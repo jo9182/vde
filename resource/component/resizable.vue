@@ -79,9 +79,15 @@
 
                 } else area.isDraggable = false;
 
+                // Resize area
                 if (isGrab) {
                     area.width = startGrabWidth + (e.pageX - startGrabX);
                     area.height = startGrabHeight + (startGrabY - e.pageY);
+
+                    // Constraint
+                    if (area.minWidth > 0 && area.width < area.minWidth) area.width = area.minWidth;
+                    if (area.minHeight > 0 && area.height < area.minHeight) area.height = area.minHeight;
+
                     area.y = startGrabY - (area.height - startGrabHeight);
                 }
             };

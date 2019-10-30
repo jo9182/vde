@@ -3,6 +3,7 @@ import axios from "axios";
 
 let VDECore = {
     runApplication(appInfo) {
+        console.log(appInfo);
         Storage.windowList.push(
             this.createWindow(appInfo, 100, 100, 720, 480, [])
         );
@@ -23,8 +24,10 @@ let VDECore = {
             appName: appInfo.name,
             x: x,
             y: y,
-            width: width,
-            height: height,
+            width: appInfo.minWidth * 1 || width,
+            height: appInfo.minHeight * 1 || height,
+            minWidth: appInfo.minWidth * 1,
+            minHeight: appInfo.minHeight * 1,
             zIndex: 0,
             isDraggable: false,
             url: appInfo.index,
@@ -116,6 +119,9 @@ let VDECore = {
     },
     setApplicationVersion(appName, appVersion) {
         return axios.get("/set-app-version?app_name=" + appName + '&app_version=' + appVersion, {});
+    },
+    updateApplication(appName) {
+        return axios.get("/app-update?app_name=" + appName, {});
     }
 };
 

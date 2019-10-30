@@ -4,7 +4,6 @@ let app = express();
 const path = require('path');
 const fs = require('fs');
 const bodyParser = require("body-parser");
-const simpleGit = require('simple-git');
 const serverGitApi = require('./server/server.git.api');
 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -17,40 +16,6 @@ app.post('^/install-app', async function (req, res) {
     let status = serverGitApi.installAppFromRepo(repo);
     if (status) res.send('OK');
     else res.send('ERROR');
-
-    /*child_process.exec(`git clone ${repo} ${finalPath}`, function (error, stdout, stderr) {
-        if (error) {
-            res.send('ERROR');
-        } else {
-            try {
-                // Get installed apps
-                let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
-
-                // Parse info about application
-                let appJson = JSON.parse(fs.readFileSync(finalPath + '/application.json', 'utf-8'));
-
-                // Add new app
-                installedApps.push({
-                    title: appJson.title,
-                    name: folderName,
-                    path: finalPath,
-                    index: `/app/${folderName}/index.html`,
-                    icon: `/app/${folderName}/icon.png`,
-                });
-
-                // Write files
-                fs.writeFileSync('./storage/user/maldan/app.json', JSON.stringify(installedApps));
-
-                // Version info
-                fs.writeFileSync(finalPath + '/.version.list', 'sas');
-
-                res.send('OK');
-            }
-            catch (e) {
-                res.send('ERROR');
-            }
-        }
-    });*/
 });
 
 // Get app list
@@ -70,6 +35,11 @@ app.get('^/app-version', function (req, res) {
     res.send(serverGitApi.getAppVersion(req.query.app_name));
 });
 
+// Update app
+app.get('^/app-update', function (req, res) {
+    res.send(serverGitApi.updateApp('maldan', req.query.app_name));
+});
+
 // Set app version
 app.get('^/set-app-version', function (req, res) {
     res.send(serverGitApi.setAppVersion(req.query.app_name, req.query.app_version));
@@ -82,6 +52,7 @@ app.get('^/app/:file(*)', function (req, res) {
     res.sendFile(path.resolve(__dirname, "storage/user/maldan/bin/" + safePath));
 });
 
+// Start server
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });

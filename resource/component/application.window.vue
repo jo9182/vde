@@ -45,6 +45,7 @@
                             <option :value="version" v-for="version in versionList">{{ version }}</option>
                         </select>
                         <button @click="setVersion">set</button>
+                        <button @click="downloadUpdate">update</button>
                     </div>
                 </div>
 
@@ -72,11 +73,11 @@
         },
         mounted() {
             Storage.sessionWindow[this.windowData.sessionId] = this.$refs.mainFrame.contentWindow;
-            //Storage.windowSessionRef[this.windowData.sessionId] = this;
 
             // Grid
             for (let winGrid in this.windowData.dependencies) {
                 for (let i = 0; i < this.windowData.dependencies[winGrid].applications.length; i++) {
+                    // Connect app deps
                     let application = this.windowData.dependencies[winGrid].applications[i];
                     if (application.connectToMain) {
                         VDECore.connectWindow(
@@ -144,6 +145,11 @@
 
                     this.versionList.push(list.data[i]);
                 }
+            },
+            async downloadUpdate() {
+                await VDECore.updateApplication(this.windowData.appName);
+                this.showSettings = false;
+                this.$refs.mainFrame.contentWindow.location.reload();
             },
             selectVersion(e) {
                 this.selectedVersion = e.target.value;

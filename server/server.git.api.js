@@ -1,7 +1,27 @@
 const child_process = require('child_process');
 const fs = require('fs');
 
-let gitApi = {
+let AppHelper = {
+    getAppByName(user, appName) {
+        let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
+        for (let i = 0; i < installedApps.length; i++)
+            if (installedApps[i].name === appName) return installedApps[i];
+        return null;
+    },
+    updateAppConfig(user, appName, config) {
+        let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
+        for (let i = 0; i < installedApps.length; i++)
+            if (installedApps[i].name === appName) {
+                installedApps[i] = Object.assign(installedApps[i], config);
+                break;
+            }
+        // Write files
+        fs.writeFileSync('./storage/user/maldan/app.json', JSON.stringify(installedApps));
+        return null;
+    },
+};
+
+let GitApi = {
     installAppFromRepo(repoUrl) {
         let folderName = repoUrl.split('/').slice(-2);
         folderName = folderName.map(x => x.replace('.git', '')
@@ -66,6 +86,20 @@ let gitApi = {
 
         return ['latest'];
     },
+    updateApp(user, appName) {
+        // Search app
+        let app = AppHelper.getAppByName(user, appName);
+        if (!app) return false;
+
+        // Update repo
+        child_process.execSync(`cd ${app.path} && git pull && git fetch --all`);
+
+        // Update new app info
+        let appJson = JSON.parse(fs.readFileSync(app.path + '/application.json', 'utf-8'));
+        AppHelper.updateAppConfig(user, appName, appJson);
+
+        return true;
+    },
     setAppVersion(appName, version) {
         let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
         for (let i = 0; i < installedApps.length; i++) {
@@ -81,4 +115,4 @@ let gitApi = {
     }
 };
 
-module.exports = gitApi;
+module.exports = GitApi;
