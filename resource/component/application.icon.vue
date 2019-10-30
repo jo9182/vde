@@ -1,8 +1,8 @@
 <template>
     <resizable :area="iconData">
-        <div class="caption" v-on:dblclick="click" style="cursor: pointer;user-select: none;">
-            <img src="https://ru.vuejs.org/images/logo.png" alt="" style="pointer-events: none;display: block;width: 100%; height: 100%">
-            <div style="text-align: center;">{{ iconData.title }}</div>
+        <div class="app-icon caption" v-on:dblclick="click" style="">
+            <img :src="iconData.icon || 'https://ru.vuejs.org/images/logo.png'" alt="">
+            <div>{{ iconData.title }}</div>
         </div>
     </resizable>
 </template>
@@ -28,3 +28,25 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .app-icon {
+        cursor: pointer;
+        user-select: none;
+
+        img {
+            pointer-events: none;
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        div {
+            text-align: center;
+            margin-top: 7px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+</style>

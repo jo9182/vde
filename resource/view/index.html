@@ -25,7 +25,7 @@
     </svg>
     <application-window v-for="win in windowList" :key="win.sessionId" :window-data="win"></application-window>
 
-    <application-icon :icon-data="app" :key="app.title" v-for="app in applicationList"></application-icon>
+    <application-icon :icon-data="app" :key="app.name" v-for="app in applicationList"></application-icon>
 </div>
 </body>
 </html>

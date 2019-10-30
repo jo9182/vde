@@ -102,11 +102,33 @@ let VDECore = {
 
     // Server side
     installApp(repoUrl) {
-        axios.post("/install-app", {
-            repo: repoUrl
+        let formData = new FormData();
+        formData.append('repo', repoUrl);
+
+        axios({
+            method: 'post',
+            url: "/install-app",
+            data: formData,
+            headers: {
+                'content-type': `multipart/form-data; boundary=${formData._boundary}`,
+            },
         }).then((r) => {
-            console.log(r);
+            this.loadApplicationList();
         });
+    },
+    removeAppByRepo(repoUrl) {
+        return axios.get("/remove-app?repo=" + repoUrl, {});
+    },
+    async loadApplicationList() {
+        Storage.applicationList.length = 0;
+        let list = await VDECore.getApplicationList();
+        for (let i = 0; i < list.data.length; i++) {
+            list.data[i].x = 32;
+            list.data[i].y = 32 + i * 96;
+            list.data[i].width = 48;
+            list.data[i].height = 48;
+            Storage.applicationList.push(list.data[i]);
+        }
     },
     getApplicationList() {
         return axios.get("/app-list", {});

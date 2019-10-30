@@ -1,7 +1,15 @@
 const child_process = require('child_process');
 const fs = require('fs');
+const rimraf = require("rimraf");
+const md5 = require('md5');
 
 let AppHelper = {
+    getAppByRepo(user, repo) {
+        let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
+        for (let i = 0; i < installedApps.length; i++)
+            if (installedApps[i].repo === repo) return installedApps[i];
+        return null;
+    },
     getAppByName(user, appName) {
         let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
         for (let i = 0; i < installedApps.length; i++)
@@ -26,8 +34,13 @@ let GitApi = {
         let folderName = repoUrl.split('/').slice(-2);
         folderName = folderName.map(x => x.replace('.git', '')
             .replace('.', '_'))
-            .join('_') + '_4';
+            .join('_');// + '_' + md5(Math.random() + '_' + Math.random() + '_' + Math.random() + 'magadusya');
         let finalPath = 'storage/user/maldan/bin/' + folderName;
+        let storagePath = 'storage/user/maldan/data/' + folderName;
+
+        // App already installed
+        if (fs.existsSync(finalPath))
+            return false;
 
         // Clone repo
         try {
@@ -41,20 +54,32 @@ let GitApi = {
             let appJson = JSON.parse(fs.readFileSync(finalPath + '/application.json', 'utf-8'));
 
             // Add new app
-            installedApps.push({
-                title: appJson.title,
+            let appInfo = Object.assign(appJson, {
                 name: folderName,
                 path: finalPath,
-                index: `/app/${folderName}/index.html`,
-                icon: `/app/${folderName}/icon.png`,
+                storage: storagePath,
+                repo: repoUrl,
+                index: `/app/${folderName}/index.html`
             });
+            // Just in case
+            delete appInfo.icon;
+            if (fs.existsSync(finalPath + '/icon.png'))
+                appInfo.icon = `/app/${folderName}/icon.png`;
+
+            // Add to app list
+            installedApps.push(appInfo);
 
             // Write files
             fs.writeFileSync('./storage/user/maldan/app.json', JSON.stringify(installedApps));
 
+            // Create data folder
+            fs.mkdirSync('./storage/user/maldan/data/' + folderName, { recursive: true });
+
             return true;
         }
         catch (e) {
+            rimraf.sync(finalPath);
+
             console.log(e);
             return false;
         }
@@ -112,6 +137,21 @@ let GitApi = {
         }
 
         return false;
+    },
+    removeAppByRepo(user, repo) {
+        let app = AppHelper.getAppByRepo(user, repo);
+        if (!app) return;
+        rimraf.sync(app.path);
+        rimraf.sync(app.storage);
+
+        let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
+        for (let i = 0; i < installedApps.length; i++)
+            if (installedApps[i].repo === repo) {
+                installedApps.splice(i, 1);
+                break;
+            }
+        // Write files
+        fs.writeFileSync('./storage/user/maldan/app.json', JSON.stringify(installedApps));
     }
 };
 

@@ -31,9 +31,10 @@ let Scene = {
         );*/
 
         // Message handler
-        window.addEventListener("message", (event) => {
-            let queryData = event.data;
-            let applicationWindow = VDECore.findWindow(Storage.windowList, queryData.sessionId);
+        window.addEventListener("message", async (event) => {
+            let query = event.data;
+            let queryData = query.data;
+            let applicationWindow = VDECore.findWindow(Storage.windowList, query.sessionId);
             let returnData = null;
 
             // Window not found
@@ -51,21 +52,35 @@ let Scene = {
                     break;
                 case 'setTitle':
                     console.log('title');
-                    applicationWindow.title = queryData.data;
+                    applicationWindow.title = query.data;
+                    break;
+                case 'getAppName':
+                    returnData = applicationWindow.appName;
+                    break;
+                case 'getInstalledApps':
+                    returnData = await VDECore.getApplicationList();
+                    returnData = returnData.data;
+                    break;
+                case 'removeAppByRepo':
+                    await VDECore.removeAppByRepo(queryData);
+                    await VDECore.loadApplicationList();
+                    break;
+                case 'installApp':
+                    await VDECore.installApp(queryData);
                     break;
                 case 'setPorts':
-                    applicationWindow.input = queryData.data.in;
-                    applicationWindow.output = queryData.data.out;
+                    applicationWindow.input = query.data.in;
+                    applicationWindow.output = query.data.out;
                     break;
                 case 'channelData':
                     for (let i = 0; i < Storage.connectionList.length; i++) {
                         // Found transmitter by sessionId
-                        if (Storage.connectionList[i].transmitter.sessionId === queryData.sessionId) {
+                        if (Storage.connectionList[i].transmitter.sessionId === query.sessionId) {
                             // Send to receiver
                             Storage.sessionWindow[Storage.connectionList[i].receiver.sessionId].postMessage({
                                 isChannelData: true,
                                 channelId: Storage.connectionList[i].inCh,
-                                data: queryData.data
+                                data: query.data
                             }, '*');
                         }
                     }
@@ -74,21 +89,14 @@ let Scene = {
 
             // Send response back
             event.source.postMessage({
-                messageId: queryData.messageId,
+                messageId: query.messageId,
                 status: true,
                 errorMessage: '',
                 data: returnData
             }, '*');
         });
 
-        let list = await VDECore.getApplicationList();
-        for (let i = 0; i < list.data.length; i++) {
-            list.data[i].x = 100;
-            list.data[i].y = 100;
-            list.data[i].width = 48;
-            list.data[i].height = 48;
-        }
-        Storage.applicationList = list.data;
+        await VDECore.loadApplicationList();
     }
 };
 
