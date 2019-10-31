@@ -2,10 +2,22 @@ import Storage from "./storage";
 import axios from "axios";
 
 let VDECore = {
+    runApplicationByRepo(repo) {
+        for (let i = 0; i < Storage.applicationList.length; i++) {
+            if (Storage.applicationList[i].repo === repo) {
+                this.runApplication(Storage.applicationList[i]);
+                return;
+            }
+        }
+    },
     runApplication(appInfo) {
         console.log(appInfo);
         Storage.windowList.push(
-            this.createWindow(appInfo, 100, 100, 720, 480, [])
+            this.createWindow(appInfo,
+                window.innerWidth / 2 - (appInfo.minWidth * 1 || 720) / 2 - 100 + Storage.windowList.length * 32,
+                window.innerHeight / 2 - (appInfo.minHeight * 1 || 480) / 2 - 100 + Storage.windowList.length * 32,
+                720, 480,
+                [])
         );
     },
     createWindow(appInfo, x, y, width, height, dependencies = []) {

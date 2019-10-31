@@ -65,6 +65,9 @@ let Scene = {
                     await VDECore.removeAppByRepo(queryData);
                     await VDECore.loadApplicationList();
                     break;
+                case 'runAppByRepo':
+                    await VDECore.runApplicationByRepo(queryData);
+                    break;
                 case 'installApp':
                     await VDECore.installApp(queryData);
                     break;

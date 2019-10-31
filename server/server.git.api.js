@@ -73,7 +73,12 @@ let GitApi = {
             fs.writeFileSync('./storage/user/maldan/app.json', JSON.stringify(installedApps));
 
             // Create data folder
-            fs.mkdirSync('./storage/user/maldan/data/' + folderName, { recursive: true });
+            try {
+                fs.mkdirSync('./storage/user/maldan/data/' + folderName, {recursive: true});
+            }
+            catch (e2) {
+
+            }
 
             return true;
         }
@@ -142,7 +147,7 @@ let GitApi = {
         let app = AppHelper.getAppByRepo(user, repo);
         if (!app) return;
         rimraf.sync(app.path);
-        rimraf.sync(app.storage);
+        // rimraf.sync(app.storage);
 
         let installedApps = JSON.parse(fs.readFileSync('./storage/user/maldan/app.json', 'utf-8'));
         for (let i = 0; i < installedApps.length; i++)

@@ -4,6 +4,11 @@ const multiparty = require('multiparty');
 const multipart = require('connect-multiparty');
 const multer = require('multer');
 const multerUpload = multer();
+const pino = require('pino');
+const logger = pino({
+    prettyPrint: { colorize: true, translateTime: true, levelFirst: true },
+    // translateTime: true
+});
 
 let app = express();
 
@@ -17,6 +22,8 @@ const request = require('request');
 app.use(formidable());
 // app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+logger.info('hello world');
 
 // Install new application
 app.post('^/install-app', async function (req, res) {
@@ -113,6 +120,6 @@ app.post('^/save-app-data', async function (req, res) {
 
 // Start server
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+    logger.info('Example app listening on port 3000!');
 });
 app.use(express.static('public'));

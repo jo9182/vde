@@ -29,9 +29,6 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 use: {
                     loader: 'babel-loader',
-                    /*options: {
-                        presets: 'env'
-                    }*/
                 }
             },
             {
@@ -54,7 +51,12 @@ module.exports = {
             filename: 'index.html',
             template: 'resource/view/index.html'
         }),
-        new ExtractTextPlugin('style.css'),
+        new ExtractTextPlugin("style.css"),
+        /*new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[id].css',
+            ignoreOrder: false, // Enable to remove warnings about conflicting order
+        }),*/
         new VueLoaderPlugin()
     ]
 };
