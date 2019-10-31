@@ -2,24 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>VDE</title>
+    <link rel="stylesheet" href="/main.css">
+    <script src="/main.js"></script>
 </head>
 <body>
-<div id="app" style="width: 100%; height: 100%;">
-    <svg style="width: 100%; height: 100%; display: block; position: absolute; left: 0; top: 0; z-index: 0;">
-        <line :x1="line.from.x"
-                :x2="line.to.x"
-                :y1="line.from.y"
-                :y2="line.to.y"
-                stroke-width="4"
-                stroke="#529E37"
-                v-for="line in sceneLines"></line>
-    </svg>
-    <application-window v-for="win in windowList" :key="win.sessionId" :window-data="win"></application-window>
+<div id="app">
+    <draggable :start="{x: 100, y: 100}" style="display: flex; flex-direction: column;" :resizable="true">
+        <div style="background: #ffff00; height: 32px;">Header</div>
+        <div style="background: #ff0000; flex: 1;">Draggable</div>
+    </draggable>
 
-    <application-icon :icon-data="app" :key="app.name" v-for="app in applicationList"></application-icon>
+    <draggable :start="{x: 200, y: 200}" style="display: flex; flex-direction: column;">
+        <div style="background: #ffff00; height: 32px;">Header</div>
+        <div style="background: #ff0000; flex: 1;">Draggable</div>
+    </draggable>
 </div>
 </body>
 </html>

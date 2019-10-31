@@ -1,20 +1,15 @@
-import Style from "../resource/scss/style.scss";
+import "../resource/scss/style.scss";
 import Vue from "vue";
-import Scene from "../resource/js/scene.js"
-import Storage from "../resource/js/storage.js"
-import VDECore from "../resource/js/core.js"
+import Storage from "../resource/js/storage.js";
 
-Vue.component('application-window', require('../resource/component/application.window.vue').default);
-Vue.component('application-icon', require('../resource/component/application.icon.vue').default);
-Vue.component('resizable', require('../resource/component/resizable.vue').default);
+let components = ['draggable'];
+for (let i = 0; i < components.length; i++)
+    Vue.component(components[i], require('../resource/component/' + components[i] + '.vue').default);
 
 // Init app
-const app = new Vue({
-    el: '#app',
-    data: Storage
-});
-
-window.VDECore = VDECore;
-
-// Init scene
-Scene.init();
+window.onload = () => {
+    const app = new Vue({
+        el: '#app',
+        data: Storage
+    });
+};
