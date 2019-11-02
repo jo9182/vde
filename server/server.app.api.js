@@ -74,8 +74,9 @@ let ServerAppApi = {
 
         // Set application key
         for (let i = 0; i < list.length; i++) {
-            list[i].applicationKey = MD5(user.accessToken + '_' + list[i].name);
-            list[i].icon = `/api/app/file/${user.accessToken}/${list[i].applicationKey}/icon.png`;
+            list[i].applicationKey = MD5(user.accessToken + '_' + list[i].name).substr(16);
+            if (list[i].icon)
+                list[i].icon = `/api/app/file/${user.accessToken}/${list[i].applicationKey}/icon.png`;
         }
 
         return list;

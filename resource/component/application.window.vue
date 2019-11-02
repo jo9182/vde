@@ -3,7 +3,8 @@
         <div class="window">
             <div class="caption">Header</div>
             <div class="body">
-
+                <iframe ref="mainFrame"
+                        :src="windowData.url + '#sessionId=' + windowData.sessionId"></iframe>
             </div>
         </div>
     </draggable>

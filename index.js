@@ -1,5 +1,6 @@
 const Fs = require('fs');
 const ServerRestAPI = require('./server/server.rest.api');
+const VDERestAPI = require('./server/vde.rest.api');
 
 // Create default folders
 Fs.mkdirSync('./public', { recursive: true });
@@ -15,3 +16,4 @@ if (!Fs.existsSync('./storage/user.list.json')) {
 
 // Start rest server
 ServerRestAPI.run(3000);
+VDERestAPI.run(3001);

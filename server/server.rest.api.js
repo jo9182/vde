@@ -31,6 +31,7 @@ let RestAppMethodList = {
         },
         // Get app current version
         '^/api/app/version': (req, res) => {
+            console.log(req.headers.host);
             res.send('gas');
         },
         // Get app version line
@@ -66,6 +67,12 @@ let RestAppMethodList = {
             let user = ServerUserApi.findBy(req.headers['access_token']);
             if (!user) return error(res);
             else res.send(JSON.stringify(user));
+        },
+
+        // Get user
+        '^/lib/:path(*)': (req, res) => {
+            let path = SafePath(req.params.path);
+            res.sendFile(Path.resolve(__dirname + '/../', 'lib/' + path));
         },
     },
     post: {

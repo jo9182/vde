@@ -1,5 +1,5 @@
 const Fs = require('fs');
-const UUID = require('uuid/v1');
+const MD5 = require('md5');
 
 let ServerUserApi = {
     users: [],
@@ -15,10 +15,8 @@ let ServerUserApi = {
             Fs.mkdirSync(`./storage/user/${user.name}/data`, { recursive: true });
 
             // Generate session access token
-            user.accessToken = UUID();
+            user.accessToken = MD5(Math.random()).substr(0, 16);
         }
-
-        console.log(this.users);
     },
     // Auth user by login and password
     auth: (login, password) => {

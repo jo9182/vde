@@ -18,6 +18,9 @@ let SceneApi = {
         // Run new app
         DataStorage.windowList.push({
             appInfo: app,
+            sessionId: Math.random() + '',
+            url: '//' + localStorage.getItem('access_token') + '_' + app.applicationKey + '.'
+                + window.location.hostname + ':' + (window.location.port * 1 + 1) + '/index.html',
             x: 100,
             y: 100,
             width: 480,
