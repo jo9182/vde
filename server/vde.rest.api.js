@@ -4,6 +4,9 @@ const BodyParser = require("body-parser");
 const RestApp = Express();
 const ServerAppApi = require('./server.app.api');
 const ServerUserApi = require('./server.user.api');
+const Request = require('request');
+const formidable = require('express-formidable');
+const Fs = require('fs');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -32,7 +35,7 @@ let AccessBySubDomain = (host) => {
 
 let RestAppMethodList = {
     get: {
-        // Get global lib
+        // Get data file
         '^/storage/:file(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
@@ -50,7 +53,27 @@ let RestAppMethodList = {
             res.sendFile(Path.resolve(__dirname + '/../', `./lib/${path}`));
         },
 
-        // Get list of user applications
+        // Get remote resource
+        '^/remote-resource/:url(*)': (req, res) => {
+            // Download remote file
+            Request({
+                method: 'GET',
+                url: req.params.url,
+                encoding: null
+            }, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                    res.set('Content-Type', response.headers['content-type']);
+                    res.set('Content-Length', response.headers['content-length']);
+                    res.send(body);
+                }
+                else {
+                    res.status(404);
+                    res.send('Not found');
+                }
+            });
+        },
+
+        // Get app file
         '^/:file(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
@@ -60,7 +83,25 @@ let RestAppMethodList = {
         },
     },
     post: {
+        // Save data file
+        '^/storage/:file(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
 
+            let path = SafePath(req.fields.path);
+
+            try {
+                let file = req.files.file;
+                let fileDataUploaded = Fs.readFileSync(file.path);
+                Fs.writeFileSync(  `${access.app.storage}/${path}`, fileDataUploaded);
+
+                res.send("OK");
+            } catch (e) {
+                console.error(e);
+                res.status(404);
+                res.send("ERROR");
+            }
+        },
     },
     delete: {
 
@@ -68,7 +109,7 @@ let RestAppMethodList = {
 };
 
 // Set post parsers
-RestApp.use(BodyParser.urlencoded({extended: true}));
+RestApp.use(formidable());
 RestApp.use(BodyParser.json());
 
 // Set get methods

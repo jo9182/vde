@@ -1,3 +1,50 @@
 body {
-  background: beige;
+  background: #d8d8d8;
+  font-family: Consolas, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  cursor: pointer;
+  background: #ff5200;
+  border: none;
+  outline: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+button:hover {
+  background: #ff7f74;
+}
+
+button:active {
+  position: relative;
+  top: 1px;
+  background: #bf4a00;
+}
+
+.error-button {
+  background: #e21919;
+}
+
+.success-button {
+  background: #38d02e;
+}
+
+.micro-button {
+  padding: 2px 5px;
+}
+
+.block {
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 4px;
+}
+
+.block-wrapper {
+  padding: 5px;
 }

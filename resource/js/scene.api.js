@@ -1,5 +1,6 @@
 import DataStorage from "./data.storage";
 import AppApi from "./app.api";
+import SystemApi from "./system.api";
 
 let SceneApi = {
     // Load application list
@@ -44,6 +45,38 @@ let SceneApi = {
                 return;
             }
         }
+    },
+
+    findWindowBy(query, by = 'sessionKey') {
+        let list = DataStorage.windowList;
+        for (let i = 0; i < list.length; i++)
+            if (list[i][by] === query) return list[i];
+        return null;
+    },
+
+    initVDEApi() {
+        window.addEventListener("message", async (event) => {
+            let query = event.data;
+            let queryData = query.data;
+            let applicationWindow = this.findWindowBy(query.sessionKey);
+            let returnData = null;
+
+            // Window not found
+            if (!applicationWindow) return;
+
+            // Run method
+            SystemApi.currentWindow = applicationWindow;
+            if (SystemApi[event.data.method])
+                returnData = await SystemApi[event.data.method](queryData);
+
+            // Send response back
+            event.source.postMessage({
+                messageId: query.messageId,
+                status: true,
+                errorMessage: '',
+                data: returnData
+            }, '*');
+        });
     }
 };
 

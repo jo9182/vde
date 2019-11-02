@@ -1,4 +1,6 @@
 import "../resource/scss/style.scss";
+import "../resource/css/normalize.css";
+
 import Vue from "vue";
 import DataStorage from "../resource/js/data.storage.js";
 import UserApi from "./js/user.api";
@@ -23,6 +25,9 @@ window.onload = async () => {
         // Load application list
         await SceneApi.reloadApplicationList();
     }
+
+    // Init VDE Api
+    SceneApi.initVDEApi();
 
     const app = new Vue({
         el: '#app',

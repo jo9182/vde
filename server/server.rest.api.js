@@ -40,10 +40,6 @@ let RestAppMethodList = {
             res.send('sss');
         },
 
-        // Get remote resource
-        '^/api/remote-resource/:url(*)': (req, res) => {
-
-        },
         // Get user
         '^/api/user': (req, res) => {
             let user = ServerUserApi.findBy(req.headers['access_token']);

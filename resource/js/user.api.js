@@ -6,7 +6,7 @@ let UserApi = {
             login: login,
             password: password
         }).then((r) => {
-            localStorage.setItem('access_token', r.data);
+            localStorage.setItem('accessToken', r.data);
             window.location.reload();
         }).catch(console.error);
     },
@@ -14,7 +14,7 @@ let UserApi = {
         try {
             let userData = await axios.get('/api/user', {
                 headers: {
-                    access_token: localStorage.getItem('access_token')
+                    access_token: localStorage.getItem('accessToken')
                 }
             });
             return userData.data;

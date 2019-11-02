@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const Autoprefixer = require('autoprefixer');
 
 module.exports = {
     resolve: {alias: {vue: 'vue/dist/vue.esm.js'}},
@@ -25,10 +26,17 @@ module.exports = {
                 loader: ['vue-loader']
             },
             {
-                test: /\.scss$/,
+                test: /\.s?css$/,
                 use: [
                     MiniCssExtractPlugin.loader,
                     'css-loader',
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            plugins: [Autoprefixer()],
+                            sourceMap: true
+                        }
+                    },
                     'sass-loader',
                 ]
             },

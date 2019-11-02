@@ -2,13 +2,12 @@
     <draggable :start="windowData" style="display: flex; flex-direction: column;" :resizable="true">
         <div class="window">
             <div class="caption">
-                <div class="title">{{ windowData.title }}</div>
+                <div class="title">{{ windowData.appInfo.title }}</div>
                 <div @click="settings" style="cursor: pointer; margin-right: 10px;">*</div>
                 <div @click="close" style="cursor: pointer;">x</div>
             </div>
             <div class="body">
-                <iframe ref="mainFrame"
-                        :src="windowData.url + '#sessionId=' + windowData.sessionId"></iframe>
+                <iframe ref="mainFrame" :src="windowData.url"></iframe>
             </div>
         </div>
     </draggable>
