@@ -10,6 +10,7 @@
 </head>
 <body>
 <div id="app">
+    <!-- Auth form -->
     <div v-if="!user" class="auth-form">
         <form>
             <input type="text" v-model="input.login">
@@ -17,6 +18,13 @@
         </form>
         <button @click="userApi.auth(input.login, input.password)">Auth</button>
     </div>
+
+    <!-- Application icon list -->
+    <application-icon v-if="user" :app-data="app" v-for="app in applicationList" :key="app.name"></application-icon>
+
+    <!-- Window list -->
+    <application-window :window-data="win" v-for="win in windowList" :key="win.sessionId"></application-window>
+
     <!--<draggable :start="{x: 100, y: 100}" style="display: flex; flex-direction: column;" :resizable="true">
         <div style="background: #53199e; height: 32px;">Header</div>
         <div style="background: #ff0000; flex: 1;">Draggable</div>

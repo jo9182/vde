@@ -1,3 +1,4 @@
+const Path = require("path");
 const Express = require('express');
 const BodyParser = require("body-parser");
 const RestApp = Express();
@@ -9,12 +10,24 @@ let error = (res, msg = 'ERROR') => {
     res.send(msg);
 };
 
+let SafePath = (path) => {
+    for (let i = 0; i < 32; i++) {
+        if (path[0] === '.') path = path.substr(1, path.length);
+
+        path = path.replace(/\\/g, '/');
+        path = path.replace(/\.\./g, '.');
+        path = path.replace(/\/\.\//g, '');
+    }
+    return path;
+};
+
 let RestAppMethodList = {
     get: {
         // Get list of user applications
         '^/api/app/list': (req, res) => {
-            console.log(req.headers['accessToken']);
-            res.send('sas');
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
+            res.send(ServerAppApi.list(user));
         },
         // Get app current version
         '^/api/app/version': (req, res) => {
@@ -23,6 +36,18 @@ let RestAppMethodList = {
         // Get app version line
         '^/api/app/version-list': (req, res) => {
             res.send('sss');
+        },
+
+        // Get app resource file by url
+        '^/api/app/file/:access_token([a-z0-9\\-]+)/:application_key([a-z0-9]+)/:path(*)': (req, res) => {
+            let user = ServerUserApi.findBy(req.params.access_token);
+            if (!user) return error(res);
+
+            let app = ServerAppApi.findBy(user, req.params.application_key, 'applicationKey');
+            if (!app) return error(res);
+
+            let path = SafePath(req.params.path);
+            res.sendFile(Path.resolve(__dirname + '/../', app.path + '/' + path));
         },
         // Get app resource file
         '^/api/app/file/:path(*)': (req, res) => {

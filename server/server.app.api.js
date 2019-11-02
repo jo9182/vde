@@ -1,6 +1,7 @@
 const ChildProcess = require('child_process');
 const Fs = require('fs');
 const Rimraf = require("rimraf");
+const MD5 = require("md5");
 
 let ServerAppApi = {
     // Install application from repo
@@ -69,7 +70,15 @@ let ServerAppApi = {
     // Get user application list
     list: (user) => {
         if (!Fs.existsSync(`./storage/user/${user.name}/app.json`)) return [];
-        return JSON.parse(Fs.readFileSync(`./storage/user/${user.name}/app.json`, 'utf-8'));
+        let list = JSON.parse(Fs.readFileSync(`./storage/user/${user.name}/app.json`, 'utf-8'));
+
+        // Set application key
+        for (let i = 0; i < list.length; i++) {
+            list[i].applicationKey = MD5(user.accessToken + '_' + list[i].name);
+            list[i].icon = `/api/app/file/${user.accessToken}/${list[i].applicationKey}/icon.png`;
+        }
+
+        return list;
     },
 
     // Remove application
@@ -87,7 +96,11 @@ let ServerAppApi = {
 
     // Find application
     findBy: (user, query, by = 'name') => {
-
+        let list = ServerAppApi.list(user);
+        for (let i = 0; i < list.length; i++)
+            if (list[i][by] === query)
+                return list[i];
+        return null;
     },
 
     // Set application version
