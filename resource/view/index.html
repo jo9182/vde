@@ -10,15 +10,17 @@
 </head>
 <body>
 <div id="app">
-    <draggable :start="{x: 100, y: 100}" style="display: flex; flex-direction: column;" :resizable="true">
-        <div style="background: #ffff00; height: 32px;">Header</div>
+    <div v-if="!user" class="auth-form">
+        <form>
+            <input type="text" v-model="input.login">
+            <input type="password" v-model="input.password" autocomplete="">
+        </form>
+        <button @click="userApi.auth(input.login, input.password)">Auth</button>
+    </div>
+    <!--<draggable :start="{x: 100, y: 100}" style="display: flex; flex-direction: column;" :resizable="true">
+        <div style="background: #53199e; height: 32px;">Header</div>
         <div style="background: #ff0000; flex: 1;">Draggable</div>
-    </draggable>
-
-    <draggable :start="{x: 200, y: 200}" style="display: flex; flex-direction: column;">
-        <div style="background: #ffff00; height: 32px;">Header</div>
-        <div style="background: #ff0000; flex: 1;">Draggable</div>
-    </draggable>
+    </draggable>-->
 </div>
 </body>
 </html>

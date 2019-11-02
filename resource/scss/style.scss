@@ -9,3 +9,17 @@ html, body {
   background-size: cover;
   overflow: hidden;
 }
+
+#app {
+  display: flex;
+  height: 100%;
+
+  .auth-form {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 4px;
+  }
+}

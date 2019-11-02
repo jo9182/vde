@@ -158,9 +158,15 @@
             position: absolute;
             width: 8px;
             height: 8px;
-            background: #f00;
-            // opacity: 0;
+            border-radius: 4px;
+            background: #ffffff;
             user-select: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+
+            &:hover {
+                opacity: 0.8;
+            }
         }
 
         .grab-lt {

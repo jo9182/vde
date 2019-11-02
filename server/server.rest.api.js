@@ -4,6 +4,11 @@ const RestApp = Express();
 const ServerAppApi = require('./server.app.api');
 const ServerUserApi = require('./server.user.api');
 
+let error = (res, msg = 'ERROR') => {
+    res.status(400);
+    res.send(msg);
+};
+
 let RestAppMethodList = {
     get: {
         // Get list of user applications
@@ -31,11 +36,22 @@ let RestAppMethodList = {
         '^/api/remote-resource/:url(*)': (req, res) => {
 
         },
+        // Get user
+        '^/api/user': (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
+            else res.send(JSON.stringify(user));
+        },
     },
     post: {
         // Install app from repo
-        '^/api/app/install': (req, res) => {
+        '^/api/app/install': async (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
 
+            let result = await ServerAppApi.install(user, req.body.repo);
+            if (!result) return error(res);
+            res.send('OK');
         },
         // Set app version
         '^/api/app/version': (req, res) => {

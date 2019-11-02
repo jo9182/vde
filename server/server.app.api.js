@@ -1,7 +1,62 @@
+const ChildProcess = require('child_process');
+const Fs = require('fs');
+const Rimraf = require("rimraf");
+
 let ServerAppApi = {
     // Install application from repo
-    install: (repoURL) => {
+    install: (user, repoURL) => {
+        let folderName = repoURL.split('/').slice(-2);
+        folderName = folderName.map(x => x.replace('.git', '')
+            .replace('.', '_'))
+            .join('_');
+        let finalPath = `./storage/user/${user.name}/bin/${folderName}`;
+        let storagePath = `./storage/user/${user.name}/data/${folderName}`;
 
+        // App already installed
+        if (Fs.existsSync(finalPath))
+            return false;
+
+        // Clone repo
+        try {
+            // Clone and fetch repo
+            ChildProcess.execSync(`git clone ${repoURL} ${finalPath}`);
+            ChildProcess.execSync(`cd ${finalPath} && git fetch && git fetch --tags`);
+
+            // Get installed apps
+            let installedApps = ServerAppApi.list(user);
+
+            // Parse info about application
+            let appJson = JSON.parse(Fs.readFileSync(`${finalPath}/application.json`, 'utf-8'));
+
+            // Add new app
+            let appInfo = Object.assign(appJson, {
+                name: folderName,
+                path: finalPath,
+                storage: storagePath,
+                repo: repoURL,
+                index: `/app/${folderName}/index.html`
+            });
+
+            // Just in case
+            delete appInfo.icon;
+            if (Fs.existsSync(`${finalPath}/icon.png`))
+                appInfo.icon = `/app/${folderName}/icon.png`;
+
+            // Add to app list
+            installedApps.push(appInfo);
+
+            // Write files
+            Fs.writeFileSync(`./storage/user/${user.name}/app.json`, JSON.stringify(installedApps));
+
+            // Create data folder
+            Fs.mkdirSync(`./storage/user/${user.name}/data/${folderName}`, {recursive: true});
+
+            return true;
+        } catch (e) {
+            console.error(e);
+            Rimraf.sync(finalPath);
+            return false;
+        }
     },
     // Update application config
     updateConfig: () => {
@@ -12,8 +67,9 @@ let ServerAppApi = {
 
     },
     // Get user application list
-    list: () => {
-
+    list: (user) => {
+        if (!Fs.existsSync(`./storage/user/${user.name}/app.json`)) return [];
+        return JSON.parse(Fs.readFileSync(`./storage/user/${user.name}/app.json`, 'utf-8'));
     },
 
     // Remove application
