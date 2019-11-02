@@ -1,4 +1,5 @@
 import AppApi from "./app.api";
+import SceneApi from "./scene.api";
 
 let SystemApi = {
     currentWindow: null,
@@ -10,6 +11,14 @@ let SystemApi = {
     },
     getInstalledApplicationList: async () => {
         return await AppApi.list();
+    },
+    async installApplication(repo) {
+        await AppApi.install(repo);
+        await SceneApi.reloadApplicationList();
+    },
+    async removeApplication(repo) {
+        await AppApi.remove(repo);
+        await SceneApi.reloadApplicationList();
     }
 };
 

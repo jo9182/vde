@@ -80,21 +80,27 @@ let ServerAppApi = {
     // Get user application list
     list: (user) => {
         if (!Fs.existsSync(`./storage/user/${user.name}/app.json`)) return [];
-        let list = JSON.parse(Fs.readFileSync(`./storage/user/${user.name}/app.json`, 'utf-8'));
-
-        // Set application key
-        for (let i = 0; i < list.length; i++) {
-            /*list[i].applicationKey = MD5(user.accessToken + '_' + list[i].name);
-            if (list[i].icon)
-                list[i].icon = `/api/app/file/${user.accessToken}/${list[i].applicationKey}/icon.png`;*/
-        }
-
-        return list;
+        return JSON.parse(Fs.readFileSync(`./storage/user/${user.name}/app.json`, 'utf-8'));
     },
 
     // Remove application
-    remove: () => {
+    remove: (user, repo) => {
+        if (!Fs.existsSync(`./storage/user/${user.name}/app.json`)) return false;
+        let list = JSON.parse(Fs.readFileSync(`./storage/user/${user.name}/app.json`, 'utf-8'));
 
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].repo === repo) {
+                // Remove folder
+                Rimraf.sync(list[i].path);
+
+                list.splice(i, 1);
+                break;
+            }
+        }
+
+        // Write files
+        Fs.writeFileSync(`./storage/user/${user.name}/app.json`, JSON.stringify(list));
+        return true;
     },
     // Remove application data file
     removeDataFile: () => {

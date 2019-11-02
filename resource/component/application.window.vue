@@ -3,6 +3,7 @@
         <div class="window">
             <div class="caption">
                 <div class="title">{{ windowData.appInfo.title }}</div>
+                <div @click="reload" style="cursor: pointer; margin-right: 10px;">@</div>
                 <div @click="settings" style="cursor: pointer; margin-right: 10px;">*</div>
                 <div @click="close" style="cursor: pointer;">x</div>
             </div>
@@ -25,6 +26,10 @@
 
         },
         methods: {
+            reload() {
+                let iFrame = this.$refs.mainFrame;
+                iFrame.src = iFrame.src;
+            },
             settings() {
 
             },

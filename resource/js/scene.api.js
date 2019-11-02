@@ -9,12 +9,10 @@ let SceneApi = {
         DataStorage.applicationList.length = 0;
         if (appList) {
             for (let i = 0; i < appList.length; i++) {
-                DataStorage.applicationList[i] = appList[i];
-                if (!DataStorage.applicationList[i].position)
-                    DataStorage.applicationList[i].position = {x: 0, y: 0};
-
-                DataStorage.applicationList[i].position.x = 16;
-                DataStorage.applicationList[i].position.y = 16 + i * 96;
+                if (!appList[i].position) appList[i].position = {x: 0, y: 0};
+                appList[i].position.x = 16;
+                appList[i].position.y = 16 + i * 96;
+                DataStorage.applicationList.push(appList[i]);
             }
         }
     },

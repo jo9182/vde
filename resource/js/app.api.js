@@ -14,6 +14,19 @@ let AppApi = {
             return false;
         }
     },
+    async remove(repo) {
+        try {
+            await axios.delete(`/api/app/${repo}`, {
+                headers: {
+                    access_token: localStorage.getItem('accessToken')
+                }
+            });
+            return true;
+        }
+        catch {
+            return false;
+        }
+    },
     async list() {
         try {
             let data = await axios.get('/api/app/list', {

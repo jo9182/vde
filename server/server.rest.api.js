@@ -92,15 +92,20 @@ let RestAppMethodList = {
     },
     delete: {
         // Remove app
-        '^/api/app': (req, res) => {
+        '^/api/app/:repo(*)': (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
 
+            // Remove app
+            if (ServerAppApi.remove(user, req.params.repo)) res.send('OK');
+            else return error(res);
         },
         // Delete app session
         '^/api/app/session/:session_key(*)': (req, res) => {
             let user = ServerUserApi.findBy(req.headers['access_token']);
             if (!user) return error(res);
 
-            delete ServerAppApi.sessionTable[req.param.session_key];
+            delete ServerAppApi.sessionTable[req.params.session_key];
             res.send('ok');
         },
     }

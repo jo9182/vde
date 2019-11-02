@@ -88,7 +88,7 @@ let RestAppMethodList = {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
 
-            let path = SafePath(req.fields.path);
+            let path = SafePath(req.params.path);
 
             try {
                 let file = req.files.file;
