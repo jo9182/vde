@@ -4,6 +4,7 @@ const BodyParser = require("body-parser");
 const RestApp = Express();
 const ServerAppApi = require('./server.app.api');
 const ServerUserApi = require('./server.user.api');
+const MD5 = require('md5');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -39,25 +40,6 @@ let RestAppMethodList = {
             res.send('sss');
         },
 
-        // Get app resource file by url
-        '^/api/app/file/:access_token([a-z0-9\\-]+)/:application_key([a-z0-9]+)/:path(*)': (req, res) => {
-            let user = ServerUserApi.findBy(req.params.access_token);
-            if (!user) return error(res);
-
-            let app = ServerAppApi.findBy(user, req.params.application_key, 'applicationKey');
-            if (!app) return error(res);
-
-            let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', app.path + '/' + path));
-        },
-        // Get app resource file
-        '^/api/app/file/:path(*)': (req, res) => {
-
-        },
-        // Get app data file
-        '^/api/app/data-file/:path(*)': (req, res) => {
-
-        },
         // Get remote resource
         '^/api/remote-resource/:url(*)': (req, res) => {
 
@@ -67,12 +49,6 @@ let RestAppMethodList = {
             let user = ServerUserApi.findBy(req.headers['access_token']);
             if (!user) return error(res);
             else res.send(JSON.stringify(user));
-        },
-
-        // Get user
-        '^/lib/:path(*)': (req, res) => {
-            let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', 'lib/' + path));
         },
     },
     post: {
@@ -89,10 +65,7 @@ let RestAppMethodList = {
         '^/api/app/version': (req, res) => {
 
         },
-        // Save app data file
-        '^/api/app/data-file': (req, res) => {
 
-        },
         // Update app
         '^/api/app/pull-update': (req, res) => {
 
@@ -105,20 +78,34 @@ let RestAppMethodList = {
                 res.status(400);
                 res.send('ERROR');
             }
-        }
+        },
+
+        // Sign app session
+        '^/api/app/session': (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
+
+            let app = ServerAppApi.findBy(user, req.body.app_name, 'name');
+            if (!app) return error(res);
+
+            let key = MD5(req.body.access_token + req.body.app_name + Math.random());
+            ServerAppApi.sessionTable[key] = {user, app};
+
+            res.send(key);
+        },
     },
     delete: {
         // Remove app
         '^/api/app': (req, res) => {
 
         },
-        // Remove app data file
-        '^/api/app/data-file/:path(*)': (req, res) => {
+        // Delete app session
+        '^/api/app/session/:session_key(*)': (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
 
-        },
-        // Remove all app data
-        '^/api/app/data': (req, res) => {
-
+            delete ServerAppApi.sessionTable[req.param.session_key];
+            res.send('ok');
         },
     }
 };

@@ -15,7 +15,7 @@ let ServerUserApi = {
             Fs.mkdirSync(`./storage/user/${user.name}/data`, { recursive: true });
 
             // Generate session access token
-            user.accessToken = MD5(Math.random()).substr(0, 16);
+            user.accessToken = MD5(Math.random() + Math.random());
         }
     },
     // Auth user by login and password

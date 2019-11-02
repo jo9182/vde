@@ -23,25 +23,11 @@ let SafePath = (path) => {
 
 let AccessBySubDomain = (host) => {
     let subDomain = host.split('.')[0];
-    if (!subDomain.includes('_')) return null;
 
-    let accessToken = subDomain.split('_')[0];
-    let applicationKey = subDomain.split('_')[1];
+    let sessionData = ServerAppApi.sessionTable[subDomain];
+    if (!sessionData) return null;
 
-    // Get user
-    let user = ServerUserApi.findBy(accessToken);
-    if (!user) return null;
-
-    // Get app
-    let app = ServerAppApi.findBy(user, applicationKey, 'applicationKey');
-    if (!app) return null;
-
-    return {
-        user,
-        app,
-        accessToken,
-        applicationKey
-    }
+    return sessionData;
 };
 
 let RestAppMethodList = {

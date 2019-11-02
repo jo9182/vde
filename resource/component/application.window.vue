@@ -1,7 +1,11 @@
 <template>
     <draggable :start="windowData" style="display: flex; flex-direction: column;" :resizable="true">
         <div class="window">
-            <div class="caption">Header</div>
+            <div class="caption">
+                <div class="title">{{ windowData.title }}</div>
+                <div @click="settings" style="cursor: pointer; margin-right: 10px;">*</div>
+                <div @click="close" style="cursor: pointer;">x</div>
+            </div>
             <div class="body">
                 <iframe ref="mainFrame"
                         :src="windowData.url + '#sessionId=' + windowData.sessionId"></iframe>
@@ -11,6 +15,8 @@
 </template>
 
 <script>
+    import SceneApi from "../js/scene.api";
+
     export default {
         name: "application-window",
         props: {
@@ -20,7 +26,12 @@
 
         },
         methods: {
+            settings() {
 
+            },
+            close() {
+                SceneApi.closeApplication(this.windowData.sessionKey);
+            }
         },
         data() {
             return {

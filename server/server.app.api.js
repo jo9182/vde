@@ -4,6 +4,8 @@ const Rimraf = require("rimraf");
 const MD5 = require("md5");
 
 let ServerAppApi = {
+    sessionTable: {},
+
     // Install application from repo
     install: (user, repoURL) => {
         let folderName = repoURL.split('/').slice(-2);
@@ -40,8 +42,16 @@ let ServerAppApi = {
 
             // Just in case
             delete appInfo.icon;
-            if (Fs.existsSync(`${finalPath}/icon.png`))
-                appInfo.icon = `/app/${folderName}/icon.png`;
+            if (Fs.existsSync(`${finalPath}/icon.png`)) {
+                // Icon path
+                appInfo.icon = `/app_icon/${folderName}_icon.png`;
+
+                // Create icon folder
+                Fs.mkdirSync(`./public/app_icon`, {recursive: true});
+
+                // Copy icon
+                Fs.copyFileSync(`${finalPath}/icon.png`, `./public/app_icon/${folderName}_icon.png`);
+            }
 
             // Add to app list
             installedApps.push(appInfo);
@@ -74,9 +84,9 @@ let ServerAppApi = {
 
         // Set application key
         for (let i = 0; i < list.length; i++) {
-            list[i].applicationKey = MD5(user.accessToken + '_' + list[i].name).substr(16);
+            /*list[i].applicationKey = MD5(user.accessToken + '_' + list[i].name);
             if (list[i].icon)
-                list[i].icon = `/api/app/file/${user.accessToken}/${list[i].applicationKey}/icon.png`;
+                list[i].icon = `/api/app/file/${user.accessToken}/${list[i].applicationKey}/icon.png`;*/
         }
 
         return list;

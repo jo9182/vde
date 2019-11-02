@@ -32,6 +32,22 @@ let AppApi = {
         for (let i = 0; i < list.length; i++)
             if (list[i][by] === query) return list[i];
         return null;
+    },
+    async getSessionKey(appName) {
+        let key = await axios.post('/api/app/session', { app_name: appName }, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        });
+        return key.data;
+    },
+    async destroySessionKey(sessionKey) {
+        let key = await axios.delete(`/api/app/session/${sessionKey}`, {
+            headers: {
+                access_token: localStorage.getItem('access_token')
+            }
+        });
+        return key.data;
     }
 };
 

@@ -1,8 +1,10 @@
 <template>
-    <div class="app-icon caption" v-on:dblclick="click(appData.name)">
-        <img :src="appData.icon || 'https://ru.vuejs.org/images/logo.png'" :alt="appData.title">
-        <div>{{ appData.title }}</div>
-    </div>
+    <draggable :start="position">
+        <div class="app-icon caption" v-on:dblclick="click(appData.name)">
+            <img :src="appData.icon || 'https://ru.vuejs.org/images/logo.png'" :alt="appData.title">
+            <div>{{ appData.title }}</div>
+        </div>
+    </draggable>
 </template>
 
 <script>
@@ -11,7 +13,8 @@
     export default {
         name: "application-icon",
         props: {
-            appData: Object
+            appData: Object,
+            position: Object
         },
         mounted() {
 

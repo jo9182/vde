@@ -131,10 +131,15 @@
                 }
             }
 
-            this.width = this.start.width || this.$refs.dragArea.getBoundingClientRect().width;
-            this.height = this.start.height || this.$refs.dragArea.getBoundingClientRect().height;
-            this.x = this.start.x || 0;
-            this.y = this.start.y || 0;
+            if (this.start) {
+                this.width = this.start.width || this.$refs.dragArea.getBoundingClientRect().width;
+                this.height = this.start.height || this.$refs.dragArea.getBoundingClientRect().height;
+                this.x = this.start.x || 0;
+                this.y = this.start.y || 0;
+            } else {
+                this.width = this.$refs.dragArea.getBoundingClientRect().width;
+                this.height = this.$refs.dragArea.getBoundingClientRect().height;
+            }
         },
         methods: {
 
