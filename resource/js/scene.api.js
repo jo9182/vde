@@ -31,7 +31,10 @@ let SceneApi = {
             x: 100,
             y: 100,
             width: app.minWidth || 480,
-            height: app.minHeight || 240
+            height: app.minHeight || 240,
+            showOptions: false,
+            tabs: [],
+            options: {}
         });
     },
 

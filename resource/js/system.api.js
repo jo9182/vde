@@ -19,6 +19,30 @@ let SystemApi = {
     async removeApplication(repo) {
         await AppApi.remove(repo);
         await SceneApi.reloadApplicationList();
+    },
+    setTabs(tabs) {
+        this.currentWindow.tabs = tabs;
+    },
+    setOptions(options) {
+        // Convert object to list
+        let optionList = [];
+        for (let option in options) {
+            if (options.hasOwnProperty(option)) {
+                optionList.push({
+                    key: option,
+                    ...options[option]
+                });
+            }
+        }
+
+        // Save options
+        this.currentWindow.options = optionList;
+    },
+    showOptions() {
+        this.currentWindow.showOptions = true;
+    },
+    hideOptions() {
+        this.currentWindow.showOptions = false;
     }
 };
 
