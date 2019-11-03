@@ -1,5 +1,6 @@
 <template>
-    <draggable :start="windowData" style="display: flex; flex-direction: column;" :resizable="true">
+    <draggable :start="windowData" style="display: flex; flex-direction: column;"
+               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag">
         <div class="window">
             <div class="caption">
                 <div class="title">{{ windowData.appInfo.title }}</div>
@@ -9,6 +10,9 @@
             </div>
             <div class="body">
                 <iframe ref="mainFrame" :src="windowData.url"></iframe>
+
+                <!-- Over body -->
+                <div v-if="isDrag" class="over-body"></div>
             </div>
         </div>
     </draggable>
@@ -35,11 +39,17 @@
             },
             close() {
                 SceneApi.closeApplication(this.windowData.sessionKey);
+            },
+            startDrag() {
+                this.isDrag = true;
+            },
+            stopDrag() {
+                this.isDrag = false;
             }
         },
         data() {
             return {
-
+                isDrag: false
             }
         }
     }
@@ -76,6 +86,12 @@
                 width: 100%;
                 height: 100%;
             }
+        }
+
+        .over-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
         }
     }
 </style>

@@ -6,6 +6,29 @@ body {
   padding: 0;
 }
 
+.button-group {
+  display: flex;
+  flex: 1;
+
+  > button {
+    flex: 1;
+  }
+}
+
+.button-group-separated {
+  display: flex;
+  flex: 1;
+
+  > button {
+    flex: 1;
+    margin-right: 5px;
+  }
+
+  > button:last-child {
+    margin-right: 0;
+  }
+}
+
 button {
   cursor: pointer;
   background: #ff5200;
@@ -15,16 +38,33 @@ button {
   border-radius: 4px;
   color: #ffffff;
   font-size: 12px;
+
+  &:hover {
+    background: #ff7f74;
+  }
+
+  &:active {
+    position: relative;
+    top: 1px;
+    background: #bf4a00;
+  }
 }
 
-button:hover {
-  background: #ff7f74;
-}
+.disabled {
+  background: #acacac;
+  color: #d7d7d7;
 
-button:active {
-  position: relative;
-  top: 1px;
-  background: #bf4a00;
+  &:hover {
+    background: #acacac;
+    color: #d7d7d7;
+  }
+
+  &:active {
+    background: #acacac;
+    color: #d7d7d7;
+    position: relative;
+    top: 0;
+  }
 }
 
 .error-button {
@@ -47,4 +87,34 @@ button:active {
 
 .block-wrapper {
   padding: 5px;
+}
+
+table {
+  display: flex;
+  flex: 1;
+  border-collapse: collapse;
+
+  thead, tbody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: hidden;
+
+    tr {
+      display: flex;
+      background: #f1f5f8;
+
+      td {
+        flex: 1;
+        padding: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    tr:nth-child(2n) {
+      background: #efedf0;
+    }
+  }
 }

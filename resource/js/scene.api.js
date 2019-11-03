@@ -30,8 +30,8 @@ let SceneApi = {
                 + (window.location.port * 1 + 1) + '/index.html',
             x: 100,
             y: 100,
-            width: 480,
-            height: 240
+            width: app.minWidth || 480,
+            height: app.minHeight || 240
         });
     },
 

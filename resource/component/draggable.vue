@@ -14,7 +14,9 @@
         name: "draggable",
         props: {
             start: Object,
-            resizable: Boolean
+            resizable: Boolean,
+            startDrag: Function,
+            stopDrag: Function,
         },
         computed: {
             style() {
@@ -64,6 +66,8 @@
                 startY = parent.y;
                 startMouseY = e.pageY;
                 isDrag = true;
+
+                if (parent.startDrag) parent.startDrag();
             });
 
             document.addEventListener('mousemove', function (e) {
@@ -110,6 +114,8 @@
             document.addEventListener('mouseup', function (e) {
                 isDrag = false;
                 isGrab = false;
+
+                if (parent.stopDrag) parent.stopDrag();
             });
 
             // Resize logic

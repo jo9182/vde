@@ -7,6 +7,7 @@ const ServerUserApi = require('./server.user.api');
 const Request = require('request');
 const formidable = require('express-formidable');
 const Fs = require('fs');
+const SASS = require('node-sass');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -31,6 +32,21 @@ let AccessBySubDomain = (host) => {
     if (!sessionData) return null;
 
     return sessionData;
+};
+
+let ConvertFile = (path, res) => {
+    let extension = Path.extname(path);
+    if (extension === '.scss') {
+        let fileContent = Fs.readFileSync(path, 'utf-8');
+
+        let result = SASS.renderSync({
+            data: fileContent
+        });
+        res.setHeader('Content-Type', 'text/css');
+        res.send(result.css);
+        return true;
+    }
+    return false;
 };
 
 let RestAppMethodList = {
@@ -79,7 +95,9 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.file);
-            res.sendFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`));
+
+            if (!ConvertFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`), res))
+                res.sendFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`));
         },
     },
     post: {

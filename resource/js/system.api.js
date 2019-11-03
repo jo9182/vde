@@ -3,13 +3,13 @@ import SceneApi from "./scene.api";
 
 let SystemApi = {
     currentWindow: null,
-    getAppInfo: () => {
-        return SystemApi.currentWindow.appInfo;
+    getAppInfo() {
+        return this.currentWindow.appInfo;
     },
-    setTitle: (title) => {
-        SystemApi.currentWindow.appInfo.title = title;
+    setTitle(title) {
+        this.currentWindow.appInfo.title = title;
     },
-    getInstalledApplicationList: async () => {
+    async getInstalledApplicationList() {
         return await AppApi.list();
     },
     async installApplication(repo) {
