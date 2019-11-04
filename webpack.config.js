@@ -62,9 +62,9 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name].css'
         }),
+        new VueLoaderPlugin(),
         new CopyPlugin([
             { from: 'public/ui.css', to: '../lib/ui.css' },
         ]),
-        new VueLoaderPlugin()
     ]
 };
