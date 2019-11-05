@@ -57,7 +57,7 @@
             windowData: Object
         },
         mounted() {
-
+            console.log(this.windowData);
         },
         methods: {
             sendIFrameEvent(eventName, data) {

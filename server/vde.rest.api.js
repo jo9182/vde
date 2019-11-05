@@ -63,21 +63,31 @@ let ConvertFile = (path, res) => {
 
 let RestAppMethodList = {
     get: {
+        '^/api/file/exists/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+            let path = SafePath(req.params.path);
+
+            if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`)))
+                res.send('OK');
+            else error(res);
+        },
+
         // Get data file
-        '^/storage/:file(*)': (req, res) => {
+        '^/storage/:path(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
 
-            let path = SafePath(req.params.file);
+            let path = SafePath(req.params.path);
             res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`));
         },
 
         // Get global lib
-        '^/lib/:file(*)': (req, res) => {
+        '^/lib/:path(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
 
-            let path = SafePath(req.params.file);
+            let path = SafePath(req.params.path);
             res.sendFile(Path.resolve(__dirname + '/../', `./lib/${path}`));
         },
 
@@ -102,11 +112,11 @@ let RestAppMethodList = {
         },
 
         // Get app file
-        '^/:file(*)': (req, res) => {
+        '^/:path(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
 
-            let path = SafePath(req.params.file);
+            let path = SafePath(req.params.path);
 
             if (!ConvertFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`), res))
                 res.sendFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`));
@@ -114,7 +124,7 @@ let RestAppMethodList = {
     },
     post: {
         // Save data file
-        '^/storage/:file(*)': (req, res) => {
+        '^/storage/:path(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
 

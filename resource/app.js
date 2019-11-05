@@ -2,9 +2,12 @@ import "../resource/scss/style.scss";
 import "../resource/css/normalize.css";
 
 import Vue from "vue";
+import VueTouch from "vue-touch";
 import DataStorage from "../resource/js/data.storage.js";
 import UserApi from "./js/user.api";
 import SceneApi from "./js/scene.api";
+
+Vue.use(VueTouch);
 
 // Load components
 let components = ['draggable', 'application.icon', 'application.window'];

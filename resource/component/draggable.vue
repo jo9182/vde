@@ -60,37 +60,45 @@
             let handler = this.$refs.dragArea.querySelector('[data-draggable]');
             if (!handler) handler = this.$refs.dragArea;
 
-            handler.addEventListener('mousedown', function (e) {
+            let mousedown = function (e) {
+                let touches = e.changedTouches;
+                let pageX = touches ?touches[0].pageX :e.pageX;
+                let pageY = touches ?touches[0].pageY :e.pageY;
+
                 startX = parent.x;
-                startMouseX = e.pageX;
+                startMouseX = pageX;
                 startY = parent.y;
-                startMouseY = e.pageY;
+                startMouseY = pageY;
                 isDrag = true;
 
                 if (parent.startDrag) parent.startDrag();
-            });
+            };
 
-            document.addEventListener('mousemove', function (e) {
+            let mousemove = function (e) {
+                let touches = e.changedTouches;
+                let pageX = touches ?touches[0].pageX :e.pageX;
+                let pageY = touches ?touches[0].pageY :e.pageY;
+
                 // Resize area
                 if (isGrab && parent.resizable) {
                     if (grabType === 'grab-rt') {
-                        parent.width = startGrabWidth + (e.pageX - startGrabX);
-                        parent.height = startGrabHeight + (startGrabY - e.pageY);
+                        parent.width = startGrabWidth + (pageX - startGrabX);
+                        parent.height = startGrabHeight + (startGrabY - pageY);
                         parent.y = startGrabPositionY - (parent.height - startGrabHeight);
                     }
                     if (grabType === 'grab-rb') {
-                        parent.width = startGrabWidth + (e.pageX - startGrabX);
-                        parent.height = startGrabHeight - (startGrabY - e.pageY);
+                        parent.width = startGrabWidth + (pageX - startGrabX);
+                        parent.height = startGrabHeight - (startGrabY - pageY);
                     }
                     if (grabType === 'grab-lt') {
-                        parent.width = startGrabWidth - (e.pageX - startGrabX);
-                        parent.height = startGrabHeight + (startGrabY - e.pageY);
+                        parent.width = startGrabWidth - (pageX - startGrabX);
+                        parent.height = startGrabHeight + (startGrabY - pageY);
                         parent.y = startGrabPositionY - (parent.height - startGrabHeight);
                         parent.x = startGrabPositionX - (parent.width - startGrabWidth);
                     }
                     if (grabType === 'grab-lb') {
-                        parent.width = startGrabWidth - (e.pageX - startGrabX);
-                        parent.height = startGrabHeight - (startGrabY - e.pageY);
+                        parent.width = startGrabWidth - (pageX - startGrabX);
+                        parent.height = startGrabHeight - (startGrabY - pageY);
                         parent.x = startGrabPositionX - (parent.width - startGrabWidth);
                     }
 
@@ -98,25 +106,36 @@
                 }
 
                 if (isDrag) {
-                    let offsetX = e.pageX - startMouseX;
+                    let offsetX = pageX - startMouseX;
                     let finalX = startX + offsetX;
                     if (finalX < 0) finalX = 0;
                     if (finalX > window.innerWidth - parent.width) finalX = window.innerWidth - parent.width;
                     parent.x = finalX;
-                    let offsetY = e.pageY - startMouseY;
+                    let offsetY = pageY - startMouseY;
                     let finalY = startY + offsetY;
                     if (finalY < 0) finalY = 0;
                     if (finalY > window.innerHeight - parent.height) finalY = window.innerHeight - parent.height;
                     parent.y = finalY;
                 }
-            });
-
-            document.addEventListener('mouseup', function (e) {
+            };
+            let mouseup = function (e) {
                 isDrag = false;
                 isGrab = false;
 
                 if (parent.stopDrag) parent.stopDrag();
-            });
+            };
+
+            // Drag start
+            handler.addEventListener('mousedown', mousedown);
+            handler.addEventListener('touchstart', mousedown);
+
+            // Mouse move
+            document.addEventListener('mousemove', mousemove);
+            document.addEventListener('touchmove', mousemove);
+
+            // Mouse up
+            document.addEventListener('mouseup', mouseup);
+            document.addEventListener('touchend', mouseup);
 
             // Resize logic
             if (this.resizable) {
