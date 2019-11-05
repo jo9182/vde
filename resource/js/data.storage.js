@@ -16,6 +16,10 @@ let DataStorage = {
         login: '',
         password: ''
     },
+    dragData: {
+        fromWindow: null,
+        data: null
+    },
     userApi: UserApi,
     appApi: AppApi,
 

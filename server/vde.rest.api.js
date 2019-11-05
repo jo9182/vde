@@ -10,6 +10,8 @@ const Fs = require('fs');
 const SASS = require('node-sass');
 const AutoPrefixer = require('autoprefixer');
 const PostCSS = require('postcss');
+const WebSocket = require('ws');
+const Net = require('net');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -169,8 +171,50 @@ for (let getMethod in RestAppMethodList.delete)
 
 module.exports = {
     run: function (port) {
+        // Start rest server
         RestApp.listen(port, function () {
             console.log(`VDE Server starts at :${port}`);
+        });
+
+        // Start web socket server
+        const wss = new WebSocket.Server({
+            port: port + 1,
+            perMessageDeflate: false
+        });
+        console.log(`VDE WebSocket Server starts at :${port + 1}`);
+
+        let wssTable = {};
+        wss.on('connection', function connection(ws, req) {
+            ws.id = req.headers['sec-websocket-key'];
+            wssTable[ws.id] = {
+                upgrade: false
+            };
+
+            ws.on('message', function incoming(message) {
+                if (!wssTable[ws.id].upgrade) {
+                    wssTable[ws.id].upgrade = true;
+
+                    let authPackage = JSON.parse(message);
+                    let client = new Net.Socket();
+                    wssTable[ws.id].client = client;
+                    client.connect(authPackage.port, authPackage.host);
+                    client.on('data', function(data) {
+                        ws.send(data);
+                    });
+                    client.on('close', function(data) {
+                        delete wssTable[ws.id];
+                        ws.close();
+                    });
+                } else {
+                    wssTable[ws.id].client.write(message);
+                }
+            });
+
+            ws.on('close', function () {
+                try { wssTable[ws.id].client.destroy(); }
+                catch {}
+                delete wssTable[ws.id];
+            });
         });
     }
 };

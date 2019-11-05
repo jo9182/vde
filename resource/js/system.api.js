@@ -1,5 +1,6 @@
 import AppApi from "./app.api";
 import SceneApi from "./scene.api";
+import DataStorage from "./data.storage";
 
 let SystemApi = {
     currentWindow: null,

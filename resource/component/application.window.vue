@@ -14,7 +14,7 @@
                 </div>
             </div>
             <div class="body">
-                <iframe ref="mainFrame" :src="windowData.url"></iframe>
+                <iframe ref="mainFrame" :src="windowData.url" ></iframe>
 
                 <!-- Over body -->
                 <div v-if="isDrag" class="over-body"></div>
@@ -80,6 +80,11 @@
 
         },
         methods: {
+            dropData() {
+                DataStorage.dragData.fromWindow = null;
+                DataStorage.dragData.data = null;
+                console.log(2);
+            },
             sendIFrameEvent(eventName, data) {
                 this.$refs.mainFrame.contentWindow.postMessage({
                     isEvent: true,
@@ -150,6 +155,7 @@
         width: 100%;
         height: 100%;
         border: 1px solid #212121;
+        user-select: none;
 
         .caption {
             background: #3b3b3b;
@@ -205,6 +211,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
+            background: #00000022;
         }
 
         .options, .settings {
