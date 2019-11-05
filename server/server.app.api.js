@@ -70,8 +70,14 @@ let ServerAppApi = {
         }
     },
     // Update application config
-    updateConfig: () => {
+    updateSettings: (user, appName, settings) => {
+        let list = ServerAppApi.list(user);
+        for (let i = 0; i < list.length; i++)
+            if (list[i].name === appName)
+                list[i].settings = settings;
 
+        // Update app list
+        Fs.writeFileSync(`./storage/user/${user.name}/app.json`, JSON.stringify(list));
     },
     // Pull update of application
     pullUpdate: () => {

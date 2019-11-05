@@ -54,6 +54,14 @@ let AppApi = {
         });
         return key.data;
     },
+    async saveSettings(appName, settings) {
+        let key = await axios.post('/api/app/settings', { app_name: appName, settings: JSON.stringify(settings) }, {
+            headers: {
+                access_token: localStorage.getItem('accessToken')
+            }
+        });
+        return key.data;
+    },
     async destroySessionKey(sessionKey) {
         let key = await axios.delete(`/api/app/session/${sessionKey}`, {
             headers: {

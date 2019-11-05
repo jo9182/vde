@@ -89,6 +89,24 @@ let RestAppMethodList = {
 
             res.send(key);
         },
+
+        // Save app settings
+        '^/api/app/settings': (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
+
+            let app = ServerAppApi.findBy(user, req.body.app_name, 'name');
+            if (!app) return error(res);
+
+            // Set settings
+            let settings;
+            try { settings = JSON.parse(req.body.settings); }
+            catch { return error(res); }
+            console.log(settings);
+            ServerAppApi.updateSettings(user, app.name, settings);
+
+            res.send('ok');
+        }
     },
     delete: {
         // Remove app

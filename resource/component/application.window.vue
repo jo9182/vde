@@ -19,6 +19,7 @@
                 <!-- Over body -->
                 <div v-if="isDrag" class="over-body"></div>
 
+                <!-- Options -->
                 <div v-if="windowData.showOptions" class="options">
                     <div v-for="option in windowData.options">
                         <!-- Text field -->
@@ -43,6 +44,18 @@
                     </div>
                     <button @click="saveOptions">Save</button>
                 </div>
+
+                <!-- Settings -->
+                <div v-if="showSettings" class="settings">
+                    <div v-for="setting in windowData.settings">
+                        <!-- Text field -->
+                        <div v-if="setting.type === 'text'" class="field">
+                            <div>{{ setting.key }}</div>
+                            <div><input type="text" v-model="setting.value"></div>
+                        </div>
+                    </div>
+                    <button @click="saveSettings">Save</button>
+                </div>
             </div>
         </div>
     </draggable>
@@ -51,6 +64,7 @@
 <script>
     import SceneApi from "../js/scene.api";
     import DataStorage from "../js/data.storage";
+    import AppApi from "../js/app.api";
 
     export default {
         name: "application-window",
@@ -63,7 +77,7 @@
             }
         },
         mounted() {
-            console.log(this.windowData);
+
         },
         methods: {
             sendIFrameEvent(eventName, data) {
@@ -72,6 +86,20 @@
                     event: eventName,
                     data: data
                 }, '*');
+            },
+            async saveSettings() {
+                this.showSettings = false;
+
+                // Convert list to object
+                let object = {};
+                for (let i = 0; i < this.windowData.settings.length; i++)
+                    object[this.windowData.settings[i].key] = this.windowData.settings[i].value;
+
+                // Save settings
+                await AppApi.saveSettings(this.windowData.appInfo.name, object);
+
+                // Reload app list
+                await SceneApi.reloadApplicationList();
             },
             saveOptions() {
                 // Convert list to object
@@ -93,7 +121,7 @@
                 iFrame.src = iFrame.src;
             },
             settings() {
-
+                this.showSettings = !this.showSettings;
             },
             close() {
                 SceneApi.closeApplication(this.windowData.sessionKey);
@@ -107,7 +135,8 @@
         },
         data() {
             return {
-                isDrag: false
+                isDrag: false,
+                showSettings: false
             }
         }
     }
@@ -178,7 +207,7 @@
             height: 100%;
         }
 
-        .options {
+        .options, .settings {
             background: #3b3b3b;
             position: absolute;
             width: 100%;

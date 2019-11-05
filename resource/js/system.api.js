@@ -38,6 +38,12 @@ let SystemApi = {
         // Save options
         this.currentWindow.options = optionList;
     },
+    getSettings() {
+        let object = {};
+        for (let i = 0; i < this.currentWindow.settings.length; i++)
+            object[this.currentWindow.settings[i].key] = this.currentWindow.settings[i].value;
+        return object;
+    },
     showOptions() {
         this.currentWindow.showOptions = true;
     },

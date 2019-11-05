@@ -20,6 +20,10 @@ let SceneApi = {
     async runApplication(name) {
         let app = await AppApi.findBy(name);
         let sessionKey = await AppApi.getSessionKey(app.name);
+        let appSettings = app.settings || {};
+        let settingsPattern = [
+            { key: 'args', type: 'text', value: appSettings.args || '' },
+        ];
 
         // Run new app
         DataStorage.windowList.push({
@@ -34,7 +38,8 @@ let SceneApi = {
             height: app.minHeight || 240,
             showOptions: false,
             tabs: [],
-            options: {}
+            options: {},
+            settings: settingsPattern
         });
     },
 
