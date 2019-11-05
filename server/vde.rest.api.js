@@ -8,6 +8,8 @@ const Request = require('request');
 const formidable = require('express-formidable');
 const Fs = require('fs');
 const SASS = require('node-sass');
+const AutoPrefixer = require('autoprefixer');
+const PostCSS = require('postcss');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -37,14 +39,23 @@ let AccessBySubDomain = (host) => {
 
 let ConvertFile = (path, res) => {
     let extension = Path.extname(path);
+
+    // SCSS File to CSS
     if (extension === '.scss') {
+        // Get file
         let fileContent = Fs.readFileSync(path, 'utf-8');
 
+        // Transpile
         let result = SASS.renderSync({
             data: fileContent
         });
+
+        // Autoprefix
+        result = PostCSS([ AutoPrefixer ]).process(result.css).css;
+
+        // Set headers
         res.setHeader('Content-Type', 'text/css');
-        res.send(result.css);
+        res.send(result);
         return true;
     }
     return false;

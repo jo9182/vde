@@ -76,11 +76,11 @@
                 }
 
                 // Send to client
-                this.sendIFrameEvent('optionSave', object);
+                this.sendIFrameEvent('optionsChanged', object);
                 this.windowData.showOptions = false;
             },
             clickTab(tab) {
-                this.sendIFrameEvent('tabClick', tab);
+                this.sendIFrameEvent('tabClicked', tab);
             },
             reload() {
                 let iFrame = this.$refs.mainFrame;
