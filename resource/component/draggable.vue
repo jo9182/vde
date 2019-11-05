@@ -17,9 +17,18 @@
             resizable: Boolean,
             startDrag: Function,
             stopDrag: Function,
+            disabled: Boolean
         },
         computed: {
             style() {
+                if (this.disabled) {
+                    return {
+                        left: '0px',
+                        top: '0px',
+                        width: '100%',
+                        height: '100%'
+                    }
+                }
                 if (this.width) {
                     return {
                         left: this.x + 'px',
@@ -61,6 +70,7 @@
             if (!handler) handler = this.$refs.dragArea;
 
             let mousedown = function (e) {
+                if (parent.disabled) return;
                 let touches = e.changedTouches;
                 let pageX = touches ?touches[0].pageX :e.pageX;
                 let pageY = touches ?touches[0].pageY :e.pageY;
@@ -75,6 +85,7 @@
             };
 
             let mousemove = function (e) {
+                if (parent.disabled) return;
                 let touches = e.changedTouches;
                 let pageX = touches ?touches[0].pageX :e.pageX;
                 let pageY = touches ?touches[0].pageY :e.pageY;
@@ -119,6 +130,7 @@
                 }
             };
             let mouseup = function (e) {
+                if (parent.disabled) return;
                 isDrag = false;
                 isGrab = false;
 

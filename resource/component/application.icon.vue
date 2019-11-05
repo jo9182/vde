@@ -1,6 +1,6 @@
 <template>
     <draggable :start="position">
-        <div class="app-icon caption" v-on:dblclick="click(appData.name)" v-on:tap="click(appData.name)">
+        <div class="app-icon caption" v-on:dblclick="click(appData.name)">
             <img :src="appData.icon || '/image/application.png'" :alt="appData.title">
             <div>{{ appData.title }}</div>
         </div>

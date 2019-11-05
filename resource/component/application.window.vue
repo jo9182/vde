@@ -1,6 +1,6 @@
 <template>
     <draggable :start="windowData" style="display: flex; flex-direction: column;"
-               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag">
+               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :disabled="isMobile">
         <div class="window">
             <div class="caption" data-draggable="true">
                 <div class="title">{{ windowData.appInfo.title }}</div>
@@ -50,11 +50,17 @@
 
 <script>
     import SceneApi from "../js/scene.api";
+    import DataStorage from "../js/data.storage";
 
     export default {
         name: "application-window",
         props: {
             windowData: Object
+        },
+        computed: {
+            isMobile() {
+                return DataStorage.device.isMobile;
+            }
         },
         mounted() {
             console.log(this.windowData);

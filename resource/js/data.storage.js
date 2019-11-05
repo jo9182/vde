@@ -18,6 +18,16 @@ let DataStorage = {
     },
     userApi: UserApi,
     appApi: AppApi,
+
+    device: {
+        isMobile: typeof window.orientation !== 'undefined'
+    },
+
+    screen: {
+        width: 0,
+        height: 0,
+        isMobile: false
+    },
 };
 
 export default DataStorage;
