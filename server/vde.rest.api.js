@@ -84,7 +84,7 @@ let RestAppMethodList = {
                         res.send('OK');
                     else error(res);
                     break;
-                case 'document':
+                case 'docs':
                     if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`)))
                         res.send('OK');
                     else error(res);
@@ -96,7 +96,7 @@ let RestAppMethodList = {
         },
 
         // Get file tree
-        '^/api/file/tree/:filter([^/]*)/:location([a-z]+)/:path(*)': async (req, res) => {
+        '^/api/file/tree/:filter([^/]+)/:location([a-z]+)/:path(*)': async (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
             let path = SafePath(req.params.path);
@@ -116,7 +116,7 @@ let RestAppMethodList = {
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
                     list = await RecursiveReaddir(absolutePath);
                     break;
-                case 'document':
+                case 'docs':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
                     list = await RecursiveReaddir(absolutePath);
@@ -143,9 +143,9 @@ let RestAppMethodList = {
         },
 
         // Get file list
-        '^/api/file/list/:filter([^/]*)/:location([a-z]+)/:path(*)': (req, res) => {
+        '^/api/file/list/:filter([^/]+)/:location([a-z]+)/:path(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
-            if (!access) return error(res);
+            if (!access) return error(res, 'Access denied');
             let path = SafePath(req.params.path);
             let location = req.params.location;
             let filter = req.params.filter;
@@ -163,13 +163,13 @@ let RestAppMethodList = {
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
                     list = Fs.readdirSync(absolutePath);
                     break;
-                case 'document':
+                case 'docs':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
                     list = Fs.readdirSync(absolutePath);
                     break;
                 default:
-                    return error(res);
+                    return error(res, `Unknown "${location}" location`);
             }
 
             // Send to client
@@ -184,6 +184,9 @@ let RestAppMethodList = {
                     size: Fs.statSync(absolutePath + '/' + x)['size'],
                     created: Fs.statSync(absolutePath + '/' + x)['birthtime'],
                 }
+            });
+            list = list.sort().sort((a, b) => {
+                return ~~b.isFolder - ~~a.isFolder;
             });
             res.send(JSON.stringify(list));
         },
