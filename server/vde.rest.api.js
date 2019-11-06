@@ -84,7 +84,7 @@ let RestAppMethodList = {
                         res.send('OK');
                     else error(res);
                     break;
-                case 'public':
+                case 'document':
                     if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`)))
                         res.send('OK');
                     else error(res);
@@ -116,7 +116,7 @@ let RestAppMethodList = {
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
                     list = await RecursiveReaddir(absolutePath);
                     break;
-                case 'public':
+                case 'document':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
                     list = await RecursiveReaddir(absolutePath);
@@ -163,7 +163,7 @@ let RestAppMethodList = {
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
                     list = Fs.readdirSync(absolutePath);
                     break;
-                case 'public':
+                case 'document':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
                     list = Fs.readdirSync(absolutePath);
@@ -204,6 +204,15 @@ let RestAppMethodList = {
 
             let path = SafePath(req.params.path);
             res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`));
+        },
+
+        // Get public file
+        '^/public/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+
+            let path = SafePath(req.params.path);
+            res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
         },
 
         // Get global lib
