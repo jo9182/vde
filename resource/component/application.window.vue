@@ -80,11 +80,6 @@
 
         },
         methods: {
-            dropData() {
-                DataStorage.dragData.fromWindow = null;
-                DataStorage.dragData.data = null;
-                console.log(2);
-            },
             sendIFrameEvent(eventName, data) {
                 this.$refs.mainFrame.contentWindow.postMessage({
                     isEvent: true,
@@ -196,7 +191,6 @@
         .body {
             display: flex;
             flex: 1;
-            //border: 1px solid #212121;
             position: relative;
             overflow: hidden;
 
@@ -211,7 +205,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: #00000022;
+            // background: #00000022;
         }
 
         .options, .settings {

@@ -13,6 +13,7 @@ let ServerUserApi = {
             // Init defaults folder
             Fs.mkdirSync(`./storage/user/${user.name}/bin`, { recursive: true });
             Fs.mkdirSync(`./storage/user/${user.name}/data`, { recursive: true });
+            Fs.mkdirSync(`./storage/user/${user.name}/docs`, { recursive: true });
 
             // Generate session access token
             user.accessToken = MD5(Math.random() + Math.random());

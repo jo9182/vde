@@ -12,6 +12,7 @@ const AutoPrefixer = require('autoprefixer');
 const PostCSS = require('postcss');
 const WebSocket = require('ws');
 const Net = require('net');
+const RecursiveReaddir = require("recursive-readdir");
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -65,14 +66,126 @@ let ConvertFile = (path, res) => {
 
 let RestAppMethodList = {
     get: {
-        '^/api/file/exists/:path(*)': (req, res) => {
+        // Check if file exists
+        '^/api/file/exists/:location([a-z]+)/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+            let path = req.params.path;
+            let location = req.params.location;
+
+            switch (location) {
+                case 'internal':
+                    if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`)))
+                        res.send('OK');
+                    else error(res);
+                    break;
+                case 'storage':
+                    if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`)))
+                        res.send('OK');
+                    else error(res);
+                    break;
+                case 'public':
+                    if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`)))
+                        res.send('OK');
+                    else error(res);
+                    break;
+                default:
+                    error(res);
+                    break;
+            }
+        },
+
+        // Get file tree
+        '^/api/file/tree/:filter([^/]*)/:location([a-z]+)/:path(*)': async (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
             let path = SafePath(req.params.path);
+            let location = req.params.location;
+            let filter = req.params.filter;
+            let list = [];
+            let absolutePath = '';
 
-            if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`)))
-                res.send('OK');
-            else error(res);
+            switch (location) {
+                case 'internal':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.path}/${path}`);
+                    list = await RecursiveReaddir(absolutePath);
+                    break;
+                case 'storage':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
+                    list = await RecursiveReaddir(absolutePath);
+                    break;
+                case 'public':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
+                    list = await RecursiveReaddir(absolutePath);
+                    break;
+                default:
+                    return error(res);
+            }
+
+            // Send to client
+            list = list.filter(x => {
+                return x.match(new RegExp(filter));
+            });
+            list = list.map(x => {
+                const stat = Fs.lstatSync(x);
+                return {
+                    file: x.replace(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/`), '')
+                        .replace(/\\/g, '/'),
+                    isFolder: stat.isDirectory(),
+                    size: Fs.statSync(x)['size'],
+                    created: Fs.statSync(x)['birthtime'],
+                }
+            });
+            res.send(JSON.stringify(list));
+        },
+
+        // Get file list
+        '^/api/file/list/:filter([^/]*)/:location([a-z]+)/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+            let path = SafePath(req.params.path);
+            let location = req.params.location;
+            let filter = req.params.filter;
+            let list = [];
+            let absolutePath = '';
+
+            switch (location) {
+                case 'internal':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.path}/${path}`);
+                    list = Fs.readdirSync(absolutePath);
+                    break;
+                case 'storage':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
+                    list = Fs.readdirSync(absolutePath);
+                    break;
+                case 'public':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
+                    list = Fs.readdirSync(absolutePath);
+                    break;
+                default:
+                    return error(res);
+            }
+
+            // Send to client
+            list = list.filter(x => {
+                return x.match(new RegExp(filter));
+            });
+            list = list.map(x => {
+                const stat = Fs.lstatSync(absolutePath + '/' + x);
+                return {
+                    file: x,
+                    isFolder: stat.isDirectory(),
+                    size: Fs.statSync(absolutePath + '/' + x)['size'],
+                    created: Fs.statSync(absolutePath + '/' + x)['birthtime'],
+                }
+            });
+            res.send(JSON.stringify(list));
         },
 
         // Get data file
@@ -82,6 +195,15 @@ let RestAppMethodList = {
 
             let path = SafePath(req.params.path);
             res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`));
+        },
+
+        // Get public user file
+        '^/docs/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+
+            let path = SafePath(req.params.path);
+            res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`));
         },
 
         // Get global lib
@@ -136,6 +258,26 @@ let RestAppMethodList = {
                 let file = req.files.file;
                 let fileDataUploaded = Fs.readFileSync(file.path);
                 Fs.writeFileSync(  `${access.app.storage}/${path}`, fileDataUploaded);
+
+                res.send("OK");
+            } catch (e) {
+                console.error(e);
+                res.status(404);
+                res.send("ERROR");
+            }
+        },
+
+        // Save public file
+        '^/docs/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+
+            let path = SafePath(req.params.path);
+
+            try {
+                let file = req.files.file;
+                let fileDataUploaded = Fs.readFileSync(file.path);
+                Fs.writeFileSync(  `${access.app.storage}/../../docs/${path}`, fileDataUploaded);
 
                 res.send("OK");
             } catch (e) {

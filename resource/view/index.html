@@ -27,12 +27,7 @@
                       :key="app.name"></application-icon>
 
     <!-- Window list -->
-    <application-window :window-data="win" v-for="win in windowList" :key="win.sessionId"></application-window>
-
-    <!--<draggable :start="{x: 100, y: 100}" style="display: flex; flex-direction: column;" :resizable="true">
-        <div style="background: #53199e; height: 32px;">Header</div>
-        <div style="background: #ff0000; flex: 1;">Draggable</div>
-    </draggable>-->
+    <application-window :window-data="win" v-for="win in windowList" :key="win.sessionKey"></application-window>
 </div>
 </body>
 </html>

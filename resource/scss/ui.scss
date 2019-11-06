@@ -6,6 +6,10 @@ body {
   padding: 0;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 .button-group {
   display: flex;
   flex: 1;
@@ -93,6 +97,7 @@ table {
   display: flex;
   flex: 1;
   border-collapse: collapse;
+  flex-direction: column;
 
   thead, tbody {
     display: flex;
@@ -104,7 +109,12 @@ table {
       display: flex;
       background: #f1f5f8;
 
-      td {
+      th {
+        text-align: left;
+        background: #b6b6b6;
+      }
+
+      td, th {
         flex: 1;
         padding: 10px;
         white-space: nowrap;
