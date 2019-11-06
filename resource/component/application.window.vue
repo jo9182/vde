@@ -46,12 +46,20 @@
                 </div>
 
                 <!-- Settings -->
-                <div v-if="showSettings" class="settings">
+                <div v-if="windowData.showSettings" class="settings">
                     <div v-for="setting in windowData.settings">
-                        <!-- Text field -->
-                        <div v-if="setting.type === 'text'" class="field">
+                        <div class="field">
                             <div>{{ setting.key }}</div>
-                            <div><input type="text" v-model="setting.value"></div>
+
+                            <!-- Text field -->
+                            <div v-if="setting.type === 'text'">
+                                <input type="text" v-model="setting.value">
+                            </div>
+
+                            <!-- Button -->
+                            <div v-if="setting.type === 'button'">
+                                <button @click="settingsButtonAction(setting.click)">{{ setting.value }}</button>
+                            </div>
                         </div>
                     </div>
                     <button @click="saveSettings">Save</button>
@@ -80,6 +88,9 @@
 
         },
         methods: {
+            settingsButtonAction(action) {
+                if (action) action(this);
+            },
             sendIFrameEvent(eventName, data) {
                 this.$refs.mainFrame.contentWindow.postMessage({
                     isEvent: true,
@@ -88,12 +99,14 @@
                 }, '*');
             },
             async saveSettings() {
-                this.showSettings = false;
+                this.windowData.showSettings = false;
 
                 // Convert list to object
                 let object = {};
-                for (let i = 0; i < this.windowData.settings.length; i++)
+                for (let i = 0; i < this.windowData.settings.length; i++) {
+                    if (this.windowData.settings[i].type === 'button') continue;
                     object[this.windowData.settings[i].key] = this.windowData.settings[i].value;
+                }
 
                 // Save settings
                 await AppApi.saveSettings(this.windowData.appInfo.name, object);
@@ -121,7 +134,7 @@
                 iFrame.src = iFrame.src;
             },
             settings() {
-                this.showSettings = !this.showSettings;
+                this.windowData.showSettings = !this.windowData.showSettings;
             },
             close() {
                 SceneApi.closeApplication(this.windowData.sessionKey);
@@ -135,8 +148,7 @@
         },
         data() {
             return {
-                isDrag: false,
-                showSettings: false
+                isDrag: false
             }
         }
     }

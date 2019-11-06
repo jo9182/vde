@@ -21,12 +21,18 @@ let SceneApi = {
         let app = await AppApi.findBy(name);
         let sessionKey = await AppApi.getSessionKey(app.name);
         let appSettings = app.settings || {};
+
         let settingsPattern = [
             { key: 'args', type: 'text', value: appSettings.args || '' },
+            { key: 'update', type: 'button', value: 'Update', async click(win) {
+                await AppApi.pullUpdate(name);
+                windowData.showSettings = false;
+                win.reload();
+            } },
         ];
 
         // Run new app
-        DataStorage.windowList.push({
+        let windowData = {
             appInfo: app,
             sessionKey: sessionKey,
             url: '//' + sessionKey + '.'
@@ -37,10 +43,12 @@ let SceneApi = {
             width: app.minWidth || 480,
             height: app.minHeight || 240,
             showOptions: false,
+            showSettings: false,
             tabs: [],
             options: {},
             settings: settingsPattern
-        });
+        };
+        DataStorage.windowList.push(windowData);
     },
 
     async closeApplication(sessionKey) {

@@ -22,6 +22,16 @@ let SafePath = (path) => {
     return path;
 };
 
+let AppAuth = (req) => {
+    let user = ServerUserApi.findBy(req.headers['access_token']);
+    if (!user) return false;
+
+    let app = ServerAppApi.findBy(user, req.body.app_name, 'name');
+    if (!app) return false;
+
+    return {user, app}
+};
+
 let RestAppMethodList = {
     get: {
         // Get list of user applications
@@ -63,9 +73,12 @@ let RestAppMethodList = {
         },
 
         // Update app
-        '^/api/app/pull-update': (req, res) => {
-
+        '^/api/app/pull-update': async (req, res) => {
+            let auth = AppAuth(req);
+            await ServerAppApi.pullUpdate(auth.user, auth.app.name);
+            res.send('OK');
         },
+
         // Auth user
         '^/api/user/auth': (req, res) => {
             let accessToken = ServerUserApi.auth(req.body.login, req.body.password);

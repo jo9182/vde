@@ -14,6 +14,19 @@ let AppApi = {
             return false;
         }
     },
+    async pullUpdate(appName) {
+        try {
+            await axios.post('/api/app/pull-update', { app_name: appName }, {
+                headers: {
+                    access_token: localStorage.getItem('accessToken')
+                }
+            });
+            return true;
+        }
+        catch {
+            return false;
+        }
+    },
     async remove(repo) {
         try {
             await axios.delete(`/api/app/${repo}`, {
