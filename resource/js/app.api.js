@@ -14,9 +14,9 @@ let AppApi = {
             return false;
         }
     },
-    async pullUpdate(appName) {
+    async pullUpdate(repo) {
         try {
-            await axios.post('/api/app/pull-update', { app_name: appName }, {
+            await axios.post('/api/app/pull-update', { repo: repo }, {
                 headers: {
                     access_token: localStorage.getItem('accessToken')
                 }

@@ -27,6 +27,7 @@ let AppAuth = (req) => {
     if (!user) return false;
 
     let app = ServerAppApi.findBy(user, req.body.app_name, 'name');
+    if (!app) app = ServerAppApi.findBy(user, req.body.repo, 'repo');
     if (!app) return false;
 
     return {user, app}
@@ -75,7 +76,8 @@ let RestAppMethodList = {
         // Update app
         '^/api/app/pull-update': async (req, res) => {
             let auth = AppAuth(req);
-            await ServerAppApi.pullUpdate(auth.user, auth.app.name);
+            if (!auth) return error(res);
+            await ServerAppApi.pullUpdate(auth.user, auth.app.repo);
             res.send('OK');
         },
 

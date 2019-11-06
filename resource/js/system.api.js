@@ -21,6 +21,9 @@ let SystemApi = {
         await AppApi.remove(repo);
         await SceneApi.reloadApplicationList();
     },
+    async pullUpdateApplication(repo) {
+        await AppApi.pullUpdate(repo);
+    },
     setTabs(tabs) {
         this.currentWindow.tabs = tabs;
     },

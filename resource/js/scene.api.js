@@ -25,7 +25,7 @@ let SceneApi = {
         let settingsPattern = [
             { key: 'args', type: 'text', value: appSettings.args || '' },
             { key: 'update', type: 'button', value: 'Update', async click(win) {
-                await AppApi.pullUpdate(name);
+                await AppApi.pullUpdate(app.repo);
                 windowData.showSettings = false;
                 win.reload();
             } },

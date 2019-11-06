@@ -80,9 +80,9 @@ let ServerAppApi = {
         Fs.writeFileSync(`./storage/user/${user.name}/app.json`, JSON.stringify(list));
     },
     // Pull update of application
-    pullUpdate: (user, appName) => {
+    pullUpdate: (user, repo) => {
         return new Promise(((resolve, reject) => {
-            let app = ServerAppApi.findBy(user, appName);
+            let app = ServerAppApi.findBy(user, repo, 'repo');
             if (!app) return reject();
 
             ChildProcess.exec(`cd ${app.path} && git pull && git fetch --tags`, (err, out, code) => {
