@@ -30,7 +30,9 @@ let DataStorage = {
     screen: {
         width: 0,
         height: 0,
-        isMobile: false
+        isMobile: false,
+        iconWidth: '20%',
+        iconHeight: '200px'
     },
 };
 

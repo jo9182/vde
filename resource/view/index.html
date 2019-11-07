@@ -20,11 +20,13 @@
     </div>
 
     <!-- Application icon list -->
-    <application-icon v-if="user"
-                      :app-data="app"
-                      v-for="app in applicationList"
-                      :position="app.position"
-                      :key="app.name"></application-icon>
+    <div class="icon-list">
+        <application-icon v-if="user"
+                          :app-data="app"
+                          v-for="app in applicationList"
+                          :position="app.position"
+                          :key="app.name" :style="{ width: screen.iconWidth, height: screen.iconHeight }"></application-icon>
+    </div>
 
     <!-- Window list -->
     <application-window :window-data="win" v-for="win in windowList" :key="win.sessionKey"></application-window>

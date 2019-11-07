@@ -1,10 +1,10 @@
 <template>
-    <draggable :start="position">
+    <!--<draggable :start="position">-->
         <div class="app-icon caption" v-on:dblclick="click(appData.name)">
             <img :src="appData.icon || '/image/application.png'" :alt="appData.title">
             <div>{{ appData.title }}</div>
         </div>
-    </draggable>
+    <!--</draggable>-->
 </template>
 
 <script>
@@ -32,16 +32,24 @@
 
 <style lang="scss" scoped>
     .app-icon {
-        position: absolute;
+        // position: absolute;
         cursor: pointer;
         user-select: none;
-        width: 48px;
+        // width: 20%;
+        padding: 15px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
 
         img {
             pointer-events: none;
             display: block;
             width: 100%;
-            height: 100%;
+            // height: 100%;
+            max-height: 100%;
+            max-width: 64px;
         }
 
         div {

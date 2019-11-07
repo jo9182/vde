@@ -18,14 +18,28 @@ window.onload = async () => {
     window.DataStorage = DataStorage;
 
     // Set resolution change event
-    DataStorage.screen.width = window.innerWidth;
-    DataStorage.screen.height = window.innerHeight;
-    DataStorage.screen.isMobile = DataStorage.screen.width <= 425;
-    window.onresize = function() {
+    let onScreenResize = () => {
         DataStorage.screen.width = window.innerWidth;
         DataStorage.screen.height = window.innerHeight;
         DataStorage.screen.isMobile = DataStorage.screen.width <= 425;
+
+        DataStorage.screen.iconWidth = '20%';
+        DataStorage.screen.iconHeight = '200px';
+
+        if (DataStorage.screen.width <= 375) {
+            DataStorage.screen.iconWidth = '25%';
+            DataStorage.screen.iconHeight = '120px';
+        }
+        if (DataStorage.screen.width >= 768) {
+            DataStorage.screen.iconWidth = '16.666%';
+            DataStorage.screen.iconHeight = '180px';
+        }
+        if (DataStorage.screen.width >= 1440) {
+            DataStorage.screen.iconWidth = '10%';
+        }
     };
+    window.onresize = onScreenResize;
+    onScreenResize();
 
     // Load user data
     let userData = await UserApi.getUser();
