@@ -5,7 +5,7 @@ const RestApp = Express();
 const ServerAppApi = require('./server.app.api');
 const ServerUserApi = require('./server.user.api');
 const Request = require('request');
-const formidable = require('express-formidable');
+const Formidable = require('express-formidable');
 const Fs = require('fs');
 const SASS = require('node-sass');
 const AutoPrefixer = require('autoprefixer');
@@ -13,6 +13,7 @@ const PostCSS = require('postcss');
 const WebSocket = require('ws');
 const Net = require('net');
 const RecursiveReaddir = require("recursive-readdir");
+const Rimraf = require('rimraf');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -227,6 +228,15 @@ let RestAppMethodList = {
             res.sendFile(Path.resolve(__dirname + '/../', `./lib/${path}`));
         },
 
+        // Get global vue component
+        /*'^/vue-component/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
+
+            let path = SafePath(req.params.path);
+            res.sendFile(Path.resolve(__dirname + '/../', `./resource/component/${path}`));
+        },*/
+
         // Get remote resource
         '^/remote-resource/:url(*)': (req, res) => {
             // Download remote file
@@ -300,12 +310,21 @@ let RestAppMethodList = {
         },
     },
     delete: {
+        // Clear storage
+        '^/storage': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res);
 
+            // Remove all files
+            Rimraf.sync(Path.resolve(__dirname + '/../', `${access.app.storage}`) + '/*');
+
+            res.send('ok');
+        },
     }
 };
 
 // Set post parsers
-RestApp.use(formidable());
+RestApp.use(Formidable());
 RestApp.use(BodyParser.json());
 
 // Set get methods
