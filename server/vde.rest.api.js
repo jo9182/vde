@@ -23,7 +23,8 @@ let error = (res, msg = 'ERROR') => {
 let SafePath = (path) => {
     if (!path) return;
     for (let i = 0; i < 32; i++) {
-        if (path[0] === '.') path = path.substr(1, path.length);
+        if (path[0] === '.' && path[1] === '.') path = path.substr(2, path.length);
+        if (path[0] === '.' && path[1] === '/') path = path.substr(2, path.length);
 
         path = path.replace(/\\/g, '/');
         path = path.replace(/\.\./g, '.');
@@ -198,7 +199,9 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`));
+            res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`), {
+                dotfiles: "allow"
+            });
         },
 
         // Get public user file
