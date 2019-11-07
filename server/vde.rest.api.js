@@ -319,7 +319,7 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             // Remove all files
-            Rimraf.sync(Path.resolve(__dirname + '/../', `${access.app.storage}`) + '/*');
+            Rimraf.sync(Path.resolve(__dirname + '/../', `${access.app.storage}`) + '/{*,.*}');
 
             res.send('ok');
         },
