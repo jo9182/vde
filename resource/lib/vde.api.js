@@ -91,6 +91,9 @@ let VDE = {
         // Set tabs
         if (config.tabs) await VDE.apiQuery('setTabs', config.tabs);
 
+        // Set window size
+        if (config.windowSize) await VDE.apiQuery('setWindowSize', config.windowSize);
+
         // Register options
         if (config.options)
             await this.registerApplicationOptions(
