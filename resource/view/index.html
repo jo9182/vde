@@ -30,7 +30,7 @@
     </div>
 
     <!-- Window list -->
-    <application-window :window-data="win" v-for="win in windowList" :key="win.sessionKey"></application-window>
+    <application-window v-if="win.isVisible" :window-data="win" v-for="win in windowList" :key="win.sessionKey"></application-window>
 </div>
 </body>
 </html>

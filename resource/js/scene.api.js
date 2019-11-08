@@ -17,8 +17,9 @@ let SceneApi = {
         }
     },
 
-    async runApplication(name) {
+    async runApplication(name, asModule = false) {
         let app = await AppApi.findBy(name);
+        if (!app) return null;
         let sessionKey = await AppApi.getSessionKey(app.name);
         let appSettings = app.settings || {};
 
@@ -47,11 +48,20 @@ let SceneApi = {
             showOptions: false,
             showSettings: false,
             tabs: [],
+            modules: [],
             options: {},
             settings: settingsPattern,
-            isReady: null
+            isReady: null,
+            isVisible: !asModule,
+            getSetting(key) {
+                for (let i = 0; i < this.settings.length; i++)
+                    if (this.settings[i].key === key)
+                        return this.settings[i].value;
+            }
         };
         DataStorage.windowList.push(windowData);
+
+        return windowData;
     },
 
     async closeApplication(sessionKey) {
@@ -112,6 +122,7 @@ let SceneApi = {
                 for (let i = 0; i < DataStorage.connectionList.length; i++) {
                     // Found window out by sessionKey
                     if (DataStorage.connectionList[i].winOut.sessionKey === query.sessionKey) {
+
                         // Send to window input
                         if (DataStorage.sessionWindow[DataStorage.connectionList[i].winInput.sessionKey]) {
                             DataStorage.sessionWindow[DataStorage.connectionList[i].winInput.sessionKey].postMessage({

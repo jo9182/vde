@@ -14,7 +14,12 @@
                 </div>
             </div>
             <div class="body">
-                <iframe ref="mainFrame" :src="windowData.url" ></iframe>
+                <!-- Main app -->
+                <iframe v-show="!selectedModule" ref="mainFrame" :src="windowData.url"></iframe>
+
+                <!-- Modules -->
+                <iframe v-show="selectedModule" ref="module" :src="module.url"
+                        v-for="module in windowData.modules"></iframe>
 
                 <!-- Over body -->
                 <div v-if="isDrag" class="over-body"></div>
@@ -70,6 +75,12 @@
                     <button @click="saveSettings">Save</button>
                 </div>
             </div>
+
+            <div class="modules">
+                <div @click="selectModule(i)" v-for="i in [0, 1, 2]" :class="i === selectedModule ?'selected-module' :''">
+                    {{ i }}
+                </div>
+            </div>
         </div>
     </draggable>
 </template>
@@ -94,8 +105,20 @@
             DataStorage.sessionWindow[this.windowData.sessionKey] = this.$refs.mainFrame.contentWindow;
 
             // At this point app is init fully and ready for work
-            this.windowData.isReady = () => {
-                console.log(1);
+            this.windowData.isReady = async () => {
+                let modules = this.windowData.getSetting('modules');
+                if (!modules) return null;
+
+                let app = await SceneApi.runApplication(modules, true);
+                this.windowData.modules.push(app);
+                
+                setTimeout(() => {
+                    // Register module iFrame window
+                    DataStorage.sessionWindow[app.sessionKey] = this.$refs.module[0].contentWindow;
+
+                    // Connect app
+                    SceneApi.connectWindows(this.windowData.sessionKey, app.sessionKey, 'command', 'command');
+                }, 16);
             };
         },
         methods: {
@@ -138,6 +161,9 @@
                 this.sendIFrameEvent('optionsChanged', object);
                 this.windowData.showOptions = false;
             },
+            selectModule(moduleId) {
+                this.selectedModule = moduleId;
+            },
             clickTab(tab) {
                 this.sendIFrameEvent('tabClicked', tab);
             },
@@ -162,7 +188,8 @@
         },
         data() {
             return {
-                isDrag: false
+                isDrag: false,
+                selectedModule: 0
             }
         }
     }
@@ -227,6 +254,24 @@
             }
         }
 
+        .modules {
+            display: flex;
+            padding: 3px;
+
+            > div {
+                background: #2b2b2b;
+                padding: 2px 5px;
+                margin-right: 5px;
+                font-size: 12px;
+                cursor: pointer;
+                border-radius: 3px;
+            }
+        }
+
+        .selected-module {
+            background: #f54c0b !important;
+        }
+
         .over-body {
             position: absolute;
             width: 100%;
@@ -247,6 +292,7 @@
             .field {
                 display: flex;
                 margin-bottom: 10px;
+                user-select: text;
 
                 > div {
                     flex: 1;
