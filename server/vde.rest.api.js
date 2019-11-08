@@ -169,7 +169,7 @@ let RestAppMethodList = {
             if (!access) return error(res);
             let path = SafePath(req.params.path);
             let location = req.params.location;
-            let filter = req.params.filter;
+            let filter = decodeURI(req.params.filter);
             let absolutePath = '';
             let tree = [];
 
@@ -225,7 +225,7 @@ let RestAppMethodList = {
             if (!access) return error(res, 'Access denied');
             let path = SafePath(req.params.path);
             let location = req.params.location;
-            let filter = req.params.filter;
+            let filter = decodeURI(req.params.filter);
             let list = [];
             let absolutePath = '';
 

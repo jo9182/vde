@@ -231,13 +231,13 @@ let VDE = {
     },
     async getFileList(path, location = 'storage', filter = '.*') {
         try {
-            return JSON.parse(await this.getRemoteFile(`/api/file/list/${filter}/${location}/${path}`));
+            return JSON.parse(await this.getRemoteFile(`/api/file/list/${encodeURI(filter)}/${location}/${path}`));
         }
         catch { return []; }
     },
     async getFileTree(path, location = 'storage', filter = '.*') {
         try {
-            return JSON.parse(await this.getRemoteFile(`/api/file/tree/${filter}/${location}/${path}`));
+            return JSON.parse(await this.getRemoteFile(`/api/file/tree/${encodeURI(filter)}/${location}/${path}`));
         }
         catch { return []; }
     },
