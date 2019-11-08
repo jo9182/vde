@@ -38,10 +38,10 @@ let SceneApi = {
             url: '//' + sessionKey + '.'
                 + window.location.hostname + ':'
                 + (window.location.port * 1 + 1) + '/index.html',
-            x: 100,
-            y: 100,
-            width: app.minWidth || 480,
-            height: app.minHeight || 240,
+            x: Math.random() * (window.innerWidth - 480),
+            y: Math.random() * (window.innerHeight - 240),
+            width: 480,
+            height: 240,
             showOptions: false,
             showSettings: false,
             tabs: [],

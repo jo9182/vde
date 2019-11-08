@@ -12,7 +12,7 @@ let SystemApi = {
     },
     setWindowSize(size) {
         this.currentWindow.width = size[0];
-        this.currentWindow.height = size[1];
+        this.currentWindow.height = size[1] + 36 + 2;
     },
     async getInstalledApplicationList() {
         return await AppApi.list();
@@ -29,6 +29,14 @@ let SystemApi = {
         await AppApi.pullUpdate(repo);
     },
     setTabs(tabs) {
+        // First tabs
+        if (!this.currentWindow.tabs.length)
+            this.currentWindow.height += 25.33;
+
+        // If have tabs and set empty tabs
+        if (this.currentWindow.tabs.length && !tabs.length)
+            this.currentWindow.height -= 25.33;
+
         this.currentWindow.tabs = tabs;
     },
     setOptions(options) {
