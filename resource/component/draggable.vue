@@ -13,6 +13,7 @@
     export default {
         name: "draggable",
         props: {
+            source: Object,
             start: Object,
             resizable: Boolean,
             startDrag: Function,
@@ -27,6 +28,14 @@
                         top: '0px',
                         width: '100%',
                         height: '100%'
+                    }
+                }
+                if (this.sourceArea) {
+                    return {
+                        left: this.sourceArea.x + 'px',
+                        top: this.sourceArea.y + 'px',
+                        width: this.sourceArea.width + 'px',
+                        height: this.sourceArea.height + 'px'
                     }
                 }
                 if (this.width) {
@@ -48,6 +57,7 @@
         },
         mounted() {
             let parent = this;
+            let area = this;
 
             // Drag
             let startX = 0;
@@ -68,6 +78,7 @@
 
             let handler = this.$refs.dragArea.querySelector('[data-draggable]');
             if (!handler) handler = this.$refs.dragArea;
+            if (this.source) area = this.source;
 
             let mousedown = function (e) {
                 if (parent.disabled) return;
@@ -75,9 +86,9 @@
                 let pageX = touches ?touches[0].pageX :e.pageX;
                 let pageY = touches ?touches[0].pageY :e.pageY;
 
-                startX = parent.x;
+                startX = area.x;
                 startMouseX = pageX;
-                startY = parent.y;
+                startY = area.y;
                 startMouseY = pageY;
                 isDrag = true;
 
@@ -93,24 +104,24 @@
                 // Resize area
                 if (isGrab && parent.resizable) {
                     if (grabType === 'grab-rt') {
-                        parent.width = startGrabWidth + (pageX - startGrabX);
-                        parent.height = startGrabHeight + (startGrabY - pageY);
-                        parent.y = startGrabPositionY - (parent.height - startGrabHeight);
+                        area.width = startGrabWidth + (pageX - startGrabX);
+                        area.height = startGrabHeight + (startGrabY - pageY);
+                        area.y = startGrabPositionY - (area.height - startGrabHeight);
                     }
                     if (grabType === 'grab-rb') {
-                        parent.width = startGrabWidth + (pageX - startGrabX);
-                        parent.height = startGrabHeight - (startGrabY - pageY);
+                        area.width = startGrabWidth + (pageX - startGrabX);
+                        area.height = startGrabHeight - (startGrabY - pageY);
                     }
                     if (grabType === 'grab-lt') {
-                        parent.width = startGrabWidth - (pageX - startGrabX);
-                        parent.height = startGrabHeight + (startGrabY - pageY);
-                        parent.y = startGrabPositionY - (parent.height - startGrabHeight);
-                        parent.x = startGrabPositionX - (parent.width - startGrabWidth);
+                        area.width = startGrabWidth - (pageX - startGrabX);
+                        area.height = startGrabHeight + (startGrabY - pageY);
+                        area.y = startGrabPositionY - (area.height - startGrabHeight);
+                        area.x = startGrabPositionX - (area.width - startGrabWidth);
                     }
                     if (grabType === 'grab-lb') {
-                        parent.width = startGrabWidth - (pageX - startGrabX);
-                        parent.height = startGrabHeight - (startGrabY - pageY);
-                        parent.x = startGrabPositionX - (parent.width - startGrabWidth);
+                        area.width = startGrabWidth - (pageX - startGrabX);
+                        area.height = startGrabHeight - (startGrabY - pageY);
+                        area.x = startGrabPositionX - (area.width - startGrabWidth);
                     }
 
                     return;
@@ -120,13 +131,13 @@
                     let offsetX = pageX - startMouseX;
                     let finalX = startX + offsetX;
                     if (finalX < 0) finalX = 0;
-                    if (finalX > window.innerWidth - parent.width) finalX = window.innerWidth - parent.width;
-                    parent.x = finalX;
+                    if (finalX > window.innerWidth - area.width) finalX = window.innerWidth - area.width;
+                    area.x = finalX;
                     let offsetY = pageY - startMouseY;
                     let finalY = startY + offsetY;
                     if (finalY < 0) finalY = 0;
-                    if (finalY > window.innerHeight - parent.height) finalY = window.innerHeight - parent.height;
-                    parent.y = finalY;
+                    if (finalY > window.innerHeight - area.height) finalY = window.innerHeight - area.height;
+                    area.y = finalY;
                 }
             };
             let mouseup = function (e) {
@@ -158,24 +169,29 @@
 
                         isGrab = true;
                         isDrag = false;
-                        startGrabWidth = parent.width;
+                        startGrabWidth = area.width;
                         startGrabX = e.pageX;
-                        startGrabHeight = parent.height;
+                        startGrabHeight = area.height;
                         startGrabY = e.pageY;
-                        startGrabPositionY = parent.y;
-                        startGrabPositionX = parent.x;
+                        startGrabPositionY = area.y;
+                        startGrabPositionX = area.x;
                     });
                 }
             }
 
-            if (this.start) {
-                this.width = this.start.width || this.$refs.dragArea.getBoundingClientRect().width;
-                this.height = this.start.height || this.$refs.dragArea.getBoundingClientRect().height;
-                this.x = this.start.x || 0;
-                this.y = this.start.y || 0;
+            // Set source values
+            if (this.source) {
+                this.sourceArea = this.source;
             } else {
-                this.width = this.$refs.dragArea.getBoundingClientRect().width;
-                this.height = this.$refs.dragArea.getBoundingClientRect().height;
+                if (this.start) {
+                    this.width = this.start.width || this.$refs.dragArea.getBoundingClientRect().width;
+                    this.height = this.start.height || this.$refs.dragArea.getBoundingClientRect().height;
+                    this.x = this.start.x || 0;
+                    this.y = this.start.y || 0;
+                } else {
+                    this.width = this.$refs.dragArea.getBoundingClientRect().width;
+                    this.height = this.$refs.dragArea.getBoundingClientRect().height;
+                }
             }
         },
         methods: {
@@ -183,6 +199,7 @@
         },
         data() {
             return {
+                sourceArea: null,
                 x: 0,
                 y: 0,
                 width: 0,

@@ -10,6 +10,10 @@ let SystemApi = {
     setTitle(title) {
         this.currentWindow.appInfo.title = title;
     },
+    setWindowSize(size) {
+        this.currentWindow.width = size[0];
+        this.currentWindow.height = size[1];
+    },
     async getInstalledApplicationList() {
         return await AppApi.list();
     },

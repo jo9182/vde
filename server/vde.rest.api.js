@@ -46,6 +46,33 @@ let AccessBySubDomain = (host) => {
 let ConvertFile = (path, res) => {
     let extension = Path.extname(path);
 
+    // Html tags
+    if (extension === '.html') {
+        // Get file
+        let fileContent = Fs.readFileSync(path, 'utf-8');
+
+        // Replace tags
+        fileContent = fileContent.replace('<!-- %STD_VUE_CONFIG% -->', [
+            '<script src="/public/lib/vue.js"></script>',
+            '<script src="/public/lib/vde.api.js"></script>',
+            '<script src="/public/lib/extender.js"></script>',
+            '<link rel="stylesheet" href="/public/ui.css">',
+            '<link rel="stylesheet" href="style.scss">'
+        ].join("\n"));
+
+        fileContent = fileContent.replace('<!-- %STD_HEAD% -->', [
+            '<meta charset="UTF-8">',
+            '<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">',
+            '<meta http-equiv="X-UA-Compatible" content="ie=edge">',
+            '<title>Application</title>'
+        ].join("\n"));
+
+        // Set headers
+        res.setHeader('Content-Type', 'text/html');
+        res.send(fileContent);
+        return true;
+    }
+
     // SCSS File to CSS
     if (extension === '.scss') {
         // Get file

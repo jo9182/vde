@@ -1,5 +1,5 @@
 <template>
-    <draggable :start="windowData" style="display: flex; flex-direction: column;"
+    <draggable :source="windowData" style="display: flex; flex-direction: column;"
                :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :disabled="isMobile">
         <div class="window">
             <div class="caption" data-draggable="true">
