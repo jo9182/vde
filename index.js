@@ -14,6 +14,6 @@ if (!Fs.existsSync('./storage/user.list.json')) {
     }]));
 }
 
-// Start rest server
+// Start rest server d
 ServerRestAPI.run(3000);
 VDERestAPI.run(3001);
