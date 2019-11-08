@@ -64,6 +64,11 @@ Array.prototype.limit = function (value) {
     return this;
 };
 
+// Clone array
+Array.prototype.clone = function (value) {
+    return [].concat(this);
+};
+
 // Remove non unique values from array
 Array.prototype.unique = function (field) {
     if (field) {

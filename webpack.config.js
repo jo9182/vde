@@ -6,6 +6,7 @@ const CopyPlugin = require('copy-webpack-plugin');
 const Autoprefixer = require('autoprefixer');
 const {UnusedFilesWebpackPlugin} = require('unused-files-webpack-plugin');
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const Webpack = require("webpack");
 const SMP = new SpeedMeasurePlugin();
 
 module.exports = SMP.wrap({
@@ -58,6 +59,10 @@ module.exports = SMP.wrap({
         ]
     },
     plugins: [
+        new Webpack.DefinePlugin({
+            PRODUCTION: JSON.stringify(true),
+            VERSION: JSON.stringify('5fa3b9')
+        }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
             inject: false,

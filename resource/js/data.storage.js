@@ -1,5 +1,6 @@
 import UserApi from "./user.api";
 import AppApi from "./app.api";
+import SceneApi from "./scene.api";
 
 let DataStorage = {
     user: null,
@@ -10,7 +11,7 @@ let DataStorage = {
 
     applicationList: [],
 
-    sessionWindow: {}, // ID -> Window
+    sessionWindow: {}, // SessionKey = IFrame Window
 
     input: {
         login: '',
@@ -22,6 +23,7 @@ let DataStorage = {
     },
     userApi: UserApi,
     appApi: AppApi,
+    sceneApi: SceneApi,
 
     device: {
         isMobile: typeof window.orientation !== 'undefined'

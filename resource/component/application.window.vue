@@ -85,7 +85,8 @@
             }
         },
         mounted() {
-
+            // Register session iFrame window
+            DataStorage.sessionWindow[this.windowData.sessionKey] = this.$refs.mainFrame.contentWindow;
         },
         methods: {
             settingsButtonAction(action) {
@@ -137,6 +138,8 @@
                 this.windowData.showSettings = !this.windowData.showSettings;
             },
             close() {
+                // Delete session
+                delete DataStorage.sessionWindow[this.windowData.sessionKey];
                 SceneApi.closeApplication(this.windowData.sessionKey);
             },
             startDrag() {

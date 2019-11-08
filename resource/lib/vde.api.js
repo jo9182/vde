@@ -43,6 +43,8 @@ let VDE = {
         // Start init
         await this.init();
 
+        let appIsReady = () => {};
+
         // Options
         if (config.options) {
             // Load saved options
@@ -82,7 +84,8 @@ let VDE = {
                 let args = {};
                 try { args = JSON.parse(settings.args); }
                 catch {}
-                config.start.bind(this)(args);
+                if (config.start)
+                    appIsReady = config.start.bind(this);
             },
             methods: config.method,
             data: () => this.applicationData
@@ -109,6 +112,9 @@ let VDE = {
                 }
             }
         }
+
+        // App is ready for usage
+        appIsReady();
 
         // Show app
         this.showApplication();
@@ -197,16 +203,18 @@ let VDE = {
     },
 
     // Channel
-    sendChannelData(chId, data) {
-        top.postMessage({
-            channelId: chId,
-            sessionKey: this.sessionKey,
-            method: 'channelData',
-            data: data
-        }, '*');
-    },
-    listenChannelData(chId, callback) {
-        this.listenCallback[chId] = callback;
+    channel: {
+        send(chId, data) {
+            top.postMessage({
+                channelId: chId,
+                sessionKey: VDE.sessionKey,
+                method: 'channelData',
+                data: data
+            }, '*');
+        },
+        listen(chId, callback) {
+            VDE.listenCallback[chId] = callback;
+        },
     },
 
     // File functions
