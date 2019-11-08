@@ -65,8 +65,9 @@ module.exports = {
         }),
         new VueLoaderPlugin(),
         new CopyPlugin([
-            { from: 'public/ui.css', to: '../lib/ui.css' },
-        ]),
-
+            { from: './resource/lib/vde.api.js', to: '../public/lib/vde.api.js' },
+            { from: './resource/lib/vue.js', to: '../public/lib/vue.js' },
+            { from: './resource/lib/vue.prod.js', to: '../public/lib/vue.prod.js' },
+        ])
     ]
 };

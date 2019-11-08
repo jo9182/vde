@@ -297,15 +297,6 @@ let RestAppMethodList = {
             res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
         },
 
-        // Get global lib
-        '^/lib/:path(*)': (req, res) => {
-            let access = AccessBySubDomain(req.headers.host);
-            if (!access) return error(res);
-
-            let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', `./lib/${path}`));
-        },
-
         // Get global vue component
         /*'^/vue-component/:path(*)': (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
