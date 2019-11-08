@@ -124,6 +124,8 @@ let VDE = {
         // App is ready for usage
         appIsReady();
 
+        await this.apiQuery("setApplicationIsReady");
+
         // Show app
         this.showApplication();
     },

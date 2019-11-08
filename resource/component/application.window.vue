@@ -49,7 +49,12 @@
                 <div v-if="windowData.showSettings" class="settings">
                     <div v-for="setting in windowData.settings">
                         <div class="field">
-                            <div>{{ setting.key }}</div>
+                            <div style="flex: 0.5;">{{ setting.key }}</div>
+
+                            <!-- Label field -->
+                            <div v-if="setting.type === 'label'">
+                                <span>{{ setting.value }}</span>
+                            </div>
 
                             <!-- Text field -->
                             <div v-if="setting.type === 'text'">
@@ -87,6 +92,11 @@
         mounted() {
             // Register session iFrame window
             DataStorage.sessionWindow[this.windowData.sessionKey] = this.$refs.mainFrame.contentWindow;
+
+            // At this point app is init fully and ready for work
+            this.windowData.isReady = () => {
+                console.log(1);
+            };
         },
         methods: {
             settingsButtonAction(action) {
@@ -106,6 +116,7 @@
                 let object = {};
                 for (let i = 0; i < this.windowData.settings.length; i++) {
                     if (this.windowData.settings[i].type === 'button') continue;
+                    if (this.windowData.settings[i].type === 'label') continue;
                     object[this.windowData.settings[i].key] = this.windowData.settings[i].value;
                 }
 

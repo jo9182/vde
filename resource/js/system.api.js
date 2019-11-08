@@ -12,7 +12,7 @@ let ConstraintWindow = (win) => {
 let SystemApi = {
     currentWindow: null,
     getAppInfo() {
-        return this.currentWindow.appInfo;
+        return JSON.parse(JSON.stringify(this.currentWindow.appInfo));
     },
     setTitle(title) {
         this.currentWindow.appInfo.title = title;
@@ -36,6 +36,10 @@ let SystemApi = {
     },
     async pullUpdateApplication(repo) {
         await AppApi.pullUpdate(repo);
+    },
+    setApplicationIsReady() {
+        if (this.currentWindow.isReady)
+            this.currentWindow.isReady();
     },
     setTabs(tabs) {
         // First tabs
