@@ -2,6 +2,13 @@ import AppApi from "./app.api";
 import SceneApi from "./scene.api";
 import DataStorage from "./data.storage";
 
+let ConstraintWindow = (win) => {
+    if (win.x + win.width > window.innerWidth)
+        win.x = window.innerWidth - win.width;
+    if (win.y + win.height > window.innerHeight)
+        win.y = window.innerHeight - win.height;
+};
+
 let SystemApi = {
     currentWindow: null,
     getAppInfo() {
@@ -13,6 +20,8 @@ let SystemApi = {
     setWindowSize(size) {
         this.currentWindow.width = size[0];
         this.currentWindow.height = size[1] + 36 + 2;
+
+        ConstraintWindow(this.currentWindow);
     },
     async getInstalledApplicationList() {
         return await AppApi.list();
@@ -38,6 +47,8 @@ let SystemApi = {
             this.currentWindow.height -= 25.33;
 
         this.currentWindow.tabs = tabs;
+
+        ConstraintWindow(this.currentWindow);
     },
     setOptions(options) {
         // Convert object to list
