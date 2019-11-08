@@ -107,8 +107,16 @@ let VDE = {
         if (config.event) {
             for (let eventName in config.event) {
                 if (config.event.hasOwnProperty(eventName)) {
-                    let boundFunc = config.event[eventName].bind(vueApp);
-                    VDE.on(eventName, boundFunc);
+                    VDE.on(eventName, config.event[eventName].bind(vueApp));
+                }
+            }
+        }
+
+        // Set channel listeners
+        if (config.channel) {
+            for (let channelId in config.channel) {
+                if (config.channel.hasOwnProperty(channelId)) {
+                    VDE.channel.listen(channelId, config.channel[channelId].bind(vueApp));
                 }
             }
         }

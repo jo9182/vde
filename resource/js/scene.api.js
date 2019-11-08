@@ -86,8 +86,8 @@ let SceneApi = {
         this.connectWindows(
             DataStorage.windowList[0].sessionKey,
             DataStorage.windowList[1].sessionKey,
-            'command-output',
-            'command-input'
+            'command',
+            'command'
         );
     },
 
