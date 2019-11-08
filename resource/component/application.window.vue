@@ -14,11 +14,8 @@
                 </div>
             </div>
             <div class="body">
-                <!-- Main app -->
-                <iframe v-show="!selectedModule" ref="mainFrame" :src="windowData.url"></iframe>
-
                 <!-- Modules -->
-                <iframe v-show="selectedModule" ref="module" :src="module.url"
+                <iframe v-show="selectedModule === module.sessionKey" ref="module" :src="module.url"
                         v-for="module in windowData.modules"></iframe>
 
                 <!-- Over body -->
@@ -76,9 +73,11 @@
                 </div>
             </div>
 
+            <!-- Modules -->
             <div class="modules">
-                <div @click="selectModule(i)" v-for="i in [0, 1, 2]" :class="i === selectedModule ?'selected-module' :''">
-                    {{ i }}
+                <div @click="selectModule(module.sessionKey)" v-for="module in windowData.modules"
+                     :class="module.sessionKey === selectedModule ?'selected-module' :''">
+                    {{ module.appInfo.title }}
                 </div>
             </div>
         </div>
@@ -102,7 +101,10 @@
         },
         mounted() {
             // Register session iFrame window
-            DataStorage.sessionWindow[this.windowData.sessionKey] = this.$refs.mainFrame.contentWindow;
+            DataStorage.sessionWindow[this.windowData.sessionKey] = this.$refs.module[0].contentWindow;
+
+            // Main module
+            this.selectedModule = this.windowData.sessionKey;
 
             // At this point app is init fully and ready for work
             this.windowData.isReady = async () => {
@@ -111,13 +113,14 @@
 
                 let app = await SceneApi.runApplication(modules, true);
                 this.windowData.modules.push(app);
-                
+
                 setTimeout(() => {
                     // Register module iFrame window
-                    DataStorage.sessionWindow[app.sessionKey] = this.$refs.module[0].contentWindow;
+                    DataStorage.sessionWindow[app.sessionKey] = this.$refs.module[1].contentWindow;
 
                     // Connect app
                     SceneApi.connectWindows(this.windowData.sessionKey, app.sessionKey, 'command', 'command');
+                    SceneApi.connectWindows(app.sessionKey, this.windowData.sessionKey, 'command', 'command');
                 }, 16);
             };
         },
@@ -126,7 +129,7 @@
                 if (action) action(this);
             },
             sendIFrameEvent(eventName, data) {
-                this.$refs.mainFrame.contentWindow.postMessage({
+                this.$refs.module[0].contentWindow.postMessage({
                     isEvent: true,
                     event: eventName,
                     data: data
@@ -168,7 +171,7 @@
                 this.sendIFrameEvent('tabClicked', tab);
             },
             reload() {
-                let iFrame = this.$refs.mainFrame;
+                let iFrame = this.$refs.module[0];
                 iFrame.src = iFrame.src;
             },
             settings() {

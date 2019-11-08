@@ -18,7 +18,7 @@ let SystemApi = {
     },
     setWindowSize(size) {
         this.currentWindow.width = size[0];
-        this.currentWindow.height = size[1] + 36 + 2;
+        this.currentWindow.height = size[1] + 36 + 2 + 23.33;
 
         ConstraintWindow(this.currentWindow);
     },

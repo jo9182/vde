@@ -59,6 +59,7 @@ let SceneApi = {
                         return this.settings[i].value;
             }
         };
+        windowData.modules.push(windowData);
         DataStorage.windowList.push(windowData);
 
         return windowData;
@@ -95,15 +96,6 @@ let SceneApi = {
         });
     },
 
-    ccc() {
-        this.connectWindows(
-            DataStorage.windowList[0].sessionKey,
-            DataStorage.windowList[1].sessionKey,
-            'command',
-            'command'
-        );
-    },
-
     initVDEApi() {
         window.addEventListener("message", async (event) => {
             let query = event.data;
@@ -122,7 +114,6 @@ let SceneApi = {
                 for (let i = 0; i < DataStorage.connectionList.length; i++) {
                     // Found window out by sessionKey
                     if (DataStorage.connectionList[i].winOut.sessionKey === query.sessionKey) {
-
                         // Send to window input
                         if (DataStorage.sessionWindow[DataStorage.connectionList[i].winInput.sessionKey]) {
                             DataStorage.sessionWindow[DataStorage.connectionList[i].winInput.sessionKey].postMessage({
@@ -133,6 +124,7 @@ let SceneApi = {
                         }
                     }
                 }
+                
                 return;
             }
 
