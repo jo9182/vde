@@ -14,6 +14,7 @@ const WebSocket = require('ws');
 const Net = require('net');
 const RecursiveReaddir = require("recursive-readdir");
 const Rimraf = require('rimraf');
+const DirTree = require("directory-tree");
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -66,6 +67,69 @@ let ConvertFile = (path, res) => {
     return false;
 };
 
+let FilterTree = (folder, filter) => {
+    if (folder.files) folder = folder.files;
+
+    for (let i = 0; i < folder.length; i++) {
+        if (folder[i].isFolder) {
+            FilterTree(folder[i], filter);
+        } else {
+            if (folder[i].name === "..") continue;
+            if (!folder[i].name.match(filter)) {
+                folder.splice(i, 1);
+                i = -1;
+            }
+        }
+    }
+
+    folder.sort((a, b) => {
+        if (b.name === "..") return 1;
+        return !!b.isFolder - !!a.isFolder;
+    });
+};
+
+let ConvertTree = (absolutePath, basePath, out, tree) => {
+    let finalPath = tree.path.replace(basePath.replace(/\\/g, '/'), '');
+    let absoluteFinalPath = tree.path.replace(absolutePath.replace(/\\/g, '/'), '');
+    let folder;
+    if (finalPath) {
+        out[finalPath] = [];
+        folder = out[finalPath];
+    } else folder = out;
+
+    folder.push({
+        name: "..",
+        path: absoluteFinalPath
+    });
+
+    for (let i = 0; i < tree.children.length; i++) {
+        if (tree.children[i].type === 'directory') {
+            let newFolder = [];
+            folder.push({
+                name: tree.children[i].name,
+                path: absoluteFinalPath + '/' + tree.children[i].name,
+                isFolder: true,
+                created: tree.children[i].mtime,
+                files: newFolder
+            });
+
+            ConvertTree(
+                absolutePath,
+                basePath + '/' + tree.children[i].name,
+                newFolder,
+                tree.children[i]
+            );
+        } else {
+            folder.push({
+                name: tree.children[i].name,
+                path: absoluteFinalPath + '/' + tree.children[i].name,
+                size: tree.children[i].size,
+                created: tree.children[i].mtime
+            });
+        }
+    }
+};
+
 let RestAppMethodList = {
     get: {
         // Check if file exists
@@ -104,44 +168,53 @@ let RestAppMethodList = {
             let path = SafePath(req.params.path);
             let location = req.params.location;
             let filter = req.params.filter;
-            let list = [];
             let absolutePath = '';
+            let tree = [];
 
             switch (location) {
                 case 'internal':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.path}/${path}`);
-                    list = await RecursiveReaddir(absolutePath);
+
+                    ConvertTree(
+                        Path.resolve(__dirname + '/../', `${access.app.path}`),
+                        Path.resolve(__dirname + '/../', `${access.app.path}`),
+                        tree,
+                        DirTree(absolutePath, { normalizePath: true, attributes: ['mtime'] }, null, null)
+                    );
                     break;
                 case 'storage':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
-                    list = await RecursiveReaddir(absolutePath);
+
+                    ConvertTree(
+                        Path.resolve(__dirname + '/../', `${access.app.storage}`),
+                        Path.resolve(__dirname + '/../', `${access.app.storage}`),
+                        tree,
+                        DirTree(absolutePath, { normalizePath: true, attributes: ['mtime'] }, null, null)
+                    );
                     break;
                 case 'docs':
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
-                    list = await RecursiveReaddir(absolutePath);
+
+                    ConvertTree(
+                        Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs`),
+                        Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs`),
+                        tree,
+                        DirTree(absolutePath, { normalizePath: true, attributes: ['mtime'] }, null, null)
+                    );
                     break;
                 default:
                     return error(res);
             }
 
+            // Filter tree
+            FilterTree(tree, filter);
+
             // Send to client
-            list = list.filter(x => {
-                return x.match(new RegExp(filter));
-            });
-            list = list.map(x => {
-                const stat = Fs.lstatSync(x);
-                return {
-                    file: x.replace(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/`), '')
-                        .replace(/\\/g, '/'),
-                    isFolder: stat.isDirectory(),
-                    size: Fs.statSync(x)['size'],
-                    created: Fs.statSync(x)['birthtime'],
-                }
-            });
-            res.send(JSON.stringify(list));
+            tree.splice(0, 1);
+            res.send(JSON.stringify(tree));
         },
 
         // Get file list
