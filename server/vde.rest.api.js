@@ -72,9 +72,10 @@ let FilterTree = (folder, filter) => {
 
     for (let i = 0; i < folder.length; i++) {
         if (folder[i].isFolder) {
-            FilterTree(folder[i], filter);
+            if (folder[i].name !== "..")
+                FilterTree(folder[i], filter);
         } else {
-            if (folder[i].name === "..") continue;
+            // if (folder[i].name === "..") continue;
             if (!folder[i].name.match(filter)) {
                 folder.splice(i, 1);
                 i = -1;
@@ -83,7 +84,7 @@ let FilterTree = (folder, filter) => {
     }
 
     folder.sort((a, b) => {
-        if (b.name === "..") return 1;
+        if (a.name === ".." || b.name === "..") return 1;
         return !!b.isFolder - !!a.isFolder;
     });
 };
@@ -99,7 +100,8 @@ let ConvertTree = (absolutePath, basePath, out, tree) => {
 
     folder.push({
         name: "..",
-        path: absoluteFinalPath
+        isFolder: true,
+        path: absoluteFinalPath.split("/").slice(0, -1).join("/")
     });
 
     for (let i = 0; i < tree.children.length; i++) {

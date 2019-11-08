@@ -1,7 +1,10 @@
 <template>
     <!--<draggable :start="position">-->
-        <div class="app-icon caption" v-on:dblclick="click(appData.name)">
-            <img :src="appData.icon || '/image/application.png'" :alt="appData.title">
+        <div class="app-icon caption">
+            <img v-on:dblclick="click(appData.name)"
+                 :src="appData.icon || '/image/application.png'"
+                 :alt="appData.title"
+            draggable="false">
             <div>{{ appData.title }}</div>
         </div>
     <!--</draggable>-->
@@ -33,7 +36,6 @@
 <style lang="scss" scoped>
     .app-icon {
         // position: absolute;
-        cursor: pointer;
         user-select: none;
         // width: 20%;
         padding: 15px;
@@ -44,7 +46,8 @@
         justify-content: center;
 
         img {
-            pointer-events: none;
+            cursor: pointer;
+            // pointer-events: none;
             display: block;
             width: 100%;
             // height: 100%;
