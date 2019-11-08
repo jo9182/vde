@@ -333,6 +333,10 @@ let RestAppMethodList = {
 
             let path = SafePath(req.params.path);
 
+            if (!Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`))) {
+                return error(res, 'File not found');
+            }
+
             if (!ConvertFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`), res))
                 res.sendFile(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`));
         },
