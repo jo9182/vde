@@ -9,7 +9,8 @@ module.exports = {
     resolve: {alias: {vue: 'vue/dist/vue.esm.js'}},
     entry: {
         main: './resource/app.js',
-        ui: './resource/ui.js'
+        ui: './resource/ui.js',
+        "lib/extender": './resource/lib/extender/extender.js'
     },
     output: {
         filename: './[name].js',
@@ -66,5 +67,6 @@ module.exports = {
         new CopyPlugin([
             { from: 'public/ui.css', to: '../lib/ui.css' },
         ]),
+
     ]
 };

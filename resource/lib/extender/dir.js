@@ -1,4 +1,4 @@
-let DirHelper = {
+module.exports = {
     getFiles(path, tree, depth = 1) {
         if (path === "/") return tree;
 

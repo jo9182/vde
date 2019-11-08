@@ -125,3 +125,5 @@ Date.prototype.readableDate = function () {
 Date.prototype.getTimeWithTimezoneOffset = function () {
     return this.getTime() + (this.getTimezoneOffset() * 60000);
 };
+
+module.exports = DateHelper;

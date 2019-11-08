@@ -1,4 +1,4 @@
-let ImageHelper = {
+module.exports = {
     resize(url, width, height) {
         return new Promise((resolve => {
             let canvas = document.createElement('canvas');
