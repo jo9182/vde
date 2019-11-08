@@ -4,8 +4,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const Autoprefixer = require('autoprefixer');
+const {UnusedFilesWebpackPlugin} = require('unused-files-webpack-plugin');
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const SMP = new SpeedMeasurePlugin();
 
-module.exports = {
+module.exports = SMP.wrap({
     resolve: {alias: {vue: 'vue/dist/vue.esm.js'}},
     entry: {
         main: './resource/app.js',
@@ -65,9 +68,10 @@ module.exports = {
         }),
         new VueLoaderPlugin(),
         new CopyPlugin([
-            { from: './resource/lib/vde.api.js', to: '../public/lib/vde.api.js' },
-            { from: './resource/lib/vue.js', to: '../public/lib/vue.js' },
-            { from: './resource/lib/vue.prod.js', to: '../public/lib/vue.prod.js' },
-        ])
+            {from: './resource/lib/vde.api.js', to: '../public/lib/vde.api.js'},
+            {from: './resource/lib/vue.js', to: '../public/lib/vue.js'},
+            {from: './resource/lib/vue.prod.js', to: '../public/lib/vue.prod.js'},
+        ]),
+        new UnusedFilesWebpackPlugin()
     ]
-};
+});
