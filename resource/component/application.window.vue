@@ -63,6 +63,11 @@
                                 <input type="text" v-model="setting.value">
                             </div>
 
+                            <!-- Text area field -->
+                            <div v-if="setting.type === 'textarea'">
+                                <textarea v-model="setting.value"></textarea>
+                            </div>
+
                             <!-- Button -->
                             <div v-if="setting.type === 'button'">
                                 <button @click="settingsButtonAction(setting.click)">{{ setting.value }}</button>
@@ -111,20 +116,68 @@
                 let modules = this.windowData.getSetting('modules');
                 if (!modules) return null;
 
-                let app = await SceneApi.runApplication(modules, true);
-                this.windowData.modules.push(app);
+                // Parse module declaration
+                let modulesTuple = modules.split(";").map(x => x.trim().split(":").map(x2 => x2.trim()))
+                    .filter(x => x.length === 2);
 
-                setTimeout(() => {
-                    // Register module iFrame window
-                    DataStorage.sessionWindow[app.sessionKey] = this.$refs.module[1].contentWindow;
+                // Go through all modules
+                for (let i = 0; i < modulesTuple.length; i++) {
+                    // Get app name
+                    let appName = modulesTuple[i][0].replace(/(\([a-zA-Z0-9_ ]+\))/g, '');
+                    let appAlias = modulesTuple[i][0].between("(", ")");
 
-                    // Connect app
-                    SceneApi.connectWindows(this.windowData.sessionKey, app.sessionKey, 'log', 'command');
-                    SceneApi.connectWindows(app.sessionKey, this.windowData.sessionKey, 'command', 'log');
-                }, 16);
+                    // Get channels info
+                    let channelInfo = modulesTuple[i][1].split(',')
+                        .map(x => x.trim()).map(
+                            x => {
+                                if (x.includes("->")) return [...x.split("->").map(x2 => x2.trim()), '->'];
+                                else return [...x.split("<-").map(x2 => x2.trim()), '<-'];
+                            }
+                        );
+
+                    // Run app if exists
+                    let app = await SceneApi.runApplication(appName, true);
+                    if (!app) continue;
+                    if (appAlias) app.appInfo.title = appAlias;
+
+                    // Save module
+                    this.windowData.modules.push(app);
+
+                    // Register module
+                    await this.registerModule(app.sessionKey, i + 1);
+
+                    // Connect channels
+                    for (let j = 0; j < channelInfo.length; j++) {
+                        // Main app send to module
+                        if (channelInfo[j][2] === "<-") {
+                            SceneApi.connectWindows(
+                                this.windowData.sessionKey, app.sessionKey,
+                                channelInfo[j][1], channelInfo[j][0]
+                            );
+                        }
+
+                        // Nodule send to main
+                        if (channelInfo[j][2] === "->") {
+                            SceneApi.connectWindows(
+                                app.sessionKey, this.windowData.sessionKey,
+                                channelInfo[j][0], channelInfo[j][1]
+                            );
+                        }
+                    }
+                }
             };
         },
         methods: {
+            registerModule(sessionKey, id) {
+                return new Promise(resolve => {
+                    // Wait until contentWindow is ready
+                    setTimeout(() => {
+                        // Register module iFrame window
+                        DataStorage.sessionWindow[sessionKey] = this.$refs.module[id].contentWindow;
+                        resolve();
+                    });
+                });
+            },
             settingsButtonAction(action) {
                 if (action) action(this);
             },
@@ -301,8 +354,13 @@
                     flex: 1;
                     display: flex;
 
-                    input, select {
+                    input, select, textarea {
                         flex: 1;
+                    }
+
+                    textarea {
+                        resize: vertical;
+                        height: 64px;
                     }
                 }
             }

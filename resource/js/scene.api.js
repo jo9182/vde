@@ -26,7 +26,7 @@ let SceneApi = {
         let settingsPattern = [
             { key: 'args', type: 'text', value: appSettings.args || '' },
             { key: 'name', type: 'label', value: name },
-            { key: 'modules', type: 'text', value: appSettings.modules || '' },
+            { key: 'modules', type: 'textarea', value: appSettings.modules || '' },
             { key: 'update', type: 'button', value: 'Update', async click(win) {
                 await AppApi.pullUpdate(app.repo);
                 windowData.showSettings = false;
