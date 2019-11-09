@@ -1,13 +1,17 @@
 html, body {
   height: 100%;
-  background: url("../image/bg.jpg");
   color: #fefefe;
   font-family: Consolas, sans-serif;
   font-size: 14px;
   padding: 0;
   margin: 0;
-  background-size: cover;
+
   overflow: hidden;
+}
+
+html, body, #app {
+  background: url("../image/bg.jpg");
+  background-size: cover;
 }
 
 #app {

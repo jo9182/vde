@@ -95,7 +95,7 @@ let VDE = {
         if (config.tabs) await VDE.apiQuery('setTabs', config.tabs);
 
         // Set ports
-        let stdPorts = { input: ['__stdin'], output: ['__stdout'] };
+        let stdPorts = { input: ['stdin'], output: ['stdout'] };
         if (config.ports && config.ports.input) stdPorts.input.push(...config.ports.input);
         if (config.ports && config.ports.output) stdPorts.output.push(...config.ports.output);
         await VDE.apiQuery('setPorts', stdPorts);
@@ -233,7 +233,7 @@ let VDE = {
         },
     },
     stdout(msg) {
-        VDE.channel.send('__stdout', msg);
+        VDE.channel.send('stdout', msg);
     },
 
     // File functions

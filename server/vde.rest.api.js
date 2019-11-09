@@ -44,6 +44,7 @@ let AccessBySubDomain = (host) => {
 };
 
 let ConvertFile = (path, res) => {
+    path = path.replace(/\\/g, '/');
     let extension = Path.extname(path);
 
     // Html tags
@@ -80,7 +81,8 @@ let ConvertFile = (path, res) => {
 
         // Transpile
         let result = SASS.renderSync({
-            data: fileContent
+            data: fileContent,
+            includePaths: [path.split("/").slice(0, -1).join("/")]
         });
 
         // Autoprefix

@@ -44,7 +44,7 @@
                             </div>
                         </div>
                     </div>
-                    <button @click="saveOptions">Save</button>
+                    <button @click="saveOptions" class="base success">Save</button>
                 </div>
 
                 <!-- Settings -->
@@ -70,11 +70,11 @@
 
                             <!-- Button -->
                             <div v-if="setting.type === 'button'">
-                                <button @click="settingsButtonAction(setting.click)">{{ setting.value }}</button>
+                                <button class="base success" @click="settingsButtonAction(setting.click)">{{ setting.value }}</button>
                             </div>
                         </div>
                     </div>
-                    <button @click="saveSettings">Save</button>
+                    <button @click="saveSettings" class="base">Save</button>
                 </div>
             </div>
 
@@ -337,11 +337,11 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            // background: #00000022;
         }
 
         .options, .settings {
-            background: #3b3b3b;
+            background: #f7f8fc;
+            color: #363636;
             position: absolute;
             width: 100%;
             height: 100%;
@@ -355,11 +355,15 @@
                 margin-bottom: 10px;
                 user-select: text;
 
+                > div:first-child {
+                    text-transform: uppercase;
+                }
+
                 > div {
                     flex: 1;
                     display: flex;
 
-                    input, select, textarea {
+                    input, select, textarea, button {
                         flex: 1;
                     }
 

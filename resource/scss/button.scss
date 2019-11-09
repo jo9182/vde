@@ -1,0 +1,60 @@
+$button-color: (
+    base: #6979f8,
+    success: #48e863,
+    error: #f86969,
+    dark: #5d5d5d,
+);
+
+button {
+    cursor: pointer;
+    border: 1px solid #00000000;
+    padding: 7px 15px;
+    border-radius: $globalBorderRadius;
+    outline: none;
+    user-select: none;
+
+    &:active {
+        position: relative;
+        top: 1px;
+    }
+}
+
+@each $btnColor, $val in $button-color {
+    $button-base: (
+        background: map_get($button-color, $btnColor),
+        color: #ffffff
+    );
+
+    $button-lite: (
+        background: lighten(map_get($button-color, $btnColor), 25%),
+        color: darken(map_get($button-color, $btnColor), 10%)
+    );
+
+    $button-inverted: (
+        background: #fefefe,
+        border: 1px solid map_get($button-color, $btnColor),
+        color: map_get($button-color, $btnColor)
+    );
+
+    $button: (
+        base: $button-base,
+        lite: $button-lite,
+        inverted: $button-inverted
+    );
+
+    @each $btnClass, $val in $button {
+        button.#{$btnColor}.#{$btnClass} {
+            @each $key1, $val1 in $val {
+                #{$key1}: $val1;
+            }
+
+            &:hover {
+                background: lighten(map_get($val, background), 2%);
+            }
+
+            &:active {
+                background: darken(map_get($val, background), 2%);
+            }
+        }
+    }
+}
