@@ -1,3 +1,5 @@
+@import "../../resource/css/normalize.css";
+
 * {
   box-sizing: border-box;
 }
@@ -49,6 +51,7 @@ input, textarea, select {
   border-radius: 5px;
   color: #707070;
   border: 1px solid #e9e9e9;
+  transition: background-color, border, 0.2s;
 
   &:focus {
     border: 1px solid $inputFocusOutlineColor;

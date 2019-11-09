@@ -1,17 +1,18 @@
 $button-color: (
     base: #6979f8,
-    success: #48e863,
+    success: #72f869,
     error: #f86969,
-    dark: #5d5d5d,
+    dark: #555faf,
 );
 
 button {
     cursor: pointer;
-    border: 1px solid #00000000;
+    //border: 1px solid #00000000;
     padding: 7px 15px;
     border-radius: $globalBorderRadius;
     outline: none;
     user-select: none;
+    transition: background-color, border, color, 0.2s;
 
     &:active {
         position: relative;
@@ -21,19 +22,25 @@ button {
 
 @each $btnColor, $val in $button-color {
     $button-base: (
+        border: 1px solid map_get($button-color, $btnColor),
         background: map_get($button-color, $btnColor),
-        color: #ffffff
+        color: #ffffff,
+        hover-power: 12%
     );
 
     $button-lite: (
+        border: 1px solid lighten(map_get($button-color, $btnColor), 25%),
         background: lighten(map_get($button-color, $btnColor), 25%),
-        color: darken(map_get($button-color, $btnColor), 10%)
+        color: darken(map_get($button-color, $btnColor), 10%),
+        hover-power: 2%
     );
 
     $button-inverted: (
         background: #fefefe,
         border: 1px solid map_get($button-color, $btnColor),
-        color: map_get($button-color, $btnColor)
+        border-color: map_get($button-color, $btnColor),
+        color: map_get($button-color, $btnColor),
+        hover-power: 5%
     );
 
     $button: (
@@ -49,11 +56,18 @@ button {
             }
 
             &:hover {
-                background: lighten(map_get($val, background), 2%);
+                background: lighten(map_get($val, background), map_get($val, hover-power));
+
+                @if $btnClass == inverted {
+                    border-color: lighten(map_get($val, border-color), 18%);
+                } @else {
+                    border-color: lighten(map_get($val, background), map_get($val, hover-power));
+                }
             }
 
             &:active {
-                background: darken(map_get($val, background), 2%);
+                background: darken(map_get($val, background), map_get($val, hover-power));
+                border-color: darken(map_get($val, background), map_get($val, hover-power));
             }
         }
     }
