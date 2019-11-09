@@ -15,7 +15,7 @@
             </div>
             <div class="body">
                 <!-- Modules -->
-                <iframe v-show="selectedModule === module.sessionKey" ref="module" :src="module.url"
+                <iframe v-show="module.sessionKey === selectedModule || splitMode" ref="module" :src="module.url"
                         v-for="module in windowData.modules"></iframe>
 
                 <!-- Over body -->
@@ -83,6 +83,9 @@
                 <div @click="selectModule(module.sessionKey)" v-for="module in windowData.modules"
                      :class="module.sessionKey === selectedModule ?'selected-module' :''">
                     {{ module.appInfo.title }}
+                </div>
+                <div @click="splitMode = !splitMode" style="margin-left: auto;" :style="splitMode ?{background: 'rgb(28, 182, 25)'} :{}">
+                    |
                 </div>
             </div>
         </div>
@@ -244,6 +247,7 @@
         },
         data() {
             return {
+                splitMode: false,
                 isDrag: false,
                 selectedModule: 0
             }
@@ -302,6 +306,7 @@
             flex: 1;
             position: relative;
             overflow: hidden;
+            flex-direction: column;
 
             iframe {
                 border: 0;
