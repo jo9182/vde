@@ -4,9 +4,15 @@
         <div class="window">
             <div class="caption" data-draggable="true">
                 <div class="title">{{ windowData.appInfo.title }}</div>
-                <div @click="reload" style="cursor: pointer; margin-right: 10px;">@</div>
-                <div @click="settings" style="cursor: pointer; margin-right: 10px;">*</div>
-                <div @click="close" style="cursor: pointer;">x</div>
+                <div class="icon" @mousedown.stop="" @click="reload">
+                    <img src="/image/refresh.svg" alt="Close" draggable="false">
+                </div>
+                <div class="icon" @mousedown.stop="" @click="settings">
+                    <img src="/image/settings-icon.svg" alt="Settings" draggable="false">
+                </div>
+                <div class="icon" @mousedown.stop="" @click="close">
+                    <img src="/image/close.svg" alt="Close" draggable="false">
+                </div>
             </div>
             <div v-if="windowData.tabs.length" class="tabs">
                 <div @click="clickTab(tab)" class="tab" v-for="tab in windowData.tabs">
@@ -254,125 +260,3 @@
         }
     }
 </script>
-
-<style lang="scss" scoped>
-    .window {
-        background: #7d7d7d;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 100%;
-        border: 1px solid #212121;
-        user-select: none;
-
-        .caption {
-            background: #3b3b3b;
-            padding: 10px;
-            user-select: none;
-            display: flex;
-
-            .title {
-                flex: 1;
-            }
-        }
-
-        .tabs {
-            user-select: none;
-            padding: 5px;
-            display: flex;
-
-            .tab {
-                cursor: pointer;
-                margin-right: 5px;
-                background: #1a1a1a;
-                font-size: 12px;
-                padding: 1px 10px;
-                border-radius: 18px;
-
-                &:hover {
-                    opacity: 0.8;
-                }
-
-                &:active {
-                    opacity: 0.6;
-                    position: relative;
-                    top: 1px;
-                }
-            }
-        }
-
-        .body {
-            display: flex;
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            flex-direction: column;
-
-            iframe {
-                border: 0;
-                width: 100%;
-                height: 100%;
-            }
-        }
-
-        .modules {
-            display: flex;
-            padding: 3px;
-
-            > div {
-                background: #2b2b2b;
-                padding: 2px 5px;
-                margin-right: 5px;
-                font-size: 12px;
-                cursor: pointer;
-                border-radius: 3px;
-            }
-        }
-
-        .selected-module {
-            background: #f54c0b !important;
-        }
-
-        .over-body {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .options, .settings {
-            background: #f7f8fc;
-            color: #363636;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-
-            .field {
-                display: flex;
-                margin-bottom: 10px;
-                user-select: text;
-
-                > div:first-child {
-                    text-transform: uppercase;
-                }
-
-                > div {
-                    flex: 1;
-                    display: flex;
-
-                    input, select, textarea, button {
-                        flex: 1;
-                    }
-
-                    textarea {
-                        resize: vertical;
-                        height: 64px;
-                    }
-                }
-            }
-        }
-    }
-</style>

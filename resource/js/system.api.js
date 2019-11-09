@@ -19,7 +19,7 @@ let SystemApi = {
     },
     setWindowSize(size) {
         this.currentWindow.width = size[0];
-        this.currentWindow.height = size[1] + 36 + 2 + 23.33;
+        this.currentWindow.height = size[1] + 28 + 2 + 25;
 
         ConstraintWindow(this.currentWindow);
     },
@@ -47,8 +47,8 @@ let SystemApi = {
             this.currentWindow.height += 25.33;
 
         // If have tabs and set empty tabs
-        if (this.currentWindow.tabs.length && !tabs.length)
-            this.currentWindow.height -= 25.33;
+        //if (this.currentWindow.tabs.length && !tabs.length)
+        //    this.currentWindow.height -= 25.33;
 
         this.currentWindow.tabs = tabs;
 

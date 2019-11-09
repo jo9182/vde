@@ -1,41 +1,246 @@
+@import "animation";
+
 html, body {
-  height: 100%;
-  color: #fefefe;
-  font-family: Consolas, sans-serif;
-  font-size: 14px;
-  padding: 0;
-  margin: 0;
+    height: 100%;
+    color: #fefefe;
+    font-family: Consolas, sans-serif;
+    font-size: 14px;
+    padding: 0;
+    margin: 0;
 
-  overflow: hidden;
-}
-
-html, body, #app {
-  background: url("../image/bg.jpg");
-  background-size: cover;
+    overflow: hidden;
+    background: #2a3542;
 }
 
 #app {
-  display: flex;
-  height: 100%;
+    background: url("../image/bg5.jpg");
+    background-size: cover;
+    animation-duration: 0.8s;
+    animation-name: backgroundFadeIn;
+}
 
-  .icon-list {
+.__ {
+  background: url("../image/settings-icon.svg");
+  background: url("../image/close.svg");
+  background: url("../image/refresh.svg");
+}
+
+#app {
     display: flex;
-    flex-wrap: wrap;
-    width: 100%;
     height: 100%;
-    align-content: flex-start;
-  }
 
-  .auth-form {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    padding: 10px;
-    background: #ffffff;
-    border-radius: 4px;
-  }
+    .icon-list {
+        display: flex;
+        flex-wrap: wrap;
+        width: 100%;
+        height: 100%;
+        align-content: flex-start;
+        animation-duration: 1.4s;
+        animation-name: backgroundFadeIn;
+    }
 
-  .app-icon-standard {
-    background: url("../image/application.png");
-  }
+    .app-icon {
+        user-select: none;
+        padding: 15px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        img {
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            max-height: 100%;
+            max-width: 64px;
+
+            transition: transform 0.2s;
+            transform: scale(1);
+
+            &:hover {
+                transform: scale(1.12);
+            }
+        }
+
+        div {
+            text-align: center;
+            margin-top: 7px;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .auth-form {
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        padding: 10px;
+        background: #ffffff;
+        border-radius: 4px;
+    }
+
+    .app-icon-standard {
+        background: url("../image/application.png");
+    }
+
+    .window {
+        background: #7d7d7d;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        user-select: none;
+        animation-duration: 0.5s;
+        animation-name: windowFadeIn;
+
+        .caption {
+            background: #2a3542;
+            padding: 5px;
+            user-select: none;
+            display: flex;
+            border-top: 1px solid #3b4957;
+            border-bottom: 1px solid #010a15;
+            color: #94b6d2;
+
+            .title {
+                flex: 1;
+            }
+
+            .icon {
+                cursor: pointer;
+                margin-right: 6px;
+                display: flex;
+                transition: opacity, 0.2s;
+
+                img {
+                    width: 14px;
+                    height: 14px;
+                    align-self: center;
+                    display: block;
+                }
+
+                &:hover {
+                    opacity: 0.8;
+                }
+
+                &:active {
+                    position: relative;
+                    top: 1px;
+                }
+            }
+
+            .icon:last-child {
+                margin-right: 0;
+            }
+        }
+
+        .tabs {
+            user-select: none;
+            padding: 5px;
+            display: flex;
+            background: #a3a8c1;
+
+            .tab {
+                cursor: pointer;
+                margin-right: 5px;
+                background: #554690;
+                font-size: 12px;
+                padding: 1px 10px;
+                border-radius: 18px;
+                transition: opacity, 0.2s;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+
+                &:active {
+                    opacity: 0.6;
+                    position: relative;
+                    top: 1px;
+                }
+            }
+        }
+
+        .body {
+            display: flex;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            flex-direction: column;
+
+            iframe {
+                border: 0;
+                width: 100%;
+                height: 100%;
+            }
+        }
+
+        .modules {
+            display: flex;
+            padding: 3px;
+            background: #313345;
+            border-top: 1px solid #3b4957;
+            border-bottom: 1px solid #202231;
+
+            > div {
+                background: #5a5e7c;
+                padding: 2px 5px;
+                margin-right: 5px;
+                font-size: 12px;
+                cursor: pointer;
+                border-radius: 3px;
+            }
+        }
+
+        .selected-module {
+            background: #6b9912 !important;
+            color: #93e769;
+        }
+
+        .over-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .options, .settings {
+            background: #f7f8fc;
+            color: #363636;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            animation-duration: 0.3s;
+            animation-name: settingsFadeIn;
+
+            .field {
+                display: flex;
+                margin-bottom: 10px;
+                user-select: text;
+
+                > div:first-child {
+                    text-transform: uppercase;
+                }
+
+                > div {
+                    flex: 1;
+                    display: flex;
+
+                    input, select, textarea, button {
+                        flex: 1;
+                    }
+
+                    textarea {
+                        resize: vertical;
+                        height: 64px;
+                    }
+                }
+            }
+        }
+    }
 }

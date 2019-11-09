@@ -1,13 +1,12 @@
 $button-color: (
     base: #6979f8,
-    success: #72f869,
+    success: #37d260,
     error: #f86969,
     dark: #555faf,
 );
 
 button {
     cursor: pointer;
-    //border: 1px solid #00000000;
     padding: 7px 15px;
     border-radius: $globalBorderRadius;
     outline: none;

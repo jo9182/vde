@@ -57,4 +57,8 @@ window.onload = async () => {
         el: '#app',
         data: DataStorage
     });
+
+    setTimeout(() => {
+        document.querySelector("#app").style.display = "flex";
+    });
 };

@@ -11,14 +11,14 @@
     <script src="/lib/extender.js"></script>
 </head>
 <body>
-<div id="app">
+<div id="app" style="display: none;">
     <!-- Auth form -->
     <div v-if="!user" class="auth-form">
         <form>
             <input type="text" v-model="input.login">
             <input type="password" v-model="input.password" autocomplete="">
         </form>
-        <button @click="userApi.auth(input.login, input.password)">Auth</button>
+        <button class="base" @click="userApi.auth(input.login, input.password)">Auth</button>
     </div>
 
     <!-- Application icon list -->
