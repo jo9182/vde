@@ -54,6 +54,10 @@ let SystemApi = {
 
         ConstraintWindow(this.currentWindow);
     },
+    setPorts(ports) {
+        this.currentWindow.ports.input = ports.input;
+        this.currentWindow.ports.output = ports.output;
+    },
     setOptions(options) {
         // Convert object to list
         let optionList = [];

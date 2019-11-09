@@ -94,6 +94,12 @@ let VDE = {
         // Set tabs
         if (config.tabs) await VDE.apiQuery('setTabs', config.tabs);
 
+        // Set ports
+        let stdPorts = { input: ['__stdin'], output: ['__stdout'] };
+        if (config.ports && config.ports.input) stdPorts.input.push(...config.ports.input);
+        if (config.ports && config.ports.output) stdPorts.output.push(...config.ports.output);
+        await VDE.apiQuery('setPorts', stdPorts);
+
         // Set window size
         if (config.windowSize) await VDE.apiQuery('setWindowSize', config.windowSize);
 
@@ -225,6 +231,9 @@ let VDE = {
         listen(chId, callback) {
             VDE.listenCallback[chId] = callback;
         },
+    },
+    stdout(msg) {
+        VDE.channel.send('__stdout', msg);
     },
 
     // File functions

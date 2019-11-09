@@ -24,8 +24,9 @@ let SceneApi = {
         let appSettings = app.settings || {};
 
         let settingsPattern = [
-            { key: 'args', type: 'text', value: appSettings.args || '' },
             { key: 'name', type: 'label', value: name },
+            {  },
+            { key: 'args', type: 'text', value: appSettings.args || '' },
             { key: 'modules', type: 'textarea', value: appSettings.modules || '' },
             { key: 'update', type: 'button', value: 'Update', async click(win) {
                 await AppApi.pullUpdate(app.repo);
@@ -50,6 +51,10 @@ let SceneApi = {
             tabs: [],
             modules: [],
             options: {},
+            ports: {
+                input: [],
+                output: []
+            },
             settings: settingsPattern,
             isReady: null,
             isVisible: !asModule,
@@ -59,7 +64,20 @@ let SceneApi = {
                         return this.settings[i].value;
             }
         };
+        // Set ports link after initialization
+        settingsPattern[1] = {
+            key: 'ports',
+            type: 'label',
+            get value() {
+                return 'in: ' + windowData.ports.input.join(", ") + '<br>' +
+                    'out: ' + windowData.ports.output.join(", ");
+            }
+        };
+
+        // Push main app to first module
         windowData.modules.push(windowData);
+
+        // Register window in system
         DataStorage.windowList.push(windowData);
 
         return windowData;
@@ -112,6 +130,11 @@ let SceneApi = {
             // Channel data
             if (event.data.method === "channelData") {
                 let isFound = false;
+
+                if (!applicationWindow.ports.output.includes(query.channelId)) {
+                    console.error(`Output port "${query.channelId}" not registered!`);
+                    return;
+                }
 
                 for (let i = 0; i < DataStorage.connectionList.length; i++) {
                     // Found window out by sessionKey and channel out

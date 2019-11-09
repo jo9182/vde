@@ -55,7 +55,7 @@
 
                             <!-- Label field -->
                             <div v-if="setting.type === 'label'">
-                                <span>{{ setting.value }}</span>
+                                <span v-html="setting.value"></span>
                             </div>
 
                             <!-- Text field -->
