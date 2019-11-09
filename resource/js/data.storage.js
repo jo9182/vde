@@ -8,6 +8,7 @@ let DataStorage = {
     connectionList: [],
     sceneLines: [],
     sceneLinesCenter: [],
+    channelLog: [],
 
     applicationList: [],
 

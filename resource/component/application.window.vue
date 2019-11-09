@@ -119,8 +119,8 @@
                     DataStorage.sessionWindow[app.sessionKey] = this.$refs.module[1].contentWindow;
 
                     // Connect app
-                    SceneApi.connectWindows(this.windowData.sessionKey, app.sessionKey, 'command', 'command');
-                    SceneApi.connectWindows(app.sessionKey, this.windowData.sessionKey, 'command', 'command');
+                    SceneApi.connectWindows(this.windowData.sessionKey, app.sessionKey, 'log', 'command');
+                    SceneApi.connectWindows(app.sessionKey, this.windowData.sessionKey, 'command', 'log');
                 }, 16);
             };
         },

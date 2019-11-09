@@ -89,7 +89,7 @@ let SceneApi = {
 
         DataStorage.connectionList.push({
             isVisible,
-            winOut: _winOut,
+            winOutput: _winOut,
             winInput: _winInput,
             channelOut,
             channelIn
@@ -111,20 +111,47 @@ let SceneApi = {
 
             // Channel data
             if (event.data.method === "channelData") {
+                let isFound = false;
+
                 for (let i = 0; i < DataStorage.connectionList.length; i++) {
-                    // Found window out by sessionKey
-                    if (DataStorage.connectionList[i].winOut.sessionKey === query.sessionKey) {
+                    // Found window out by sessionKey and channel out
+                    if (DataStorage.connectionList[i].winOutput.sessionKey === query.sessionKey
+                        && DataStorage.connectionList[i].channelOut === query.channelId) {
+
                         // Send to window input
                         if (DataStorage.sessionWindow[DataStorage.connectionList[i].winInput.sessionKey]) {
+                            // Channel log
+                            DataStorage.channelLog.push({
+                                fromApp: DataStorage.connectionList[i].winOutput.appInfo.name,
+                                toApp: DataStorage.connectionList[i].winInput.appInfo.name,
+                                channelOut: DataStorage.connectionList[i].channelOut,
+                                channelIn: DataStorage.connectionList[i].channelIn,
+                                size: queryData.length
+                            });
+
+                            isFound = true;
+
+                            // Send to client
                             DataStorage.sessionWindow[DataStorage.connectionList[i].winInput.sessionKey].postMessage({
                                 isChannelData: true,
                                 channelId: DataStorage.connectionList[i].channelIn,
-                                data: query.data
+                                data: queryData
                             }, '*');
                         }
                     }
                 }
-                
+
+                if (!isFound) {
+                    // Channel log
+                    DataStorage.channelLog.push({
+                        fromApp: applicationWindow.appInfo.name,
+                        toApp: null,
+                        channelOut: query.channelId,
+                        channelIn: null,
+                        size: queryData.length
+                    });
+                }
+
                 return;
             }
 

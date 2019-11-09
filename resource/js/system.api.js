@@ -1,5 +1,6 @@
 import AppApi from "./app.api";
 import SceneApi from "./scene.api";
+import DataStorage from "./data.storage";
 
 let ConstraintWindow = (win) => {
     if (win.x + win.width > window.innerWidth)
@@ -73,6 +74,25 @@ let SystemApi = {
         for (let i = 0; i < this.currentWindow.settings.length; i++)
             object[this.currentWindow.settings[i].key] = this.currentWindow.settings[i].value;
         return object;
+    },
+    getConnectionList() {
+        return DataStorage.connectionList.map(x => {
+            return {
+                channelIn: x.channelIn,
+                channelOut: x.channelOut,
+                winInput: {
+                    appInfo: x.winInput.appInfo,
+                    sessionKey: x.winInput.sessionKey
+                },
+                winOutput: {
+                    appInfo: x.winOutput.appInfo,
+                    sessionKey: x.winOutput.sessionKey
+                },
+            }
+        });
+    },
+    getChannelLog() {
+        return DataStorage.channelLog;
     },
     showOptions() {
         this.currentWindow.showOptions = true;
