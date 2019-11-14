@@ -1,18 +1,18 @@
 @import "../../resource/css/normalize.css";
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html, body, #app {
-  height: 100%;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  background: #f7f8fc;
-  display: flex;
-  font-family: Consolas, sans-serif;
-  font-size: 14px;
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #f7f8fc;
+    display: flex;
+    font-family: Consolas, sans-serif;
+    font-size: 14px;
 }
 
 $globalBorderRadius: 4px;
@@ -28,157 +28,171 @@ $inputFocusOutlineColor: #ffb559;
 $inputBackground: #f5f5f5;
 
 #app {
-  padding: 10px;
-  flex-direction: column;
+    padding: 10px;
+    flex-direction: column;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin-top: 0;
-  margin-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 p {
-  margin-top: 0;
-  margin-bottom: 10px;
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 @import "./button.scss";
 
 input, textarea, select {
-  outline: none;
-  padding: 10px;
-  background: $inputBackground;
-  border-radius: 5px;
-  color: #707070;
-  border: 1px solid #e9e9e9;
-  transition: background-color, border, 0.2s;
+    outline: none;
+    padding: 10px;
+    background: $inputBackground;
+    border-radius: 5px;
+    color: #707070;
+    border: 1px solid #e9e9e9;
+    transition: background-color, border, 0.2s;
 
-  &:focus {
-    border: 1px solid $inputFocusOutlineColor;
-    background: lighten($inputBackground, 8%);
-    color: #898989;
-  }
+    &:focus {
+        border: 1px solid $inputFocusOutlineColor;
+        background: lighten($inputBackground, 8%);
+        color: #898989;
+    }
 }
 
 input.error, textarea.error {
-  border: 1px solid #ff9a97;
-  background: #ffe5e5;
-  color: #ed5757;
+    border: 1px solid #ff9a97;
+    background: #ffe5e5;
+    color: #ed5757;
 
-  &:focus {
-    border: 1px solid #ffc3c3;
-    background: #ffedef;
-    color: #ed7977;
-  }
+    &:focus {
+        border: 1px solid #ffc3c3;
+        background: #ffedef;
+        color: #ed7977;
+    }
 }
 
 .button-group {
-  display: flex;
+    display: flex;
 
-  > button {
-    flex: 1;
-    border-radius: 0;
-  }
+    > button {
+        flex: 1;
+        border-radius: 0;
+    }
 
-  > button:first-child {
-    border-right: 0;
-    border-radius: $globalBorderRadius 0 0 $globalBorderRadius;
-  }
+    > button:first-child {
+        border-right: 0;
+        border-radius: $globalBorderRadius 0 0 $globalBorderRadius;
+    }
 
-  > button:last-child {
-    border-left: 0;
-    border-radius: 0 $globalBorderRadius $globalBorderRadius 0;
-  }
+    > button:last-child {
+        border-left: 0;
+        border-radius: 0 $globalBorderRadius $globalBorderRadius 0;
+    }
 }
 
 .button-group-separated {
-  display: flex;
+    display: flex;
 
-  > button {
-    flex: 1;
-    margin-right: 5px;
-  }
+    > button {
+        flex: 1;
+        margin-right: 5px;
+    }
 
-  > button:last-child {
-    margin-right: 0;
-  }
+    > button:last-child {
+        margin-right: 0;
+    }
 }
 
 .shadow {
-  box-shadow: 0 0 3px 1px #0000001a;
+    box-shadow: 0 0 3px 1px #0000001a;
 }
 
 .block-wrapper {
-  padding: 5px;
+    padding: 5px;
 }
 
 .block {
-  display: flex;
-  flex-direction: column;
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 6px;
-  color: #636363;
-  margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    padding: 15px;
+    border-radius: 6px;
+    color: #636363;
+    margin-bottom: 10px;
 
-  @extend .shadow;
+    @extend .shadow;
 }
 
 .block-group {
-  display: flex;
+    display: flex;
 
-  .block {
-    flex: 1;
-    margin-right: 10px;
-  }
+    .block {
+        flex: 1;
+        margin-right: 10px;
+    }
 
-  .block:last-child {
-    margin-right: 0;
-  }
+    .block:last-child {
+        margin-right: 0;
+    }
 }
 
 table {
-  display: flex;
-  //flex: 1;
-  border-collapse: collapse;
-  flex-direction: column;
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid #e7edf1;
-
-  thead, tbody {
     display: flex;
-    flex: 1;
+    //flex: 1;
+    border-collapse: collapse;
     flex-direction: column;
+    border-radius: 4px;
     overflow: hidden;
+    border: 1px solid #e7edf1;
 
-    tr {
-      display: flex;
-      background: #ffffff;
-      border-bottom: 1px solid #e7edf1;
-
-      th {
-        text-align: left;
-        background: #e7edf1;
-        color: #53676f;
-        text-transform: uppercase;
-      }
-
-      td {
-        color: #53676f;
-      }
-
-      td, th {
+    thead, tbody {
+        display: flex;
         flex: 1;
-        padding: 10px;
-        white-space: nowrap;
+        flex-direction: column;
         overflow: hidden;
-        text-overflow: ellipsis;
-      }
+
+        tr {
+            display: flex;
+            background: #ffffff;
+            border-bottom: 1px solid #e7edf1;
+
+            th {
+                text-align: left;
+                background: #e7edf1;
+                color: #53676f;
+                text-transform: uppercase;
+            }
+
+            td {
+                color: #53676f;
+            }
+
+            td, th {
+                flex: 1;
+                padding: 10px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+
+        tr:nth-child(2n) {
+            background: #f9f9f9;
+        }
+    }
+}
+
+.scroll {
+    // Scrollbar firefox
+    scrollbar-color: #b2b2b2 #dddddd;
+
+    // Scrollbar webkit
+    &::-webkit-scrollbar {
+        background: #dddddd;
     }
 
-    tr:nth-child(2n) {
-      background: #f9f9f9;
+    &::-webkit-scrollbar-thumb {
+        background: #b2b2b2;
     }
-  }
 }
