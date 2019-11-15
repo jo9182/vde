@@ -13,7 +13,7 @@ Fs.mkdirSync('./storage/user', { recursive: true });
 if (!Fs.existsSync('./storage/user.list.json')) {
     Fs.writeFileSync('./storage/user.list.json', JSON.stringify([{
         name: 'root',
-        password: '1234'
+        password: process.env.DEFAULT_ROOT_PASSWORD || 'root'
     }]));
 }
 
