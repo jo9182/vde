@@ -453,10 +453,10 @@ module.exports = {
 
         // Start web socket server
         const wss = new WebSocket.Server({
-            port: port + 1,
+            port: port * 1 + 1,
             perMessageDeflate: false
         });
-        console.log(`VDE WebSocket Server starts at :${port + 1}`);
+        console.log(`VDE WebSocket Server starts at :${port * 1 + 1}`);
 
         let wssTable = {};
         wss.on('connection', function connection(ws, req) {
