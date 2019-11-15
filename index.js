@@ -23,6 +23,6 @@ VDERestAPI.run(process.env.VDE_PORT);
 
 // Start rest server
 RestApp.listen(process.env.GIT_PORT, () => { console.log(`Git server starts at :${process.env.GIT_PORT}`) });
-RestApp.get(`/git-pull/${process.env.GIT_WEB_HOOK_PATH}`, () => {
+RestApp.get(`/git-push/${process.env.GIT_WEB_HOOK_PATH}`, () => {
     process.exit();
 });
