@@ -46,6 +46,7 @@ let SceneApi = {
             y: Math.random() * (window.innerHeight - 240),
             width: 480,
             height: 240,
+            zIndex: 1,
             showOptions: false,
             showSettings: false,
             tabs: [],
@@ -112,6 +113,35 @@ let SceneApi = {
             channelOut,
             channelIn
         });
+
+        this.calculateConnectionLines();
+    },
+
+    topWindow(sessionKey) {
+        for (let i = 0; i < DataStorage.windowList.length; i++)
+            DataStorage.windowList[i].zIndex = 1;
+        let win = this.findWindowBy(sessionKey);
+        if (win) win.zIndex = 2;
+    },
+
+    calculateConnectionLines() {
+        DataStorage.sceneLines.length = 0;
+        for (let i = 0; i < DataStorage.connectionList.length; i++) {
+            let connection = DataStorage.connectionList[i];
+            let fromPort = document.querySelector(
+                `#port-${connection.winOutput.sessionKey}-${connection.channelOut}`
+            ).getBoundingClientRect();
+            let toPort = document.querySelector(
+                `#port-${connection.winInput.sessionKey}-${connection.channelIn}`
+            ).getBoundingClientRect();
+
+            DataStorage.sceneLines.push(`
+                M${fromPort.x + 9} ${fromPort.y + 9}
+                C ${(fromPort.x + 9) * 1.25} ${fromPort.y + 9},
+                ${(toPort.x + 9) / 1.25} ${toPort.y + 9},
+                ${toPort.x + 9} ${toPort.y + 9}
+            `.trim());
+        }
     },
 
     initVDEApi() {
@@ -190,6 +220,13 @@ let SceneApi = {
                 data: returnData
             }, '*');
         });
+    },
+
+    initScene() {
+        setInterval(() => {
+            if (DataStorage.event.isDrag)
+                this.calculateConnectionLines();
+        }, 16);
     }
 };
 

@@ -35,7 +35,8 @@
                         left: this.sourceArea.x + 'px',
                         top: this.sourceArea.y + 'px',
                         width: this.sourceArea.width + 'px',
-                        height: this.sourceArea.height + 'px'
+                        height: this.sourceArea.height + 'px',
+                        zIndex: this.sourceArea.zIndex
                     }
                 }
                 if (this.width) {

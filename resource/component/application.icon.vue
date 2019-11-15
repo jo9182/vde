@@ -1,7 +1,7 @@
 <template>
     <!--<draggable :start="position">-->
         <div class="app-icon caption">
-            <img v-on:dblclick="click(appData.name)"
+            <img v-on:dblclick="click(appData.name)" v-on:click="tap(appData.name)"
                  :src="appData.icon || '/image/application.png'"
                  :alt="appData.title"
             draggable="false">
@@ -23,6 +23,10 @@
 
         },
         methods: {
+            tap(appName) {
+                if (DataStorage.screen.isMobile)
+                    SceneApi.runApplication(appName);
+            },
             click(appName) {
                 SceneApi.runApplication(appName);
             }

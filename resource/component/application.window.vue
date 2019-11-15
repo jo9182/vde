@@ -2,7 +2,8 @@
     <draggable :source="windowData" style="display: flex; flex-direction: column;"
                :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :disabled="isMobile">
         <div class="window">
-            <div class="caption" data-draggable="true">
+            <!-- Header -->
+            <div @mousedown="focusWindow" @click="focusWindow" class="caption" data-draggable="true">
                 <div class="title">{{ windowData.appInfo.title }}</div>
                 <div class="icon" @mousedown.stop="" @click="reload">
                     <img src="/image/refresh.svg" alt="Close" draggable="false">
@@ -14,11 +15,15 @@
                     <img src="/image/close.svg" alt="Close" draggable="false">
                 </div>
             </div>
+
+            <!-- Tabs -->
             <div v-if="windowData.tabs.length" class="tabs">
                 <div @click="clickTab(tab)" class="tab" v-for="tab in windowData.tabs">
                     {{ tab }}
                 </div>
             </div>
+
+            <!-- Body -->
             <div class="body">
                 <!-- Modules -->
                 <iframe v-show="module.sessionKey === selectedModule || splitMode" ref="module" :src="module.url"
@@ -94,6 +99,14 @@
                     |
                 </div>
             </div>
+
+            <!-- Ports -->
+            <div @mouseup="dropPort(port)" class="port-in"
+                 :id="'port-' + windowData.sessionKey + '-' + port"
+                 v-for="port in windowData.ports.input"></div>
+            <div @mousedown="dragPort(port)" class="port-out"
+                 :id="'port-' + windowData.sessionKey + '-' + port"
+                 v-for="port in windowData.ports.output"></div>
         </div>
     </draggable>
 </template>
@@ -229,6 +242,10 @@
             selectModule(moduleId) {
                 this.selectedModule = moduleId;
             },
+            focusWindow() {
+                this.$refs.module[0].contentWindow.focus();
+                SceneApi.topWindow(this.windowData.sessionKey);
+            },
             clickTab(tab) {
                 this.sendIFrameEvent('tabClicked', tab);
             },
@@ -246,9 +263,23 @@
             },
             startDrag() {
                 this.isDrag = true;
+                DataStorage.event.isDrag = true;
             },
             stopDrag() {
                 this.isDrag = false;
+                DataStorage.event.isDrag = false;
+            },
+            dragPort(port) {
+                DataStorage.dragData.port = port;
+                DataStorage.dragData.fromWindowSessionKey = this.windowData.sessionKey;
+            },
+            dropPort(port) {
+                SceneApi.connectWindows(
+                    DataStorage.dragData.fromWindowSessionKey,
+                    this.windowData.sessionKey,
+                    DataStorage.dragData.port,
+                    port
+                );
             }
         },
         data() {

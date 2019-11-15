@@ -52,6 +52,7 @@ window.onload = async () => {
 
     // Init VDE Api
     SceneApi.initVDEApi();
+    SceneApi.initScene();
 
     const app = new Vue({
         el: '#app',

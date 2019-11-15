@@ -32,6 +32,16 @@
 
     <!-- Window list -->
     <application-window v-if="win.isVisible" :window-data="win" v-for="win in windowList" :key="win.sessionKey"></application-window>
+
+    <!-- Lines -->
+    <svg width="100%" height="100%" style="position: absolute; left: 0; top: 0; pointer-events: none;">
+        <path :d="line"
+              pointer-events="visible"
+              stroke-linecap="round"
+              stroke="#9dff00"
+              stroke-width="4"
+              fill="transparent" v-for="line in sceneLines"></path>
+    </svg>
 </div>
 </body>
 </html>

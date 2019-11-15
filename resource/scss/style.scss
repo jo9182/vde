@@ -242,5 +242,22 @@ html, body {
                 }
             }
         }
+
+        .port-in, .port-out {
+            cursor: pointer;
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: -24px;
+            bottom: 0;
+            border-radius: 9px;
+            border: 2px solid #b1d936;
+        }
+
+        .port-out {
+            border: 2px solid #fa4e0c;
+            left: unset;
+            right: -24px;
+        }
     }
 }

@@ -19,8 +19,12 @@ let DataStorage = {
         password: ''
     },
     dragData: {
-        fromWindow: null,
-        data: null
+        fromWindowSessionKey: null,
+        data: null,
+        port: null
+    },
+    event: {
+        isDrag: false
     },
     userApi: UserApi,
     appApi: AppApi,
