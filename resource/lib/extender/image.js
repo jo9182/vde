@@ -16,11 +16,13 @@ module.exports = {
             let image = new Image();
             image.src = url;
             image.onload = () => {
-                ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, width, height);
+                let size = image.width > image.height ?image.height :image.width;
+
+                ctx.drawImage(image, 0, 0, size, size, 0, 0, width, height);
                 canvas.toBlob((blob) => {
                     document.querySelector('body').removeChild(canvas);
                     resolve(blob);
-                }, 'image/jpeg')
+                }, 'image/jpeg');
             }
         }));
     }
