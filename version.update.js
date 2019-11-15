@@ -17,4 +17,5 @@ else if (commitText.match(/^major/i)) outVersion = Semver.inc(outVersion, 'major
 console.log(outVersion);
 
 // Save version back
+packageJSON.version = outVersion;
 Fs.writeFileSync('package.json', JSON.stringify(packageJSON, null, 4));
