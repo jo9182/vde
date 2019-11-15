@@ -77,6 +77,6 @@ module.exports = SMP.wrap({
             {from: './resource/lib/vue.js', to: '../public/lib/vue.js'},
             {from: './resource/lib/vue.prod.js', to: '../public/lib/vue.prod.js'},
         ]),
-        new UnusedFilesWebpackPlugin()
+        // new UnusedFilesWebpackPlugin()
     ]
 });
