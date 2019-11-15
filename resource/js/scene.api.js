@@ -111,7 +111,8 @@ let SceneApi = {
             winOutput: _winOut,
             winInput: _winInput,
             channelOut,
-            channelIn
+            channelIn,
+            channelUsage: 0
         });
 
         this.calculateConnectionLines();
@@ -128,6 +129,8 @@ let SceneApi = {
         DataStorage.sceneLines.length = 0;
         for (let i = 0; i < DataStorage.connectionList.length; i++) {
             let connection = DataStorage.connectionList[i];
+            if (!connection.isVisible) continue;
+
             let fromPort = document.querySelector(
                 `#port-${connection.winOutput.sessionKey}-${connection.channelOut}`
             ).getBoundingClientRect();
@@ -135,12 +138,27 @@ let SceneApi = {
                 `#port-${connection.winInput.sessionKey}-${connection.channelIn}`
             ).getBoundingClientRect();
 
-            DataStorage.sceneLines.push(`
-                M${fromPort.x + 9} ${fromPort.y + 9}
-                C ${(fromPort.x + 9) * 1.25} ${fromPort.y + 9},
-                ${(toPort.x + 9) / 1.25} ${toPort.y + 9},
-                ${toPort.x + 9} ${toPort.y + 9}
-            `.trim());
+            // Visual line effect
+            let sin =  Math.sin(new Date().getTime() / 32) * 0.1;
+            if (connection.channelUsage < 1)
+                sin *= connection.channelUsage;
+            let lineMultiplierX = 1.1 + sin;
+            let lineWidthMultiplier = 4 + connection.channelUsage / 3;
+
+            // Scene lines
+            DataStorage.sceneLines.push([
+                `
+                    M${fromPort.x + 9} ${fromPort.y + 9}
+                    C ${(fromPort.x + 9) * lineMultiplierX} ${(fromPort.y + 9)},
+                    ${(toPort.x + 9) / lineMultiplierX} ${(toPort.y + 9)},
+                    ${toPort.x + 9} ${toPort.y + 9}
+                `.trim(),
+                connection.channelUsage > 0.1 ?'#ffffff' :'#9dff00',
+                lineWidthMultiplier
+            ]);
+
+            // Visual channel usage
+            connection.channelUsage += (0 - connection.channelUsage) / 24;
         }
     },
 
@@ -190,6 +208,8 @@ let SceneApi = {
                                 channelId: DataStorage.connectionList[i].channelIn,
                                 data: queryData
                             }, '*');
+
+                            DataStorage.connectionList[i].channelUsage += 0.4;
                         }
                     }
                 }
@@ -224,8 +244,8 @@ let SceneApi = {
 
     initScene() {
         setInterval(() => {
-            if (DataStorage.event.isDrag)
-                this.calculateConnectionLines();
+            // if (DataStorage.event.isDrag)
+            this.calculateConnectionLines();
         }, 16);
     }
 };

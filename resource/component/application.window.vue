@@ -174,7 +174,8 @@
                         if (channelInfo[j][2] === "<-") {
                             SceneApi.connectWindows(
                                 this.windowData.sessionKey, app.sessionKey,
-                                channelInfo[j][1], channelInfo[j][0]
+                                channelInfo[j][1], channelInfo[j][0],
+                                false
                             );
                         }
 
@@ -182,7 +183,8 @@
                         if (channelInfo[j][2] === "->") {
                             SceneApi.connectWindows(
                                 app.sessionKey, this.windowData.sessionKey,
-                                channelInfo[j][0], channelInfo[j][1]
+                                channelInfo[j][0], channelInfo[j][1],
+                                false
                             );
                         }
                     }
