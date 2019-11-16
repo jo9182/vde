@@ -43,24 +43,6 @@ window.onload = async () => {
             DataStorage.screen.iconWidth = '25%';
             DataStorage.screen.iconHeight = '120px';
         }
-
-        /*if (DataStorage.screen.width <= 375) {
-            DataStorage.screen.iconWidth = '25%';
-            DataStorage.screen.iconHeight = '120px';
-        }
-        if (DataStorage.screen.width >= 768) {
-            DataStorage.screen.iconWidth = '16.666%';
-            DataStorage.screen.iconHeight = '180px';
-        }
-        if (DataStorage.screen.width >= 1440) {
-            DataStorage.screen.iconWidth = '10%';
-        }
-        if (DataStorage.screen.height < 480) {
-            DataStorage.screen.iconHeight = '120px';
-        }
-        if (DataStorage.screen.height < 640) {
-            DataStorage.screen.iconHeight = '140px';
-        }*/
     };
     window.onresize = onScreenResize;
     onScreenResize();
