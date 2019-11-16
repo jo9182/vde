@@ -41,6 +41,8 @@ let DataStorage = {
         iconWidth: '20%',
         iconHeight: '200px'
     },
+
+    version: ENV.VERSION
 };
 
 export default DataStorage;

@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const Fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -60,8 +61,9 @@ module.exports = SMP.wrap({
     },
     plugins: [
         new Webpack.DefinePlugin({
-            PRODUCTION: JSON.stringify(true),
-            VERSION: JSON.stringify('5fa3b9')
+            ENV: {
+                VERSION: JSON.stringify(JSON.parse(Fs.readFileSync('package.json', 'utf-8'))['version'])
+            }
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
