@@ -176,6 +176,7 @@
                         startGrabY = e.pageY;
                         startGrabPositionY = area.y;
                         startGrabPositionX = area.x;
+                        if (parent.startDrag) parent.startDrag();
                     });
                 }
             }
