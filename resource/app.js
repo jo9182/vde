@@ -26,7 +26,25 @@ window.onload = async () => {
         DataStorage.screen.iconWidth = '20%';
         DataStorage.screen.iconHeight = '200px';
 
-        if (DataStorage.screen.width <= 375) {
+        // Mobile L
+        if (DataStorage.screen.width <= 768) {
+            DataStorage.screen.iconWidth = '20%';
+            DataStorage.screen.iconHeight = '140px';
+        }
+
+        // Mobile L
+        if (DataStorage.screen.width <= 425) {
+            DataStorage.screen.iconWidth = '25%';
+            DataStorage.screen.iconHeight = '140px';
+        }
+
+        // Mobile Small
+        if (DataStorage.screen.width <= 320) {
+            DataStorage.screen.iconWidth = '25%';
+            DataStorage.screen.iconHeight = '120px';
+        }
+
+        /*if (DataStorage.screen.width <= 375) {
             DataStorage.screen.iconWidth = '25%';
             DataStorage.screen.iconHeight = '120px';
         }
@@ -37,6 +55,12 @@ window.onload = async () => {
         if (DataStorage.screen.width >= 1440) {
             DataStorage.screen.iconWidth = '10%';
         }
+        if (DataStorage.screen.height < 480) {
+            DataStorage.screen.iconHeight = '120px';
+        }
+        if (DataStorage.screen.height < 640) {
+            DataStorage.screen.iconHeight = '140px';
+        }*/
     };
     window.onresize = onScreenResize;
     onScreenResize();
@@ -52,13 +76,17 @@ window.onload = async () => {
 
     // Init VDE Api
     SceneApi.initVDEApi();
+
+    // Init scene
     SceneApi.initScene();
 
+    // Init app
     const app = new Vue({
         el: '#app',
         data: DataStorage
     });
 
+    // Show app after loading
     setTimeout(() => {
         document.querySelector("#app").style.display = "flex";
     });
