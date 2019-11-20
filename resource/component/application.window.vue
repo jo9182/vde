@@ -1,6 +1,6 @@
 <template>
     <draggable :source="windowData" style="display: flex; flex-direction: column;"
-               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :disabled="isMobile">
+               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :resize="onResize" :disabled="isMobile">
         <div class="window">
             <!-- Header -->
             <div @mousedown="focusWindow" @click="focusWindow" class="caption" data-draggable="true">
@@ -282,6 +282,12 @@
                     DataStorage.dragData.port,
                     port
                 );
+            },
+            onResize() {
+                this.sendIFrameEvent('onResize', {
+                    width: this.$refs.module[0].getBoundingClientRect().width,
+                    height: this.$refs.module[0].getBoundingClientRect().height,
+                });
             }
         },
         data() {

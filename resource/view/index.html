@@ -22,7 +22,7 @@
     </div>
 
     <!-- Application icon list -->
-    <div class="icon-list">
+    <div v-if="user" class="icon-list">
         <application-icon v-if="user"
                           :app-data="app"
                           v-for="app in applicationList"

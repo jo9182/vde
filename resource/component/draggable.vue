@@ -18,6 +18,7 @@
             resizable: Boolean,
             startDrag: Function,
             stopDrag: Function,
+            resize: Function,
             disabled: Boolean
         },
         computed: {
@@ -124,6 +125,9 @@
                         area.height = startGrabHeight - (startGrabY - pageY);
                         area.x = startGrabPositionX - (area.width - startGrabWidth);
                     }
+
+                    if (parent.resize)
+                        parent.resize();
 
                     return;
                 }
