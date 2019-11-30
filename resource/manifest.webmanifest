@@ -2,7 +2,7 @@
   "name": "VDE",
   "short_name": "VDE",
   "start_url": ".",
-  "display": "standalone",
+  "display": "fullscreen",
   "background_color": "#06123c",
   "description": "Virtual Desktop Environment"
 }
