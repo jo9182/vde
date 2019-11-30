@@ -1,6 +1,6 @@
 <template>
     <draggable :source="windowData" style="display: flex; flex-direction: column;"
-               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :resize="onResize" :disabled="isMobile">
+               :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :resize="onResize" :disabled="storage.device.isMobile">
         <div class="window">
             <!-- Header -->
             <div @mousedown="focusWindow" @click="focusWindow" class="caption" data-draggable="true">
@@ -101,10 +101,10 @@
             </div>
 
             <!-- Ports -->
-            <div @mouseup="dropPort(port)" class="port-in"
+            <div v-show="!storage.device.isMobile" @mouseup="dropPort(port)" class="port-in"
                  :id="'port-' + windowData.sessionKey + '-' + port"
                  v-for="port in windowData.ports.input"></div>
-            <div @mousedown="dragPort(port)" class="port-out"
+            <div v-show="!storage.device.isMobile" @mousedown="dragPort(port)" class="port-out"
                  :id="'port-' + windowData.sessionKey + '-' + port"
                  v-for="port in windowData.ports.output"></div>
         </div>
@@ -122,9 +122,7 @@
             windowData: Object
         },
         computed: {
-            isMobile() {
-                return DataStorage.device.isMobile;
-            }
+
         },
         mounted() {
             // Register session iFrame window
@@ -292,6 +290,8 @@
         },
         data() {
             return {
+                storage: DataStorage,
+
                 splitMode: false,
                 isDrag: false,
                 selectedModule: 0

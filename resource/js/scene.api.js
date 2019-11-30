@@ -120,9 +120,9 @@ let SceneApi = {
 
     topWindow(sessionKey) {
         for (let i = 0; i < DataStorage.windowList.length; i++)
-            DataStorage.windowList[i].zIndex = 1;
+            DataStorage.windowList[i].zIndex = 2;
         let win = this.findWindowBy(sessionKey);
-        if (win) win.zIndex = 2;
+        if (win) win.zIndex = 3;
     },
 
     calculateConnectionLines() {

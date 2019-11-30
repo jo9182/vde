@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=0, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>VDE</title>
     <link rel="stylesheet" href="/ui.css">
@@ -12,11 +12,13 @@
 </head>
 <body>
 <div id="app" style="display: none;">
+    <div class="version">{{ version }}</div>
+
     <!-- Auth form -->
     <div v-if="!user" class="auth-form">
         <form>
-            <input type="text" v-model="input.login">
-            <input type="password" v-model="input.password" autocomplete="">
+            <input type="text" placeholder="Login" v-model="input.login">
+            <input type="password" placeholder="Password" v-model="input.password" autocomplete="">
         </form>
         <button class="base" @click="userApi.auth(input.login, input.password)">Auth</button>
     </div>
@@ -42,8 +44,6 @@
               fill="transparent" v-for="line in sceneLines"
               :style="{stroke: line[1], transition: 'stroke 0.2s'}"></path>
     </svg>
-
-    <div class="version">{{ version }}</div>
 </div>
 </body>
 </html>

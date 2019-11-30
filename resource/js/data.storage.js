@@ -31,7 +31,7 @@ let DataStorage = {
     sceneApi: SceneApi,
 
     device: {
-        isMobile: typeof window.orientation !== 'undefined'
+        get isMobile() { return typeof window.orientation !== 'undefined'; }
     },
 
     screen: {

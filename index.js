@@ -22,6 +22,10 @@ ServerRestAPI.run(process.env.SERVER_PORT);
 VDERestAPI.run(process.env.VDE_PORT);
 
 // Start rest server
+RestApp.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    next()
+});
 RestApp.listen(process.env.GIT_PORT, () => { console.log(`Git server starts at :${process.env.GIT_PORT}`) });
 RestApp.post(`/git-push/${process.env.GIT_WEB_HOOK_PATH}`, (req, res) => {
     res.send('OK');
