@@ -78,7 +78,7 @@ module.exports = SMP.wrap({
             {from: './resource/lib/vde.api.js', to: '../public/lib/vde.api.js'},
             {from: './resource/lib/vue.js', to: '../public/lib/vue.js'},
             {from: './resource/lib/vue.prod.js', to: '../public/lib/vue.prod.js'},
-        ]),
-        // new UnusedFilesWebpackPlugin()
+            {from: './resource/manifest.webmanifest', to: '../public/manifest.webmanifest'},
+        ])
     ]
 });
