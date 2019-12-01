@@ -35,3 +35,30 @@
         opacity: 1;
     }
 }
+
+@keyframes inputErrorShake {
+    from {
+        position: relative;
+        left: -8px;
+    }
+
+    25% {
+        position: relative;
+        left: 6px;
+    }
+
+    50% {
+        position: relative;
+        left: -4px;
+    }
+
+    75% {
+        position: relative;
+        left: 2px;
+    }
+
+    to {
+        position: relative;
+        left: 0;
+    }
+}

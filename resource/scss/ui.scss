@@ -44,6 +44,7 @@ p {
 }
 
 @import "./button.scss";
+@import "./animation.scss";
 
 input, textarea, select {
     outline: none;
@@ -61,6 +62,7 @@ input, textarea, select {
     }
 }
 
+// Error input
 input.error, textarea.error {
     border: 1px solid #ff9a97;
     background: #ffe5e5;
@@ -71,6 +73,12 @@ input.error, textarea.error {
         background: #ffedef;
         color: #ed7977;
     }
+}
+
+// Error animation
+input.error, button.error {
+    animation-name: inputErrorShake;
+    animation-duration: 0.1s;
 }
 
 .button-group {
