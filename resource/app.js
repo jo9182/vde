@@ -5,6 +5,11 @@ import Vue from "vue";
 import DataStorage from "../resource/js/data.storage.js";
 import UserApi from "./js/user.api";
 import SceneApi from "./js/scene.api";
+import Axios from "axios";
+
+// Default axios settings
+Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+Axios.defaults.headers.common['access_token'] = localStorage.getItem('accessToken');
 
 // Load components
 let components = ['draggable', 'application.icon', 'application.window'];

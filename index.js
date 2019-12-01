@@ -5,6 +5,9 @@ const Express = require('express');
 const RestApp = Express();
 require('dotenv').config();
 
+// Don't know but make send email works
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 // Create default folders
 Fs.mkdirSync('./public', { recursive: true });
 Fs.mkdirSync('./storage/user', { recursive: true });

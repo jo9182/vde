@@ -1,5 +1,6 @@
 const Fs = require('fs');
 const MD5 = require('md5');
+const EMail = require('nodemailer');
 
 let ServerUserApi = {
     users: [],
@@ -31,6 +32,34 @@ let ServerUserApi = {
         for (let i = 0; i < this.users.length; i++)
             if (this.users[i][by] === query) return this.users[i];
         return null;
+    },
+
+    // Send email to user account
+    async sendEmail(user, to, subject, message) {
+        if (!user.mail || !user.email) return;
+
+        let transporter = EMail.createTransport({
+            host: user.mail.host,
+            port: user.mail.port,
+            secure: user.mail.secure,
+            auth: {
+                user: user.mail.user,
+                pass: user.mail.password
+            }
+        });
+
+        try {
+            return await transporter.sendMail({
+                from: user.mail.user,
+                to: to || user.email,
+                subject: subject,
+                text: message
+            });
+        }
+        catch (e) {
+            console.error(e);
+            return null;
+        }
     }
 };
 

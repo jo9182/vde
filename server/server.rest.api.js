@@ -91,6 +91,17 @@ let RestAppMethodList = {
             }
         },
 
+        // Send email to user
+        '^/api/user/email': async (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
+            else {
+                let status = await ServerUserApi.sendEmail(user, req.body.to, req.body.subject, req.body.message);
+                if (status) res.send("OK");
+                else return error(res);
+            }
+        },
+
         // Sign app session
         '^/api/app/session': (req, res) => {
             let user = ServerUserApi.findBy(req.headers['access_token']);

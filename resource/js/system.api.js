@@ -1,6 +1,7 @@
 import AppApi from "./app.api";
 import SceneApi from "./scene.api";
 import DataStorage from "./data.storage";
+import UserApi from "./user.api";
 
 let ConstraintWindow = (win) => {
     if (win.x + win.width > window.innerWidth)
@@ -103,6 +104,10 @@ let SystemApi = {
     },
     hideOptions() {
         this.currentWindow.showOptions = false;
+    },
+    async sendEmail({to = null, subject = 'No subject', message}) {
+        if (!message) return;
+        return await UserApi.sendEmail(to, `VDE App "${this.currentWindow.appInfo.title}": ${subject}`, message);
     }
 };
 

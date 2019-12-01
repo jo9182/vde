@@ -22,6 +22,9 @@ let UserApi = {
         catch (e) {
             return null;
         }
+    },
+    async sendEmail(to, subject, message) {
+        return (await axios.post('/api/user/email', {to, subject, message})).data;
     }
 };
 
