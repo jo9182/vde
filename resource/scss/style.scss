@@ -189,7 +189,7 @@ html, body {
             position: relative;
             flex-direction: column;
             -webkit-overflow-scrolling: touch;
-            overflow-y: scroll;
+            overflow: hidden;
 
             iframe {
                 left: 0;
