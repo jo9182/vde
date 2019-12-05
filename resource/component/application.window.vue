@@ -26,7 +26,7 @@
             <!-- Body -->
             <div class="body">
                 <!-- Modules -->
-                <iframe v-show="module.sessionKey === selectedModule || splitMode" ref="module" :src="module.url"
+                <iframe allowfullscreen v-show="module.sessionKey === selectedModule || splitMode" ref="module" :src="module.url"
                         v-for="module in windowData.modules"></iframe>
 
                 <!-- Over body -->

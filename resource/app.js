@@ -52,6 +52,12 @@ window.onload = async () => {
     window.onresize = onScreenResize;
     onScreenResize();
 
+    // Prevent zoom on iOS
+    document.addEventListener('touchmove', function (event) {
+        event = event.originalEvent || event;
+        event.preventDefault();
+    }, {passive: false});
+
     // Load user data
     let userData = await UserApi.getUser();
     if (userData) {

@@ -24,7 +24,7 @@
         },
         methods: {
             tap(appName) {
-                if (DataStorage.screen.isMobile)
+                if (DataStorage.device.isMobile)
                     SceneApi.runApplication(appName);
             },
             click(appName) {
