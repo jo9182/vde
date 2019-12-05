@@ -82,6 +82,11 @@ module.exports = SMP.wrap({
             inject: false,
             template: 'resource/view/index.html'
         }),
+        new HtmlWebpackPlugin({
+            filename: 'error.html',
+            inject: false,
+            template: 'resource/view/error.html'
+        }),
         new MiniCssExtractPlugin({
             filename: '[name].css'
         }),

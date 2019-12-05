@@ -36,12 +36,17 @@ let SceneApi = {
         ];
 
         // Run new app
+        let appUrl = '//' + sessionKey + '.'
+            + window.location.hostname + ':'
+            + (window.location.port * 1 + 1) + '/index.html';
+        // Ip address
+        if (window.location.hostname.split('.').length === 4)
+            appUrl = `//${window.location.hostname}:${window.location.port}/error.html`;
+
         let windowData = {
             appInfo: app,
             sessionKey: sessionKey,
-            url: '//' + sessionKey + '.'
-                + window.location.hostname + ':'
-                + (window.location.port * 1 + 1) + '/index.html',
+            url: appUrl,
             x: Math.random() * (window.innerWidth - 480),
             y: Math.random() * (window.innerHeight - 240),
             width: 480,
