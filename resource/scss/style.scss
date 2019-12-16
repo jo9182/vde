@@ -20,11 +20,12 @@ html, body {
 }
 
 #app {
-    background: url("../image/bg5.jpg");
+    background: url("../image/bg.purple.jpg");
     background-size: cover;
     animation-duration: 0.8s;
     animation-name: backgroundFadeIn;
     overflow: hidden;
+    padding: 0;
 }
 
 .__ {
@@ -36,6 +37,42 @@ html, body {
 #app {
     display: flex;
     height: 100%;
+
+    .status-bar {
+        display: flex;
+        background: linear-gradient(to bottom, #dedede 0%,#a9a9a9 100%);
+        border-bottom: 1px solid #8a8a8a;
+        border-top: 1px solid #f7f7f7;
+        font-family: Roboto, sans-serif;
+
+        font-size: 12px;
+        color: #2d2d2d;
+        text-shadow: 1px 1px #cecece;
+        padding: 3px;
+        box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.51);
+
+        .button {
+            cursor: pointer;
+            font-size: 16px;
+            margin-left: 5px;
+            margin-right: 5px;
+        }
+
+        .profile {
+            display: flex;
+
+            img {
+                width: 18px;
+                height: 18px;
+                display: block;
+            }
+
+            .name {
+                align-self: center;
+                margin-left: 5px;
+            }
+        }
+    }
 
     .icon-list {
         display: flex;

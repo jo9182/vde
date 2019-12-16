@@ -25,6 +25,10 @@ let UserApi = {
     },
     async sendEmail(to, subject, message) {
         return (await axios.post('/api/user/email', {to, subject, message})).data;
+    },
+    async logout() {
+        localStorage.removeItem('accessToken');
+        window.location.reload();
     }
 };
 

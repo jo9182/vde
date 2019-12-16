@@ -12,7 +12,7 @@ Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Axios.defaults.headers.common['access_token'] = localStorage.getItem('accessToken');
 
 // Load components
-let components = ['draggable', 'application.icon', 'application.window'];
+let components = ['draggable', 'application.icon', 'application.window', 'status.bar'];
 for (let i = 0; i < components.length; i++)
     Vue.component(components[i].replace(/\./g, '-'),
         require('../resource/component/' + components[i] + '.vue').default);

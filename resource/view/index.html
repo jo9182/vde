@@ -24,6 +24,9 @@
         <button class="base" @click="userApi.auth(input.login, input.password)">Auth</button>
     </div>
 
+    <!-- Status bar -->
+    <status-bar v-if="user"></status-bar>
+
     <!-- Application icon list -->
     <div v-if="user" class="icon-list">
         <application-icon v-if="user"

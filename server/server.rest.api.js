@@ -55,7 +55,10 @@ let RestAppMethodList = {
         '^/api/user': (req, res) => {
             let user = ServerUserApi.findBy(req.headers['access_token']);
             if (!user) return error(res);
-            else res.send(JSON.stringify(user));
+            else res.send(JSON.stringify(user, (key, value) => {
+                if (key === "password") return undefined;
+                else return value;
+            }));
         },
     },
     post: {
