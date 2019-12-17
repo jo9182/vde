@@ -23,7 +23,8 @@ let SystemApi = {
         this.currentWindow.height = size[1] + 28 + 2 + 25;
 
         ConstraintWindow(this.currentWindow);*/
-        this.currentWindow.ref.resize(size[0], size[1] + 28 + 2 + 25);
+        if (this.currentWindow.ref)
+            this.currentWindow.ref.resize(size[0], size[1] + 28 + 2 + 25);
     },
     async getInstalledApplicationList() {
         return await AppApi.list();
