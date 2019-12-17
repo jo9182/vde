@@ -37,7 +37,8 @@
                         top: this.sourceArea.y + 'px',
                         width: this.sourceArea.width + 'px',
                         height: this.sourceArea.height + 'px',
-                        zIndex: this.sourceArea.zIndex
+                        zIndex: this.sourceArea.zIndex,
+                        transform: this.transform
                     }
                 }
                 if (this.width) {
@@ -45,7 +46,8 @@
                         left: this.x + 'px',
                         top: this.y + 'px',
                         width: this.width + 'px',
-                        height: this.height + 'px'
+                        height: this.height + 'px',
+                        transform: this.transform
                     }
                 }
                 return {
@@ -58,6 +60,24 @@
 
         },
         mounted() {
+            let skewXTemp = 0;
+            let skewYTemp = 0;
+            let tempArea = { x: 0, y: 0 };
+
+            let animate = () => {
+                if (Math.abs(skewXTemp) < 0.1) skewXTemp = 0;
+                else skewXTemp += (0 - skewXTemp) / 8;
+
+                if (Math.abs(skewYTemp) < 0.1) skewYTemp = 0;
+                else skewYTemp += (0 - skewYTemp) / 8;
+
+                this.sourceArea.x = tempArea.x;
+                this.sourceArea.y = tempArea.y;
+                this.transform = `skewX(${skewXTemp}deg) rotateX(${skewYTemp}deg)`;
+                window.requestAnimationFrame(animate);
+            };
+            window.requestAnimationFrame(animate);
+
             let parent = this;
             let area = this;
 
@@ -88,9 +108,9 @@
                 let pageX = touches ?touches[0].pageX :e.pageX;
                 let pageY = touches ?touches[0].pageY :e.pageY;
 
-                startX = area.x;
+                startX = tempArea.x;
                 startMouseX = pageX;
-                startY = area.y;
+                startY = tempArea.y;
                 startMouseY = pageY;
                 isDrag = true;
 
@@ -108,7 +128,7 @@
                     if (grabType === 'grab-rt') {
                         area.width = startGrabWidth + (pageX - startGrabX);
                         area.height = startGrabHeight + (startGrabY - pageY);
-                        area.y = startGrabPositionY - (area.height - startGrabHeight);
+                        tempArea.y = startGrabPositionY - (area.height - startGrabHeight);
                     }
                     if (grabType === 'grab-rb') {
                         area.width = startGrabWidth + (pageX - startGrabX);
@@ -117,13 +137,13 @@
                     if (grabType === 'grab-lt') {
                         area.width = startGrabWidth - (pageX - startGrabX);
                         area.height = startGrabHeight + (startGrabY - pageY);
-                        area.y = startGrabPositionY - (area.height - startGrabHeight);
-                        area.x = startGrabPositionX - (area.width - startGrabWidth);
+                        tempArea.y = startGrabPositionY - (area.height - startGrabHeight);
+                        tempArea.x = startGrabPositionX - (area.width - startGrabWidth);
                     }
                     if (grabType === 'grab-lb') {
                         area.width = startGrabWidth - (pageX - startGrabX);
                         area.height = startGrabHeight - (startGrabY - pageY);
-                        area.x = startGrabPositionX - (area.width - startGrabWidth);
+                        tempArea.x = startGrabPositionX - (area.width - startGrabWidth);
                     }
 
                     if (parent.resize)
@@ -137,12 +157,14 @@
                     let finalX = startX + offsetX;
                     if (finalX < 0) finalX = 0;
                     if (finalX > window.innerWidth - area.width) finalX = window.innerWidth - area.width;
-                    area.x = finalX;
+                    skewXTemp += -(finalX - tempArea.x) / 10;
+                    tempArea.x = finalX;
                     let offsetY = pageY - startMouseY;
                     let finalY = startY + offsetY;
                     if (finalY < 0) finalY = 0;
                     if (finalY > window.innerHeight - area.height) finalY = window.innerHeight - area.height;
-                    area.y = finalY;
+                    skewYTemp += -(finalY - tempArea.y) / 4;
+                    tempArea.y = finalY;
                 }
             };
             let mouseup = function (e) {
@@ -167,27 +189,32 @@
 
             // Resize logic
             if (this.resizable) {
+                let onGrab = function (e) {
+                    grabType = this.getAttribute('class').replace('grab ', '');
+
+                    isGrab = true;
+                    isDrag = false;
+                    startGrabWidth = area.width;
+                    startGrabX = e.changedTouches? e.changedTouches[0].pageX :e.pageX;
+                    startGrabHeight = area.height;
+                    startGrabY = e.changedTouches? e.changedTouches[0].pageY :e.pageY;
+                    startGrabPositionY = tempArea.y;
+                    startGrabPositionX = tempArea.x;
+                    if (parent.startDrag) parent.startDrag();
+                };
+
                 let ss = Array.from(this.$refs.dragArea.querySelectorAll('.grab'));
                 for (let i = 0; i < ss.length; i++) {
-                    ss[i].addEventListener('mousedown', function (e) {
-                        grabType = this.getAttribute('class').replace('grab ', '');
-
-                        isGrab = true;
-                        isDrag = false;
-                        startGrabWidth = area.width;
-                        startGrabX = e.pageX;
-                        startGrabHeight = area.height;
-                        startGrabY = e.pageY;
-                        startGrabPositionY = area.y;
-                        startGrabPositionX = area.x;
-                        if (parent.startDrag) parent.startDrag();
-                    });
+                    ss[i].addEventListener('mousedown', onGrab);
+                    ss[i].addEventListener('touchstart', onGrab);
                 }
             }
 
             // Set source values
             if (this.source) {
                 this.sourceArea = this.source;
+                tempArea.x = this.sourceArea.x;
+                tempArea.y = this.sourceArea.y;
             } else {
                 if (this.start) {
                     this.width = this.start.width || this.$refs.dragArea.getBoundingClientRect().width;
@@ -209,7 +236,11 @@
                 x: 0,
                 y: 0,
                 width: 0,
-                height: 0
+                height: 0,
+                skewX: 0,
+                transform: '',
+
+                timerId: 0
             }
         },
     }
@@ -221,9 +252,9 @@
 
         .grab {
             position: absolute;
-            width: 8px;
-            height: 8px;
-            border-radius: 4px;
+            width: 12px;
+            height: 12px;
+            border-radius: 6px;
             background: #ffffff;
             user-select: none;
             opacity: 0;
@@ -235,26 +266,26 @@
         }
 
         .grab-lt {
-            top: -8px;
-            left: -8px;
+            top: -12px;
+            left: -12px;
             cursor: se-resize;
         }
 
         .grab-rt {
-            top: -8px;
-            right: -8px;
+            top: -12px;
+            right: -12px;
             cursor: sw-resize;
         }
 
         .grab-lb {
-            bottom: -8px;
-            left: -8px;
+            bottom: -12px;
+            left: -12px;
             cursor: ne-resize;
         }
 
         .grab-rb {
-            bottom: -8px;
-            right: -8px;
+            bottom: -12px;
+            right: -12px;
             cursor: nw-resize;
         }
     }

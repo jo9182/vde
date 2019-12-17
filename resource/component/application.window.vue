@@ -3,16 +3,19 @@
                :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :resize="onResize" :disabled="storage.device.isMobile">
         <div class="window">
             <!-- Header -->
-            <div @mousedown="focusWindow" @click="focusWindow" class="caption" data-draggable="true">
+            <div @touchstart="focusWindow" @mousedown="focusWindow" @click="focusWindow" class="caption" data-draggable="true">
                 <div class="title">{{ windowData.appInfo.title }}</div>
                 <div class="icon" @mousedown.stop="" @click="reload">
-                    <img src="/image/refresh.svg" alt="Close" draggable="false">
+                    <!--<img src="/image/refresh.svg" alt="Close" draggable="false">-->
+                    <i class="fas fa-redo-alt"></i>
                 </div>
-                <div class="icon" @mousedown.stop="" @click="settings">
-                    <img src="/image/settings-icon.svg" alt="Settings" draggable="false">
+                <div class="icon options" @mousedown.stop="" @click="settings">
+                    <!--<img src="/image/settings-icon.svg" alt="Settings" draggable="false">-->
+                    <i class="fas fa-cog"></i>
                 </div>
-                <div class="icon" @mousedown.stop="" @click="close">
-                    <img src="/image/close.svg" alt="Close" draggable="false">
+                <div class="icon close" @mousedown.stop="" @click="close">
+                    <!--<img src="/image/close.svg" alt="Close" draggable="false">-->
+                    <i class="fas fa-times"></i>
                 </div>
             </div>
 
@@ -90,12 +93,12 @@
             </div>
 
             <!-- Modules -->
-            <div class="modules">
+            <div v-show="windowData.modules.length > 1" class="modules">
                 <div @click="selectModule(module.sessionKey)" v-for="module in windowData.modules"
                      :class="module.sessionKey === selectedModule ?'selected-module' :''">
                     {{ module.appInfo.title }}
                 </div>
-                <div @click="splitMode = !splitMode" style="margin-left: auto;" :style="splitMode ?{background: 'rgb(28, 182, 25)'} :{}">
+                <div @click="splitMode = !splitMode" style="margin-left: auto;" :class="splitMode ?'selected-module' :''">
                     |
                 </div>
             </div>

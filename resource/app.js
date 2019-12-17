@@ -6,6 +6,7 @@ import DataStorage from "../resource/js/data.storage.js";
 import UserApi from "./js/user.api";
 import SceneApi from "./js/scene.api";
 import Axios from "axios";
+import Environment from "./js/environment";
 
 // Default axios settings
 Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -22,42 +23,6 @@ window.onload = async () => {
     // Set global link
     window.DataStorage = DataStorage;
 
-    // Set resolution change event
-    let onScreenResize = () => {
-        DataStorage.screen.width = window.innerWidth;
-        DataStorage.screen.height = window.innerHeight;
-        DataStorage.screen.isMobile = DataStorage.screen.width <= 425;
-
-        DataStorage.screen.iconWidth = '20%';
-        DataStorage.screen.iconHeight = '200px';
-
-        // Mobile L
-        if (DataStorage.screen.width <= 768) {
-            DataStorage.screen.iconWidth = '20%';
-            DataStorage.screen.iconHeight = '140px';
-        }
-
-        // Mobile L
-        if (DataStorage.screen.width <= 425) {
-            DataStorage.screen.iconWidth = '25%';
-            DataStorage.screen.iconHeight = '140px';
-        }
-
-        // Mobile Small
-        if (DataStorage.screen.width <= 320) {
-            DataStorage.screen.iconWidth = '25%';
-            DataStorage.screen.iconHeight = '120px';
-        }
-    };
-    window.onresize = onScreenResize;
-    onScreenResize();
-
-    // Prevent zoom on iOS
-    document.addEventListener('touchmove', function (event) {
-        event = event.originalEvent || event;
-        event.preventDefault();
-    }, {passive: false});
-
     // Load user data
     let userData = await UserApi.getUser();
     if (userData) {
@@ -72,6 +37,9 @@ window.onload = async () => {
 
     // Init scene
     SceneApi.initScene();
+
+    // Init environment
+    Environment.init();
 
     // Init app
     const app = new Vue({

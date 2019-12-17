@@ -18,10 +18,10 @@
     <!-- Auth form -->
     <div v-if="!user" class="auth-form">
         <form>
-            <input type="text" placeholder="Login" v-model="input.login">
-            <input type="password" placeholder="Password" v-model="input.password" autocomplete="">
+            <input type="text" placeholder="Login" v-model="authForm.login">
+            <input type="password" placeholder="Password" v-model="authForm.password" autocomplete="">
         </form>
-        <button class="base" @click="userApi.auth(input.login, input.password)">Auth</button>
+        <button class="base" @click="userApi.auth(authForm.login, authForm.password)">Auth</button>
     </div>
 
     <!-- Status bar -->

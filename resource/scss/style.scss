@@ -10,7 +10,7 @@ html, body, #app {
 html, body {
     height: 100%;
     color: #fefefe;
-    font-family: Consolas, sans-serif;
+    font-family: Helvetica, sans-serif;
     font-size: 14px;
     padding: 0;
     margin: 0;
@@ -43,7 +43,6 @@ html, body {
         background: linear-gradient(to bottom, #dedede 0%,#a9a9a9 100%);
         border-bottom: 1px solid #8a8a8a;
         border-top: 1px solid #f7f7f7;
-        font-family: Roboto, sans-serif;
 
         font-size: 12px;
         color: #2d2d2d;
@@ -93,7 +92,7 @@ html, body {
         align-items: center;
         justify-content: center;
 
-        img {
+        .icon {
             cursor: pointer;
             display: block;
             width: 100%;
@@ -108,7 +107,7 @@ html, body {
             }
         }
 
-        div {
+        .title {
             text-align: center;
             margin-top: 7px;
             font-size: 12px;
@@ -143,7 +142,7 @@ html, body {
     }
 
     .window {
-        background: #7d7d7d;
+        background: transparent;
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -152,17 +151,23 @@ html, body {
         animation-duration: 0.5s;
         animation-name: windowFadeIn;
 
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 0 7px 4px #00000030;
+
         .caption {
-            background: #2a3542;
+            background: #f1f7ff;
             padding: 5px;
             user-select: none;
             display: flex;
-            border-top: 1px solid #3b4957;
-            border-bottom: 1px solid #010a15;
-            color: #94b6d2;
+            // border-top: 1px solid #3b4957;
+            // border-bottom: 1px solid #010a15;
+            color: #444444;
+            font-size: 12px;
 
             .title {
                 flex: 1;
+                align-self: center;
             }
 
             .icon {
@@ -170,6 +175,17 @@ html, body {
                 margin-right: 6px;
                 display: flex;
                 transition: opacity, 0.2s;
+                padding: 3px;
+                background: #51de40;
+                border-radius: 24px;
+                color: #0f8449;
+                font-size: 0.85vw;
+                text-align: center;
+
+                align-items: center;
+                justify-content: center;
+                width: 18px;
+                height: 18px;
 
                 img {
                     width: 14px;
@@ -188,6 +204,16 @@ html, body {
                 }
             }
 
+            .icon.options {
+                background: #eca63e;
+                color: #f3e5a2;
+            }
+
+            .icon.close {
+                background: #ec563e;
+                color: #f5b88c;
+            }
+
             .icon:last-child {
                 margin-right: 0;
             }
@@ -197,12 +223,12 @@ html, body {
             user-select: none;
             padding: 5px;
             display: flex;
-            background: #a3a8c1;
+            background: #f1f7ff;
 
             .tab {
                 cursor: pointer;
                 margin-right: 5px;
-                background: #554690;
+                background: #b9cad4;
                 font-size: 12px;
                 padding: 1px 10px;
                 border-radius: 18px;
@@ -240,23 +266,25 @@ html, body {
         .modules {
             display: flex;
             padding: 3px;
-            background: #313345;
-            border-top: 1px solid #3b4957;
-            border-bottom: 1px solid #202231;
+            background: #cdd7e4;
+            //border-top: 1px solid #3b4957;
+            //border-bottom: 1px solid #202231;
 
             > div {
-                background: #5a5e7c;
+                background: #7f92a2;
                 padding: 2px 5px;
                 margin-right: 5px;
                 font-size: 12px;
                 cursor: pointer;
                 border-radius: 3px;
+                color: #d1def1;
+                opacity: 0.35;
+                transition: opacity, 0.3s;
             }
         }
 
         .selected-module {
-            background: #6b9912 !important;
-            color: #93e769;
+            opacity: 1 !important;
         }
 
         .over-body {
@@ -265,7 +293,7 @@ html, body {
             height: 100%;
         }
 
-        .options, .settings {
+        > .options, .settings {
             background: #f7f8fc;
             color: #363636;
             position: absolute;
