@@ -47,7 +47,7 @@ let SceneApi = {
             appInfo: app,
             sessionKey: sessionKey,
             url: appUrl,
-            x: DataStorage.input.x + Math.random() * 64,
+            x: DataStorage.input.x > window.innerWidth / 2 ?DataStorage.input.x - 400 + Math.random() * 64 :DataStorage.input.x + Math.random() * 64,
             y: DataStorage.input.y + Math.random() * 64,
             width: 480,
             height: 240,
@@ -64,6 +64,7 @@ let SceneApi = {
             settings: settingsPattern,
             isReady: null,
             isVisible: !asModule,
+            ref: null,
             getSetting(key) {
                 for (let i = 0; i < this.settings.length; i++)
                     if (this.settings[i].key === key)

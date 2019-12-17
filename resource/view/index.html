@@ -24,11 +24,13 @@
         <button class="base" @click="userApi.auth(authForm.login, authForm.password)">Auth</button>
     </div>
 
+    <system-settings v-if="showSystemSettings"></system-settings>
+
     <!-- Status bar -->
     <status-bar v-if="user"></status-bar>
 
     <!-- Application icon list -->
-    <div v-if="user" class="icon-list">
+    <div v-if="user" class="icon-list" :style="{ transform: `translateX(${desktop.x}px)` }">
         <application-icon v-if="user"
                           :app-data="app"
                           v-for="app in applicationList"

@@ -31,11 +31,36 @@ let Environment = {
         window.onresize = onScreenResize;
         onScreenResize();
 
-        // Prevent zoom on iOS
+        let isTouchEnd = false;
+        let desktopX = false;
+        let animate = () => {
+            DataStorage.desktop.x += ((DataStorage.desktop.id * window.innerWidth + desktopX) - DataStorage.desktop.x) / 12;
+            window.requestAnimationFrame(animate);
+        };
+        window.requestAnimationFrame(animate);
+
+        let startFromX = 0;
+        document.addEventListener('touchstart', function (event) {
+            startFromX = event.changedTouches[0].screenX;
+            isTouchEnd = false;
+        });
+
         document.addEventListener('touchmove', function (event) {
             event = event.originalEvent || event;
             event.preventDefault();
+
+            if (!DataStorage.event.isDrag) desktopX = event.changedTouches[0].screenX - startFromX;
         }, {passive: false});
+
+        document.addEventListener('touchend', function (event) {
+            if (desktopX > 100) {
+                DataStorage.desktop.id++;
+            }
+            if (desktopX < -100) {
+                DataStorage.desktop.id--;
+            }
+            desktopX = 0;
+        });
 
         // Click
         document.addEventListener('mousedown', function (event) {

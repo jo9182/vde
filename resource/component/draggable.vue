@@ -38,6 +38,7 @@
                         width: this.sourceArea.width + 'px',
                         height: this.sourceArea.height + 'px',
                         zIndex: this.sourceArea.zIndex,
+                        opacity: this.opacity,
                         transform: this.transform
                     }
                 }
@@ -62,7 +63,7 @@
         mounted() {
             let skewXTemp = 0;
             let skewYTemp = 0;
-            let tempArea = { x: 0, y: 0 };
+            let tempArea = this.tempArea;
 
             let animate = () => {
                 if (Math.abs(skewXTemp) < 0.1) skewXTemp = 0;
@@ -71,8 +72,12 @@
                 if (Math.abs(skewYTemp) < 0.1) skewYTemp = 0;
                 else skewYTemp += (0 - skewYTemp) / 8;
 
-                this.sourceArea.x = tempArea.x;
-                this.sourceArea.y = tempArea.y;
+                this.sourceArea.x += (tempArea.x - this.sourceArea.x) / 8;
+                this.sourceArea.y += (tempArea.y - this.sourceArea.y) / 8;
+                this.sourceArea.width += (tempArea.width - this.sourceArea.width) / 8;
+                this.sourceArea.height += (tempArea.height - this.sourceArea.height) / 8;
+
+                this.opacity += (this.tempOpacity - this.opacity) / 8;
                 this.transform = `skewX(${skewXTemp}deg) rotateX(${skewYTemp}deg)`;
                 window.requestAnimationFrame(animate);
             };
@@ -127,23 +132,23 @@
                 if (isGrab && parent.resizable) {
                     if (grabType === 'grab-rt') {
                         area.width = startGrabWidth + (pageX - startGrabX);
-                        area.height = startGrabHeight + (startGrabY - pageY);
-                        tempArea.y = startGrabPositionY - (area.height - startGrabHeight);
+                        tempArea.height = startGrabHeight + (startGrabY - pageY);
+                        tempArea.y = startGrabPositionY - (tempArea.height - startGrabHeight);
                     }
                     if (grabType === 'grab-rb') {
-                        area.width = startGrabWidth + (pageX - startGrabX);
-                        area.height = startGrabHeight - (startGrabY - pageY);
+                        tempArea.width = startGrabWidth + (pageX - startGrabX);
+                        tempArea.height = startGrabHeight - (startGrabY - pageY);
                     }
                     if (grabType === 'grab-lt') {
-                        area.width = startGrabWidth - (pageX - startGrabX);
-                        area.height = startGrabHeight + (startGrabY - pageY);
-                        tempArea.y = startGrabPositionY - (area.height - startGrabHeight);
-                        tempArea.x = startGrabPositionX - (area.width - startGrabWidth);
+                        tempArea.width = startGrabWidth - (pageX - startGrabX);
+                        tempArea.height = startGrabHeight + (startGrabY - pageY);
+                        tempArea.y = startGrabPositionY - (tempArea.height - startGrabHeight);
+                        tempArea.x = startGrabPositionX - (tempArea.width - startGrabWidth);
                     }
                     if (grabType === 'grab-lb') {
-                        area.width = startGrabWidth - (pageX - startGrabX);
-                        area.height = startGrabHeight - (startGrabY - pageY);
-                        tempArea.x = startGrabPositionX - (area.width - startGrabWidth);
+                        tempArea.width = startGrabWidth - (pageX - startGrabX);
+                        tempArea.height = startGrabHeight - (startGrabY - pageY);
+                        tempArea.x = startGrabPositionX - (tempArea.width - startGrabWidth);
                     }
 
                     if (parent.resize)
@@ -156,13 +161,13 @@
                     let offsetX = pageX - startMouseX;
                     let finalX = startX + offsetX;
                     if (finalX < 0) finalX = 0;
-                    if (finalX > window.innerWidth - area.width) finalX = window.innerWidth - area.width;
+                    if (finalX > window.innerWidth - tempArea.width) finalX = window.innerWidth - tempArea.width;
                     skewXTemp += -(finalX - tempArea.x) / 10;
                     tempArea.x = finalX;
                     let offsetY = pageY - startMouseY;
                     let finalY = startY + offsetY;
                     if (finalY < 0) finalY = 0;
-                    if (finalY > window.innerHeight - area.height) finalY = window.innerHeight - area.height;
+                    if (finalY > window.innerHeight - tempArea.height) finalY = window.innerHeight - tempArea.height;
                     skewYTemp += -(finalY - tempArea.y) / 4;
                     tempArea.y = finalY;
                 }
@@ -194,9 +199,9 @@
 
                     isGrab = true;
                     isDrag = false;
-                    startGrabWidth = area.width;
+                    startGrabWidth = tempArea.width;
                     startGrabX = e.changedTouches? e.changedTouches[0].pageX :e.pageX;
-                    startGrabHeight = area.height;
+                    startGrabHeight = tempArea.height;
                     startGrabY = e.changedTouches? e.changedTouches[0].pageY :e.pageY;
                     startGrabPositionY = tempArea.y;
                     startGrabPositionX = tempArea.x;
@@ -215,6 +220,8 @@
                 this.sourceArea = this.source;
                 tempArea.x = this.sourceArea.x;
                 tempArea.y = this.sourceArea.y;
+                tempArea.width = this.sourceArea.width;
+                tempArea.height = this.sourceArea.height;
             } else {
                 if (this.start) {
                     this.width = this.start.width || this.$refs.dragArea.getBoundingClientRect().width;
@@ -228,7 +235,14 @@
             }
         },
         methods: {
-
+            setSize(width, height) {
+                this.tempArea.width = width;
+                this.tempArea.height = height;
+            },
+            close() {
+                this.tempArea.y -= 100;
+                this.tempOpacity = 0;
+            }
         },
         data() {
             return {
@@ -239,6 +253,9 @@
                 height: 0,
                 skewX: 0,
                 transform: '',
+                opacity: 1,
+                tempOpacity: 1,
+                tempArea: { x: 0, y: 0, width: 0, height: 0 },
 
                 timerId: 0
             }
@@ -249,6 +266,7 @@
 <style lang="scss" scoped>
     .draggable-container {
         position: absolute;
+        // transition: width, 0.3s;
 
         .grab {
             position: absolute;

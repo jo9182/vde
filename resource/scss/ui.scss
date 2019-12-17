@@ -147,7 +147,7 @@ input.error, button.error {
 }
 
 table {
-    display: flex;
+    display: grid;
     //flex: 1;
     border-collapse: collapse;
     flex-direction: column;

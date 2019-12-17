@@ -7,13 +7,16 @@ import UserApi from "./js/user.api";
 import SceneApi from "./js/scene.api";
 import Axios from "axios";
 import Environment from "./js/environment";
+import LongPress from 'vue-directive-long-press';
+
+Vue.directive('long-press', LongPress);
 
 // Default axios settings
 Axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 Axios.defaults.headers.common['access_token'] = localStorage.getItem('accessToken');
 
 // Load components
-let components = ['draggable', 'application.icon', 'application.window', 'status.bar'];
+let components = ['draggable', 'application.icon', 'application.window', 'status.bar', 'system.settings'];
 for (let i = 0; i < components.length; i++)
     Vue.component(components[i].replace(/\./g, '-'),
         require('../resource/component/' + components[i] + '.vue').default);

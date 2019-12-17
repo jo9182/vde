@@ -19,10 +19,11 @@ let SystemApi = {
         this.currentWindow.appInfo.title = title;
     },
     setWindowSize(size) {
-        this.currentWindow.width = size[0];
+        /*this.currentWindow.width = size[0];
         this.currentWindow.height = size[1] + 28 + 2 + 25;
 
-        ConstraintWindow(this.currentWindow);
+        ConstraintWindow(this.currentWindow);*/
+        this.currentWindow.ref.resize(size[0], size[1] + 28 + 2 + 25);
     },
     async getInstalledApplicationList() {
         return await AppApi.list();
