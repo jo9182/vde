@@ -49,6 +49,7 @@ html, body {
         text-shadow: 1px 1px #cecece;
         padding: 3px;
         box-shadow: 1px 1px 10px 0 rgba(0, 0, 0, 0.51);
+        user-select: none;
 
         .button {
             cursor: pointer;
@@ -83,6 +84,29 @@ html, body {
         animation-name: backgroundFadeIn;
     }
 
+    .desktop-amount-list {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        bottom: 24px;
+        align-self: center;
+        opacity: 0.75;
+
+        div {
+            width: 6px;
+            height: 6px;
+            border-radius: 3px;
+            background: #212121;
+            margin-right: 5px;
+            transition: background-color, 0.7s;
+        }
+
+        div.active {
+            background: #fefefe;
+        }
+    }
+
     .app-icon {
         user-select: none;
         padding: 15px;
@@ -91,19 +115,35 @@ html, body {
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        position: relative;
 
         .icon {
+            position: relative;
             cursor: pointer;
             display: block;
             width: 100%;
             max-height: 100%;
             max-width: 64px;
 
-            transition: transform 0.2s;
-            transform: scale(1);
+            // transition: transform 0.2s;
+            //transform: scale(1);
 
-            &:hover {
+            /*&:hover {
                 transform: scale(1.12);
+            }*/
+
+            i {
+                position: absolute;
+                right: -12px;
+                top: -12px;
+                background: #00000094;
+                width: 16px;
+                height: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 32px;
+                font-size: 10px;
             }
         }
 
@@ -113,6 +153,14 @@ html, body {
             font-size: 12px;
             overflow: hidden;
             text-overflow: ellipsis;
+        }
+    }
+
+    .app-icon.remove-icon {
+        .icon {
+            animation-duration: 0.36s;
+            animation-iteration-count: infinite;
+            animation-name: removeIconShake;
         }
     }
 

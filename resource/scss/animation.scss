@@ -62,3 +62,21 @@
         left: 0;
     }
 }
+
+@keyframes removeIconShake {
+    from {
+        transform: rotateZ(0deg);
+    }
+
+    25% {
+        transform: rotateZ(3deg);
+    }
+
+    75% {
+        transform: rotateZ(-3deg);
+    }
+
+    to {
+        transform: rotateZ(0deg);
+    }
+}

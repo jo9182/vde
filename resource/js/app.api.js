@@ -47,7 +47,12 @@ let AppApi = {
                     access_token: localStorage.getItem('accessToken')
                 }
             });
-            return data.data;
+
+            return data.data.sort((a, b) => {
+                if (a.order === undefined) return 1;
+                if (b.order === undefined) return -1;
+                return ~~a.order - ~~b.order;
+            });
         }
         catch {
             return [];

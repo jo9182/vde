@@ -34,7 +34,7 @@ let Environment = {
         let isTouchEnd = false;
         let desktopX = false;
         let animate = () => {
-            DataStorage.desktop.x += ((DataStorage.desktop.id * window.innerWidth + desktopX) - DataStorage.desktop.x) / 12;
+            DataStorage.desktop.x += ((-DataStorage.desktop.id * window.innerWidth + -desktopX) - DataStorage.desktop.x) / 12;
             window.requestAnimationFrame(animate);
         };
         window.requestAnimationFrame(animate);
@@ -49,15 +49,19 @@ let Environment = {
             event = event.originalEvent || event;
             event.preventDefault();
 
-            if (!DataStorage.event.isDrag) desktopX = event.changedTouches[0].screenX - startFromX;
+            if (!DataStorage.event.isDrag) desktopX = -event.changedTouches[0].screenX + startFromX;
         }, {passive: false});
 
         document.addEventListener('touchend', function (event) {
             if (desktopX > 100) {
                 DataStorage.desktop.id++;
+                if (DataStorage.desktop.id > DataStorage.desktop.maxId)
+                    DataStorage.desktop.id = DataStorage.desktop.maxId;
             }
             if (desktopX < -100) {
                 DataStorage.desktop.id--;
+                if (DataStorage.desktop.id <= 0)
+                    DataStorage.desktop.id = 0;
             }
             desktopX = 0;
         });
@@ -66,6 +70,10 @@ let Environment = {
         document.addEventListener('mousedown', function (event) {
             DataStorage.input.x = event.pageX;
             DataStorage.input.y = event.pageY;
+        }, {passive: false});
+
+        document.addEventListener('click', function (event) {
+            DataStorage.desktop.isRemoveMode = false;
         }, {passive: false});
     }
 };

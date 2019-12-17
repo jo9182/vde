@@ -49,9 +49,11 @@ let DataStorage = {
     },
 
     desktop: {
+        isRemoveMode: false,
         x: 0,
         y: 0,
-        id: 0
+        id: 0,
+        maxId: 2
     },
 
     input: {

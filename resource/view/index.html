@@ -29,6 +29,10 @@
     <!-- Status bar -->
     <status-bar v-if="user"></status-bar>
 
+    <div class="desktop-amount-list" v-if="user">
+        <div :class="x - 1 === desktop.id ?'active' :''" v-for="x in desktop.maxId + 1"></div>
+    </div>
+
     <!-- Application icon list -->
     <div v-if="user" class="icon-list" :style="{ transform: `translateX(${desktop.x}px)` }">
         <application-icon v-if="user"

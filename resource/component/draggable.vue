@@ -166,7 +166,7 @@
                     tempArea.x = finalX;
                     let offsetY = pageY - startMouseY;
                     let finalY = startY + offsetY;
-                    if (finalY < 0) finalY = 0;
+                    if (finalY < 26) finalY = 26;
                     if (finalY > window.innerHeight - tempArea.height) finalY = window.innerHeight - tempArea.height;
                     skewYTemp += -(finalY - tempArea.y) / 4;
                     tempArea.y = finalY;
