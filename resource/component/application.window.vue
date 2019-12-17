@@ -1,5 +1,5 @@
 <template>
-    <draggable :source="windowData" style="display: flex; flex-direction: column;"
+    <draggable ref="draggable" :source="windowData" style="display: flex; flex-direction: column;"
                :resizable="true" :start-drag="startDrag" :stop-drag="stopDrag" :resize="onResize" :disabled="storage.device.isMobile">
         <div class="window">
             <!-- Header -->
@@ -128,6 +128,8 @@
 
         },
         mounted() {
+            this.windowData.ref = this;
+
             // Register session iFrame window
             DataStorage.sessionWindow[this.windowData.sessionKey] = this.$refs.module[0].contentWindow;
 
@@ -259,10 +261,18 @@
             settings() {
                 this.windowData.showSettings = !this.windowData.showSettings;
             },
+            resize(width, height) {
+                this.$refs.draggable.setSize(width, height);
+            },
             close() {
-                // Delete session
-                delete DataStorage.sessionWindow[this.windowData.sessionKey];
-                SceneApi.closeApplication(this.windowData.sessionKey);
+                this.isClosed = true;
+                this.$refs.draggable.close();
+
+                setTimeout(() => {
+                    // Delete session
+                    delete DataStorage.sessionWindow[this.windowData.sessionKey];
+                    SceneApi.closeApplication(this.windowData.sessionKey);
+                }, 250);
             },
             startDrag() {
                 this.isDrag = true;
@@ -295,6 +305,7 @@
             return {
                 storage: DataStorage,
 
+                isClosed: false,
                 splitMode: false,
                 isDrag: false,
                 selectedModule: 0

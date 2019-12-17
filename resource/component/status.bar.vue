@@ -5,7 +5,7 @@
             <div class="name">{{ storage.user.name }}</div>
         </div>
         <div style="flex: 1;"></div>
-        <div class="button">
+        <div class="button" @click="storage.showSystemSettings = !storage.showSystemSettings">
             <i class="fas fa-cog"></i>
         </div>
         <div @click="logout" class="button">

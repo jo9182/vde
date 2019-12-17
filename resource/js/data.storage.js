@@ -14,6 +14,7 @@ let DataStorage = {
 
     sessionWindow: {}, // SessionKey = IFrame Window
 
+    showSystemSettings: false,
     authForm: {
         login: '',
         password: ''
@@ -43,9 +44,14 @@ let DataStorage = {
     screen: {
         width: 0,
         height: 0,
-        // isMobile: false,
         iconWidth: '20%',
         iconHeight: '200px'
+    },
+
+    desktop: {
+        x: 0,
+        y: 0,
+        id: 0
     },
 
     input: {
