@@ -18,15 +18,14 @@ let SceneApi = {
         }
     },
 
+    async checkUpdateForAllApplication(app) {
+        app.isNeedToUpdate = await AppApi.checkUpdate(app.repo);
+    },
+
     async checkUpdateForAllApplications() {
         for (let i = 0; i < DataStorage.applicationList.length; i++) {
-            try {
-                // Check update
-                DataStorage.applicationList[i].isNeedToUpdate = await AppApi.checkUpdate(DataStorage.applicationList[i].repo);
-            }
-            catch {
-
-            }
+            // Check update
+            this.checkUpdateForAllApplication(DataStorage.applicationList[i]);
         }
     },
 
