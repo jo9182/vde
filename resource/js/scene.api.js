@@ -12,7 +12,20 @@ let SceneApi = {
                 if (!appList[i].position) appList[i].position = {x: 0, y: 0};
                 appList[i].position.x = 16;
                 appList[i].position.y = 16 + i * 96;
+                appList[i].isNeedToUpdate = false;
                 DataStorage.applicationList.push(appList[i]);
+            }
+        }
+    },
+
+    async checkUpdateForAllApplications() {
+        for (let i = 0; i < DataStorage.applicationList.length; i++) {
+            try {
+                // Check update
+                DataStorage.applicationList[i].isNeedToUpdate = await AppApi.checkUpdate(DataStorage.applicationList[i].repo);
+            }
+            catch {
+
             }
         }
     },

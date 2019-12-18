@@ -153,6 +153,17 @@ html, body {
             font-size: 12px;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+
+            span {
+                display: block;
+                width: 6px;
+                height: 6px;
+                background: #2aacf9;
+                border-radius: 3px;
+                align-self: center;
+                margin-right: 5px;
+            }
         }
     }
 

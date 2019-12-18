@@ -84,6 +84,13 @@ let RestAppMethodList = {
             res.send('OK');
         },
 
+        // Check update
+        '^/api/app/check-update': async (req, res) => {
+            let user = ServerUserApi.findBy(req.headers['access_token']);
+            if (!user) return error(res);
+            res.send(await ServerAppApi.checkUpdate(user, req.body.repo));
+        },
+
         // Auth user
         '^/api/user/auth': (req, res) => {
             let accessToken = ServerUserApi.auth(req.body.login, req.body.password);

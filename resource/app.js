@@ -54,4 +54,7 @@ window.onload = async () => {
     setTimeout(() => {
         document.querySelector("#app").style.display = "flex";
     });
+
+    // Check update
+    await SceneApi.checkUpdateForAllApplications();
 };

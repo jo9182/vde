@@ -2,6 +2,7 @@ const ChildProcess = require('child_process');
 const Fs = require('fs');
 const Rimraf = require("rimraf");
 const MD5 = require("md5");
+const Axios = require("axios");
 
 let ServerAppApi = {
     sessionTable: {},
@@ -88,6 +89,26 @@ let ServerAppApi = {
             ChildProcess.exec(`cd ${app.path} && git pull && git fetch --tags`, (err, out, code) => {
                 if (err) reject();
                 else resolve();
+            });
+        }));
+    },
+    checkUpdate: (user, repo) => {
+        return new Promise((async (resolve, reject) => {
+            let app = ServerAppApi.findBy(user, repo, 'repo');
+            if (!app) return resolve(false);
+
+            let commitHistory;
+            try {
+                let newRepo = repo.replace('https://github.com/', '').replace('.git', '');
+                commitHistory = (await Axios.get(`https://api.github.com/repos/${newRepo}/commits`)).data;
+            }
+            catch {
+                resolve(false);
+                return;
+            }
+            ChildProcess.exec(`cd ${app.path} && git log -1 --format=%cd `, (err, out, code) => {
+                if (err) resolve(false);
+                else resolve(new Date(out).getTime() > new Date(commitHistory[0].commit.author.date).getTime());
             });
         }));
     },

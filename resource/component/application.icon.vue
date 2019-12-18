@@ -8,7 +8,10 @@
             <div class="icon" v-long-press="1000" @long-press-start.stop="onLongPressStart" v-on:click.stop="click(appData.name)" :style="{ animationDelay: Math.random() / 5 + 's', width: '56px', height: '56px', background: `center / contain no-repeat url(${appData.icon || '/image/application.png'})` }">
                 <i @click.stop="removeApp(appData.name)" v-if="storage.desktop.isRemoveMode" class="fas fa-times"></i>
             </div>
-            <div class="title">{{ appData.title }}</div>
+            <div class="title">
+                <span v-if="appData.isNeedToUpdate"></span>
+                {{ appData.title }}
+            </div>
         </div>
     <!--</draggable>-->
 </template>
