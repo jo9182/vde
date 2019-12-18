@@ -85,11 +85,17 @@ let RestAppMethodList = {
         },
 
         // Check update
-        '^/api/app/check-update': async (req, res) => {
+        /*'^/api/app/check-update': async (req, res) => {
             let user = ServerUserApi.findBy(req.headers['access_token']);
             if (!user) return error(res);
-            res.send(await ServerAppApi.checkUpdate(user, req.body.repo));
-        },
+            try {
+                res.send(await ServerAppApi.checkUpdate(user, req.body.repo));
+            }
+            catch (e) {
+                console.log(e);
+                return error(res);
+            }
+        },*/
 
         // Auth user
         '^/api/user/auth': (req, res) => {

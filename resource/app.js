@@ -56,5 +56,5 @@ window.onload = async () => {
     });
 
     // Check update
-    await SceneApi.checkUpdateForAllApplications();
+    // await SceneApi.checkUpdateForAllApplications();
 };

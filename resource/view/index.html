@@ -19,7 +19,7 @@
     <div v-if="!user" class="auth-form">
         <form>
             <input type="text" placeholder="Login" v-model="authForm.login">
-            <input type="password" placeholder="Password" v-model="authForm.password" autocomplete="">
+            <input @keypress.enter="userApi.auth(authForm.login, authForm.password)" type="password" placeholder="Password" v-model="authForm.password" autocomplete="">
         </form>
         <button class="base" @click="userApi.auth(authForm.login, authForm.password)">Auth</button>
     </div>

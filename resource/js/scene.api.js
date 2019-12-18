@@ -18,7 +18,7 @@ let SceneApi = {
         }
     },
 
-    async checkUpdateForAllApplication(app) {
+    /*async checkUpdateForAllApplication(app) {
         app.isNeedToUpdate = await AppApi.checkUpdate(app.repo);
     },
 
@@ -27,7 +27,7 @@ let SceneApi = {
             // Check update
             this.checkUpdateForAllApplication(DataStorage.applicationList[i]);
         }
-    },
+    },*/
 
     async runApplication(name, asModule = false) {
         let app = await AppApi.findBy(name);
