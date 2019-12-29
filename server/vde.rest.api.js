@@ -15,6 +15,7 @@ const Net = require('net');
 const RecursiveReaddir = require("recursive-readdir");
 const Rimraf = require('rimraf');
 const DirTree = require("directory-tree");
+const Tsc = require('typescript');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -93,6 +94,35 @@ let ConvertFile = (path, res) => {
         res.send(result);
         return true;
     }
+
+    // TypeScript File to JS
+    if (extension === '.ts') {
+        let fileDir = require('path').dirname(path);
+
+        // Get file
+        let fileContent = Fs.readFileSync(path, 'utf-8');
+        fileContent = fileContent.replace(/\/\/\/ <reference path="(.*?)" \/>/g, (r1, r2) => {
+            return Fs.readFileSync(fileDir + '/' + SafePath(r2), 'utf-8');
+        });
+
+        // Compile ts to js
+        let result = Tsc.transpileModule(fileContent, {
+            reportDiagnostics: true,
+            compilerOptions: {
+                removeComments: true,
+                //sourceMap: true,
+                //inlineSourceMap: true,
+                target: Tsc.ScriptTarget.ES2016,
+                // module: Tsc.ModuleKind.CommonJS
+            }
+        });
+
+        // Set headers
+        res.setHeader('Content-Type', 'application/javascript');
+        res.send(result.outputText);
+        return true;
+    }
+
     return false;
 };
 

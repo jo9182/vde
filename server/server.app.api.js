@@ -93,18 +93,14 @@ let ServerAppApi = {
         }));
     },
     checkUpdate: (user, repo) => {
-        /*return new Promise((async (resolve, reject) => {
+        return new Promise((async (resolve, reject) => {
             let app = ServerAppApi.findBy(user, repo, 'repo');
             if (!app) return resolve(false);
 
             let commitHistory;
             try {
                 let newRepo = repo.replace('https://github.com/', '').replace('.git', '');
-                commitHistory = (await Axios.get(`https://api.github.com/repos/${newRepo}/commits`, {
-                    headers: {
-                        Authorization: '286da2c659fb4150d6eab972cf4c035ed30ad647'
-                    }
-                })).data;
+                commitHistory = (await Axios.get(`https://api.github.com/repos/${newRepo}/commits?client_id=0d78228beb0fe46bc39b&client_secret=286da2c659fb4150d6eab972cf4c035ed30ad647`)).data;
             }
             catch(e) {
                 reject(e);
@@ -114,7 +110,7 @@ let ServerAppApi = {
                 if (err) reject();
                 else resolve(new Date(out).getTime() > new Date(commitHistory[0].commit.author.date).getTime());
             });
-        }));*/
+        }));
     },
     // Get user application list
     list: (user) => {
