@@ -74,6 +74,7 @@ module.exports = SMP.wrap({
     plugins: [
         new Webpack.DefinePlugin({
             ENV: {
+                SERVICE_PORT: JSON.stringify(process.env.SERVICE_PORT),
                 VERSION: JSON.stringify(JSON.parse(Fs.readFileSync('package.json', 'utf-8'))['version'])
             }
         }),

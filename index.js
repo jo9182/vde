@@ -1,6 +1,7 @@
 const Fs = require('fs');
 const ServerRestAPI = require('./server/server.rest.api');
 const VDERestAPI = require('./server/vde.rest.api');
+const ServiceManager = require('./server/service.manager');
 const Express = require('express');
 const RestApp = Express();
 require('dotenv').config();
@@ -23,6 +24,7 @@ if (!Fs.existsSync('./storage/user.list.json')) {
 // Start rest server
 ServerRestAPI.run(process.env.SERVER_PORT);
 VDERestAPI.run(process.env.VDE_PORT);
+ServiceManager.run(process.env.SERVICE_PORT);
 
 // Start rest server
 RestApp.use((req, res, next) => {
