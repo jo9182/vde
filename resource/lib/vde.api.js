@@ -236,6 +236,59 @@ let VDE = {
         VDE.channel.send('stdout', msg);
     },
 
+    service: {
+        listen(serviceName) {
+            let service = {
+                socket: null,
+                eventCallback: {},
+                name: serviceName,
+                on(event, callback) {
+                    // Add listener to queue
+                    if (!service.eventCallback[event])
+                        service.eventCallback[event] = [];
+                    service.eventCallback[event].push(callback);
+                },
+                write(data) {
+                    service.socket.send(JSON.stringify({
+                        service: serviceName,
+                        type: "write",
+                        data
+                    }));
+                }
+            };
+
+            return new Promise((resolve => {
+                let hostname = window.location.hostname.split('.').slice(-2).join('.');
+                let socket = new WebSocket(`ws://${hostname}:3011`);
+                socket.onopen = () => {
+                    console.log(`${serviceName} connected`);
+                    socket.send(JSON.stringify({
+                        service: serviceName,
+                        type: "listen"
+                    }));
+                    service.socket = socket;
+                    resolve(service);
+                };
+                socket.onmessage = (event) => {
+                    let packageData = null;
+                    try { packageData = JSON.parse(event.data); }
+                    catch { return; }
+
+                    if (service.eventCallback[packageData.type])
+                        service.eventCallback[packageData.type].forEach(x => x(packageData.data))
+                }
+            }));
+        },
+        /*eventCallback: {},
+
+        on(event, callback) {
+            // Add listener to queue
+            if (!this.eventCallback[event])
+                this.eventCallback[event] = [];
+            this.eventCallback[event].push(callback);
+        }*/
+    },
+
     // File functions
     async getDocumentFile(path, format = null) {
         return await this.getFile(path, format, 'docs');
