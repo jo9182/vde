@@ -69,5 +69,10 @@ button {
                 border-color: darken(map_get($val, background), map_get($val, hover-power));
             }
         }
+
+        button.#{$btnColor}.#{$btnClass}.selected {
+            background: darken(map_get($val, background), map_get($val, hover-power));
+            border-color: darken(map_get($val, background), map_get($val, hover-power));
+        }
     }
 }
