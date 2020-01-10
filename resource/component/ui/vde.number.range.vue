@@ -1,7 +1,7 @@
 <template>
     <div class="number-range">
         <div @click="prev" class="left-button">-</div>
-        <div><input type="text" v-model="val"></div>
+        <div><input type="text" v-model="currentValue"></div>
         <div @click="next" class="right-button">+</div>
     </div>
 </template>
@@ -10,32 +10,40 @@
     export default {
         name: "vde-number-range",
         props: {
-
+            value: Number,
+            step: Number,
+            max: Number,
+            min: Number,
         },
         mounted() {
-
+            this.currentValue = this.value || 0;
+            this.currentStep = this.step || 0.1;
+            this.currentMax = this.max || 1;
+            this.currentMin = this.min || 0;
         },
         methods: {
             prev() {
-                this.val = this.val * 1 - this.step;
+                this.currentValue = this.currentValue * 1 - this.currentStep;
                 this.constrain();
+                this.$emit('change', this.currentValue);
             },
             next() {
-                this.val = this.val * 1 + this.step;
+                this.currentValue = this.currentValue * 1 + this.currentStep;
                 this.constrain();
+                this.$emit('change', this.currentValue);
             },
             constrain() {
-                if (this.val < this.min) this.val = this.min * 1;
-                if (this.val > this.max) this.val = this.max * 1;
-                this.val = this.val.toFixed(2) * 1;
+                if (this.currentValue < this.currentMin) this.currentValue = this.currentMin * 1;
+                if (this.currentValue > this.currentMax) this.currentValue = this.currentMax * 1;
+                this.currentValue = this.currentValue.toFixed(2) * 1;
             }
         },
         data() {
             return {
-                min: 0,
-                max: 1,
-                step: 0.1,
-                val: 0
+                currentMin: 0,
+                currentMax: 1,
+                currentStep: 0.1,
+                currentValue: 0
             }
         }
     }

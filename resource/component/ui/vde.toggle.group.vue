@@ -1,6 +1,6 @@
 <template>
     <div class="toggle-group button-group">
-        <button @click="selectedItem = item" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>
+        <button @click="selectItem(item)" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>
     </div>
 </template>
 
@@ -18,7 +18,10 @@
 
         },
         methods: {
-
+            selectItem(item) {
+                this.selectedItem = item;
+                this.$emit('change', item);
+            }
         },
         data() {
             return {

@@ -58,6 +58,7 @@ let ConvertFile = (path, res) => {
             '<script src="/public/lib/vue.js"></script>',
             '<script src="/public/lib/vde.api.js"></script>',
             '<script src="/public/lib/extender.js"></script>',
+            '<script src="/public/ui.js"></script>',
             '<link rel="stylesheet" href="/public/ui.css">',
             '<link rel="stylesheet" href="style.scss">'
         ].join("\n"));

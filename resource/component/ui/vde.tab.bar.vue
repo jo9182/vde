@@ -18,7 +18,8 @@
         },
         mounted() {
             this.hideAll();
-            this.select(this.selected);
+            if (this.selected)
+                this.select(this.selected);
         },
         beforeDestroy() {
 

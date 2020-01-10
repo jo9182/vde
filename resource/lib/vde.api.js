@@ -300,10 +300,12 @@ let VDE = {
     },
     async getFile(path, format = null, location = 'storage') {
         let resource = null;
-        if (location === 'internal') resource = await this.getRemoteFile(`/${path}`);
-        if (location === 'storage') resource = await this.getRemoteFile(`/storage/${path}`);
-        if (location === 'docs') resource = await this.getRemoteFile(`/docs/${path}`);
-        if (location === 'public') resource = await this.getRemoteFile(`/public/${path}`);
+        let isBinary = false;
+        if (format === 'binary') isBinary = true;
+        if (location === 'internal') resource = await this.getRemoteFile(`/${path}`, isBinary);
+        if (location === 'storage') resource = await this.getRemoteFile(`/storage/${path}`, isBinary);
+        if (location === 'docs') resource = await this.getRemoteFile(`/docs/${path}`, isBinary);
+        if (location === 'public') resource = await this.getRemoteFile(`/public/${path}`, isBinary);
         if (!resource) return null;
         if (format === 'json') resource = JSON.parse(resource);
         return resource;
@@ -332,6 +334,8 @@ let VDE = {
             if (this.status === 200) resolveMain(this.responseText);
             else rejectMain(this.responseText);
         };
+
+        if (typeof data === "object" && !(data instanceof Blob)) data = JSON.stringify(data);
 
         oReq.open("post", `/${location}/${path}`, true);
         let formData = new FormData();
