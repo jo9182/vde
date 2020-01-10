@@ -106,7 +106,19 @@ let SceneApi = {
         await AppApi.destroySessionKey(sessionKey);
         for (let i = 0; i < DataStorage.windowList.length; i++) {
             if (DataStorage.windowList[i].sessionKey === sessionKey) {
+                // Remove found connections
+                for (let j = 0; j < DataStorage.connectionList.length; j++) {
+                    let x = DataStorage.connectionList[j];
+
+                    if (x.winInput === DataStorage.windowList[i] || x.winOutput === DataStorage.windowList[i]) {
+                        this.removeConnection(x.winOutput, x.winInput, x.channelOut, x.channelIn);
+                        j -= 1;
+                    }
+                }
+
+                // Remove window
                 DataStorage.windowList.splice(i, 1);
+                this.calculateConnectionLines();
                 return;
             }
         }
@@ -134,6 +146,15 @@ let SceneApi = {
         });
 
         this.calculateConnectionLines();
+    },
+
+    removeConnection(winOut, winInput, channelOut, channelIn) {
+        let index = DataStorage.connectionList.findIndex(x => {
+            return x.winOutput === winOut && x.winInput === winInput
+                && x.channelOut === channelOut && x.channelIn === channelIn;
+        });
+        if (index !== -1) DataStorage.connectionList.splice(index, 1);
+        // this.calculateConnectionLines();
     },
 
     topWindow(sessionKey) {

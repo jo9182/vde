@@ -54,6 +54,7 @@ module.exports = {
                 if (!serviceList[packageData.service]) {
                     ws.send(JSON.stringify({
                         status: false,
+                        type: "init",
                         service: packageData.service,
                         message: 'Service not found'
                     }));
@@ -61,8 +62,16 @@ module.exports = {
                 }
                 
                 // Listen service
-                if (packageData.type === "listen")
+                if (packageData.type === "listen") {
                     serviceList[packageData.service].listeners.add(ws);
+
+                    ws.send(JSON.stringify({
+                        status: true,
+                        type: "init",
+                        service: packageData.service
+                    }));
+                    return;
+                }
 
                 // Write service
                 if (packageData.type === "write")

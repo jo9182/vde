@@ -257,36 +257,32 @@ let VDE = {
                 }
             };
 
-            return new Promise((resolve => {
+            return new Promise(((resolve, reject) => {
                 let hostname = window.location.hostname.split('.').slice(-2).join('.');
                 let socket = new WebSocket(`ws://${hostname}:3011`);
                 socket.onopen = () => {
                     console.log(`${serviceName} connected`);
+                    service.socket = socket;
                     socket.send(JSON.stringify({
                         service: serviceName,
                         type: "listen"
                     }));
-                    service.socket = socket;
-                    resolve(service);
                 };
                 socket.onmessage = (event) => {
                     let packageData = null;
                     try { packageData = JSON.parse(event.data); }
                     catch { return; }
 
+                    if (packageData.type === "init") {
+                        if (packageData.status) resolve(service);
+                        else reject();
+                    }
+
                     if (service.eventCallback[packageData.type])
                         service.eventCallback[packageData.type].forEach(x => x(packageData.data))
                 }
             }));
         },
-        /*eventCallback: {},
-
-        on(event, callback) {
-            // Add listener to queue
-            if (!this.eventCallback[event])
-                this.eventCallback[event] = [];
-            this.eventCallback[event].push(callback);
-        }*/
     },
 
     // File functions
@@ -304,10 +300,12 @@ let VDE = {
     },
     async getFile(path, format = null, location = 'storage') {
         let resource = null;
-        if (location === 'internal') resource = await this.getRemoteFile(`/${path}`);
-        if (location === 'storage') resource = await this.getRemoteFile(`/storage/${path}`);
-        if (location === 'docs') resource = await this.getRemoteFile(`/docs/${path}`);
-        if (location === 'public') resource = await this.getRemoteFile(`/public/${path}`);
+        let isBinary = false;
+        if (format === 'binary') isBinary = true;
+        if (location === 'internal') resource = await this.getRemoteFile(`/${path}`, isBinary);
+        if (location === 'storage') resource = await this.getRemoteFile(`/storage/${path}`, isBinary);
+        if (location === 'docs') resource = await this.getRemoteFile(`/docs/${path}`, isBinary);
+        if (location === 'public') resource = await this.getRemoteFile(`/public/${path}`, isBinary);
         if (!resource) return null;
         if (format === 'json') resource = JSON.parse(resource);
         return resource;
@@ -336,6 +334,8 @@ let VDE = {
             if (this.status === 200) resolveMain(this.responseText);
             else rejectMain(this.responseText);
         };
+
+        if (typeof data === "object" && !(data instanceof Blob)) data = JSON.stringify(data);
 
         oReq.open("post", `/${location}/${path}`, true);
         let formData = new FormData();

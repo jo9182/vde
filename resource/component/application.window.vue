@@ -106,10 +106,10 @@
             <!-- Ports -->
             <div v-show="!storage.device.isMobile" @mouseup="dropPort(port)" class="port-in"
                  :id="'port-' + windowData.sessionKey + '-' + port"
-                 v-for="port in windowData.ports.input"></div>
+                 v-for="(port, i) in windowData.ports.input" :style="{ bottom: i * 24 + 'px' }"></div>
             <div v-show="!storage.device.isMobile" @mousedown="dragPort(port)" class="port-out"
                  :id="'port-' + windowData.sessionKey + '-' + port"
-                 v-for="port in windowData.ports.output"></div>
+                 v-for="(port, i) in windowData.ports.output" :style="{ bottom: i * 24 + 'px' }"></div>
         </div>
     </draggable>
 </template>

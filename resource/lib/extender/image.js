@@ -42,14 +42,18 @@ module.exports = {
             ctx.imageSmoothingQuality = "high";
             let image = new Image();
             image.src = url;
+
             image.onload = () => {
                 let size = image.width > image.height ?image.height :image.width;
-                let newSize = width > height ?height :width;
+                /*let newSize = width > height ?height :width;
                 let ratio = 1;
                 if (size / newSize > 4) ratio = 2;
                 if (size / newSize > 6) ratio = 2.5;
 
-                ctx.drawImage(image, 0, 0, size / ratio, size / ratio, 0, 0, width, height);
+                ctx.drawImage(image, 0, 0, size / ratio, size / ratio, 0, 0, width, height);*/
+
+                ctx.drawImage(image, 0, 0, size, size, 0, 0, width, height);
+
                 canvas.toBlob((blob) => {
                     document.querySelector('body').removeChild(canvas);
                     resolve(blob);

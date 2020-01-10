@@ -200,8 +200,6 @@ module.exports = {
 
             // Load user list
             ServerUserApi.load();
-
-
         });
     }
 };
