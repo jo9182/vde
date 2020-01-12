@@ -50,7 +50,7 @@ let SystemApi = {
             this.currentWindow.height += 25.33;
 
         // If have tabs and set empty tabs
-        //if (this.currentWindow.tabs.length && !tabs.length)
+        // if (this.currentWindow.tabs.length && !tabs.length)
         //    this.currentWindow.height -= 25.33;
 
         this.currentWindow.tabs = tabs;
