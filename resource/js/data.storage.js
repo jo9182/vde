@@ -16,6 +16,7 @@ let DataStorage = {
 
     showSystemSettings: false,
     authForm: {
+        isError: false,
         login: '',
         password: ''
     },

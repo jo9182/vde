@@ -8,7 +8,7 @@
         <div class="button" @click="storage.showSystemSettings = !storage.showSystemSettings">
             <i class="fas fa-cog"></i>
         </div>
-        <div @click="logout" class="button">
+        <div @click="logout" class="button logout">
             <i class="fas fa-sign-out-alt"></i>
         </div>
     </div>

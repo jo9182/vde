@@ -18,12 +18,13 @@
     <!-- Auth form -->
     <div v-if="!user" class="auth-form">
         <form>
-            <input type="text" placeholder="Login" v-model="authForm.login">
-            <input @keypress.enter="userApi.auth(authForm.login, authForm.password)" type="password" placeholder="Password" v-model="authForm.password" autocomplete="">
+            <input :class="authForm.isError ?'error' :''" id="login" type="text" placeholder="Login" v-model="authForm.login">
+            <input :class="authForm.isError ?'error' :''" id="password" @keypress.enter="userApi.auth(authForm.login, authForm.password)" type="password" placeholder="Password" v-model="authForm.password" autocomplete="">
         </form>
         <button class="base" @click="userApi.auth(authForm.login, authForm.password)">Auth</button>
     </div>
 
+    <!-- System settings -->
     <system-settings v-if="showSystemSettings"></system-settings>
 
     <!-- Status bar -->

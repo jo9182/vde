@@ -1,4 +1,5 @@
 import axios from "axios";
+import DataStorage from "./data.storage";
 
 let UserApi = {
     async auth(login, password) {
@@ -8,7 +9,10 @@ let UserApi = {
         }).then((r) => {
             localStorage.setItem('accessToken', r.data);
             window.location.reload();
-        }).catch(console.error);
+        }).catch((e) => {
+            console.error(e);
+            DataStorage.authForm.isError = true;
+        });
     },
     async getUser() {
         try {
