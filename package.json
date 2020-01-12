@@ -1,6 +1,6 @@
 {
     "name": "vde",
-    "version": "1.1.16",
+    "version": "1.1.17",
     "description": "Virtual Desktop Environment",
     "main": "index.js",
     "scripts": {
