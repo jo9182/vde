@@ -1,10 +1,13 @@
 <template>
     <div>
-        <div class="toggle-group button-group">
-            <button @click="select(item)" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>
-        </div>
-        <div ref="tab-body" class="tab-body">
-            <slot></slot>
+        <div class="vde-tab-bar">
+            <div class="toggle-group button-group">
+                <!--<button @click="select(item)" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>-->
+                <vde-button @click="select(item)" v-for="item in items" :title="item" :selected="item === selectedItem"></vde-button>
+            </div>
+            <div ref="tab-body" class="tab-body">
+                <slot></slot>
+            </div>
         </div>
     </div>
 </template>
@@ -47,7 +50,19 @@
 </script>
 
 <style lang="scss" scoped>
-    .toggle-group {
+    .vde-tab-bar {
+        position: relative;
+        border: 1px solid #4b4b4b;
+        border-radius: 2px;
+        padding: 0 10px 10px;
+        margin-top: 20px;
+        display: flex;
+        flex-direction: column;
 
+        .toggle-group {
+            position: relative;
+            top: -12px;
+            align-self: center;
+        }
     }
 </style>

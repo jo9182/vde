@@ -16,7 +16,7 @@ html, body, #app {
     font-size: 14px;
 }
 
-$globalBorderRadius: 4px;
+$globalBorderRadius: 2px;
 
 $baseButton: #6979f8;
 $liteButton: #d5d7f7;
@@ -83,20 +83,23 @@ input.error, button.error {
 
 .button-group {
     display: flex;
+    box-shadow: 0 1px 1px 0 #0a0a0a;
 
     > button {
         flex: 1;
-        border-radius: 0;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border-right: 1px solid #2b2b2b !important;
     }
 
     > button:first-child {
-        border-right: 0;
-        border-radius: $globalBorderRadius 0 0 $globalBorderRadius;
+        // border-right: 0 !important;
+        border-radius: $globalBorderRadius 0 0 $globalBorderRadius !important;
     }
 
     > button:last-child {
-        border-left: 0;
-        border-radius: 0 $globalBorderRadius $globalBorderRadius 0;
+        border-right: 0 !important;
+        border-radius: 0 $globalBorderRadius $globalBorderRadius 0 !important;
     }
 }
 

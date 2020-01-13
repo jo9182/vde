@@ -1,6 +1,10 @@
 <template>
     <div class="toggle-group button-group">
-        <button @click="selectItem(item)" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>
+        <!--<button @click="selectItem(item)" class="button base"
+                :class="item === selectedItem ?'selected' :''"
+                v-for="item in items">{{ item }}</button>-->
+
+        <vde-button @click="selectItem(item)" :selected="item === selectedItem" v-for="item in items" :title="item"></vde-button>
     </div>
 </template>
 

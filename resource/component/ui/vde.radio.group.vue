@@ -4,7 +4,7 @@
             <div class="radio" :class="selectedItem === item ?'selected' :''">
                 <div class="round"></div>
             </div>
-            <div>{{ item }}</div>
+            <div class="title">{{ item }}</div>
         </div>
     </div>
 </template>
@@ -41,16 +41,17 @@
             .radio {
                 width: 16px;
                 height: 16px;
-                background: #3c4e82;
+                background: #4b4b4b;
                 border-radius: 8px;
                 margin-right: 5px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                transition: opacity, 0.2s;
+                transition: opacity, background-color, 0.2s;
+                box-shadow: 0 1px 1px 0 #0a0a0a;
 
                 &:hover {
-                    opacity: 0.8;
+                    background: #6b6b6b;
                 }
 
                 &:active {
@@ -63,19 +64,31 @@
                     transition: opacity, scale, 0.3s;
                     width: 9px;
                     height: 9px;
-                    background: #fefefe;
+                    background: #bbb;
                     border-radius: 5px;
                     opacity: 0;
-                    transform: scale(2);
+                    transform: scale(1.5);
                 }
             }
 
-            .radio.selected{
+            .radio.selected {
+                background: #d03d58;
+
                 .round {
                     opacity: 1;
                     transform: scale(1);
                 }
             }
+
+            .title {
+                color: #bbb;
+                font-size: 12px;
+                margin-left: 5px;
+            }
+        }
+
+        .radio-item:last-child {
+            margin-bottom: 0;
         }
     }
 </style>

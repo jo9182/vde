@@ -4,6 +4,7 @@ const VDERestAPI = require('./server/vde.rest.api');
 const ServiceManager = require('./server/service.manager');
 const Express = require('express');
 const RestApp = Express();
+
 require('dotenv').config();
 
 // Don't know but make send email works

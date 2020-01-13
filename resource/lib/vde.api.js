@@ -326,6 +326,12 @@ let VDE = {
         let response = await fetch(`/api/file/exists/${location}/${path}`);
         return response.ok;
     },
+    async searchFile(path, location = 'storage') {
+        try {
+            return JSON.parse(await this.getRemoteFile(`/api/file/search/${location}/${path}`));
+        }
+        catch { return []; }
+    },
     saveFile(path, data, location = 'storage') {
         let resolveMain = null;
         let rejectMain = null;
