@@ -59,6 +59,7 @@ let ConvertFile = (path, res) => {
             '<script src="/public/lib/vue.js"></script>',
             '<script src="/public/lib/vde.api.js"></script>',
             '<script src="/public/lib/extender.js"></script>',
+            '<script src="/public/lib/vde.image.ts"></script>',
             '<script src="/public/ui.js"></script>',
             '<link rel="stylesheet" href="/public/ui.css">',
             '<link rel="stylesheet" href="style.scss">'
@@ -317,7 +318,7 @@ let RestAppMethodList = {
             list = list.map(x => {
                 const stat = Fs.lstatSync(absolutePath + '/' + x);
                 return {
-                    file: x,
+                    name: x,
                     isFolder: stat.isDirectory(),
                     size: Fs.statSync(absolutePath + '/' + x)['size'],
                     created: Fs.statSync(absolutePath + '/' + x)['birthtime'],
@@ -402,7 +403,9 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
+
+            if (!ConvertFile(Path.resolve(__dirname + '/../', `public/${path}`), res))
+                res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
         },
 
         // Get global vue component

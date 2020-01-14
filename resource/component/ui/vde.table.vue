@@ -1,12 +1,12 @@
 <template>
     <div class="vde-table">
         <div class="header">
-            <div v-for="x in header" @click="sortBy(x)">{{ x }}</div>
+            <div v-for="(x, i) in headerTitle" @click="sortBy(x, headerType[i])" :style="{ flex: headerColumnWidth[i] }">{{ x }}</div>
         </div>
         <div class="body">
             <div v-for="(x, i) in currentData" @click.stop="$emit('select', x)">
-                <div @click="[editable ?edit(i, j) :'']" v-for="(y, j) in header">
-                    <span v-if="!isEditable(i, j)">{{ x[y] }}</span>
+                <div @click="[editable ?edit(i, j) :'']" v-for="(y, j) in headerTitle" :style="{ flex: headerColumnWidth[j] }">
+                    <span v-if="!isEditable(i, j)" v-html="headerFormat[j](x[y], x)"></span>
                     <vde-input ref="currentEditField" v-if="isEditable(i, j)" :value="x[y]" @change="update(x, y, $event.target.value)" style="width: 100%;"></vde-input>
                 </div>
             </div>
@@ -28,16 +28,22 @@
                 if (this.editable) this.edit(-1, -1);
             });
 
-            this.currentData = this.data;
+            this.refresh(this.header, this.data);
         },
         beforeDestroy() {
 
         },
         methods: {
-            sortBy(x) {
-                this.currentData = this.data.sort((a, b) => {
-                    return (a[x] + '').localeCompare(b[x] + '');
-                });
+            sortBy(x, type = 'string') {
+                if (type === 'int') {
+                    this.currentData = this.data.sort((a, b) => {
+                        return a[x] - b[x];
+                    });
+                } else {
+                    this.currentData = this.data.sort((a, b) => {
+                        return (a[x] + '').localeCompare(b[x] + '');
+                    });
+                }
                 if (this.isSortOrderAsc) this.currentData.reverse();
 
                 this.isSortOrderAsc = !this.isSortOrderAsc;
@@ -63,11 +69,36 @@
                         this.$refs.currentEditField[0].$el.select();
                     }
                 });
+            },
+            refresh(header = null, data = null) {
+                if (data) this.currentData = data;
+                if (header) {
+                    this.headerTitle = header.map(x => {
+                        if (typeof x === "string") return x.split(':')[0];
+                        return x.title.split(':')[0];
+                    });
+                    this.headerType = header.map(x => {
+                        if (typeof x === "string") return x.split(':')[1] || 'string';
+                        return x.title.split(':')[1] || 'string';
+                    });
+                    this.headerColumnWidth = header.map(x => {
+                        if (typeof x === "string") return 1;
+                        return x.columnWidth || 1;
+                    });
+                    this.headerFormat = header.map(x => {
+                        if (typeof x === "string") return (y) => y;
+                        return x.format ?x.format :(y) => y;
+                    });
+                    console.log(this.headerFormat);
+                }
             }
         },
         watch: {
             data(val) {
-                this.currentData = val;
+                this.refresh(null, val);
+            },
+            header(val) {
+                this.refresh(val, null);
             }
         },
         data() {
@@ -75,6 +106,10 @@
                 row: -1,
                 column: -1,
                 isSortOrderAsc: false,
+                headerTitle: [],
+                headerType: [],
+                headerFormat: [],
+                headerColumnWidth: [],
                 currentData: []
             }
         }

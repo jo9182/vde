@@ -1,5 +1,5 @@
 <template>
-    <button class="vde-button" :class="selected ?'selected' :''" @click="$emit('click')">{{ title }}</button>
+    <div class="vde-button" :class="selected ?'selected' :''" @click="$emit('click')">{{ title }}</div>
 </template>
 
 <script>
@@ -25,6 +25,12 @@
 
 <style lang="scss" scoped>
     .vde-button {
+        cursor: pointer;
+        user-select: none;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        flex: 1;
         padding: 5px 10px;
         font-size: 12px;
         border: 0;
