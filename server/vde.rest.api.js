@@ -16,6 +16,7 @@ const RecursiveReaddir = require("recursive-readdir");
 const Rimraf = require('rimraf');
 const DirTree = require("directory-tree");
 const Tsc = require('typescript');
+const Glob = require("glob");
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -24,7 +25,7 @@ let error = (res, msg = 'ERROR') => {
 
 let SafePath = (path) => {
     if (!path) return;
-    for (let i = 0; i < 32; i++) {
+    for (let i = 0; i < 64; i++) {
         if (path[0] === '.' && path[1] === '.') path = path.substr(2, path.length);
         if (path[0] === '.' && path[1] === '/') path = path.substr(2, path.length);
 
@@ -58,6 +59,7 @@ let ConvertFile = (path, res) => {
             '<script src="/public/lib/vue.js"></script>',
             '<script src="/public/lib/vde.api.js"></script>',
             '<script src="/public/lib/extender.js"></script>',
+            '<script src="/public/lib/vde.image.ts"></script>',
             '<script src="/public/ui.js"></script>',
             '<link rel="stylesheet" href="/public/ui.css">',
             '<link rel="stylesheet" href="style.scss">'
@@ -316,7 +318,7 @@ let RestAppMethodList = {
             list = list.map(x => {
                 const stat = Fs.lstatSync(absolutePath + '/' + x);
                 return {
-                    file: x,
+                    name: x,
                     isFolder: stat.isDirectory(),
                     size: Fs.statSync(absolutePath + '/' + x)['size'],
                     created: Fs.statSync(absolutePath + '/' + x)['birthtime'],
@@ -325,6 +327,53 @@ let RestAppMethodList = {
             list = list.sort().sort((a, b) => {
                 return ~~b.isFolder - ~~a.isFolder;
             });
+            res.send(JSON.stringify(list));
+        },
+
+        // Search files
+        '^/api/file/search/:location([a-z]+)/:path(*)': (req, res) => {
+            let access = AccessBySubDomain(req.headers.host);
+            if (!access) return error(res, 'Access denied');
+            let path = SafePath(req.params.path);
+            let location = req.params.location;
+            let filter = decodeURI(req.params.filter);
+            let list = [];
+            let absolutePath = '';
+
+            switch (location) {
+                case 'internal':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.path}/${path}`);
+                    list = Glob.sync(absolutePath);
+                    break;
+                case 'storage':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/${path}`);
+                    list = Glob.sync(absolutePath);
+                    break;
+                case 'docs':
+                    // Get file list
+                    absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
+                    list = Glob.sync(absolutePath);
+                    break;
+                default:
+                    return error(res, `Unknown "${location}" location`);
+            }
+
+            let rootPath = absolutePath.slice(0, -path.length).replace(/\\/g, '/');
+
+            // Send to client
+            list = list.map(x => {
+                const stat = Fs.lstatSync(x);
+                return {
+                    name: x.replace(rootPath, '').split('/').pop(),
+                    path: '/' + x.replace(rootPath, ''),
+                    isFolder: stat.isDirectory(),
+                    size: Fs.statSync(x)['size'],
+                    created: Fs.statSync(x)['birthtime'],
+                }
+            });
+            list = list.filter(x => !x.isFolder);
             res.send(JSON.stringify(list));
         },
 
@@ -354,7 +403,9 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
+
+            if (!ConvertFile(Path.resolve(__dirname + '/../', `public/${path}`), res))
+                res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
         },
 
         // Get global vue component

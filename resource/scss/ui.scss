@@ -10,13 +10,14 @@ html, body, #app {
     width: 100%;
     padding: 0;
     margin: 0;
-    background: #f1f7ff;
+    background: #2b2b2b;
+    color: #bbbbbb;
     display: flex;
     font-family: Helvetica, sans-serif;
     font-size: 14px;
 }
 
-$globalBorderRadius: 4px;
+$globalBorderRadius: 2px;
 
 $baseButton: #6979f8;
 $liteButton: #d5d7f7;
@@ -83,32 +84,35 @@ input.error, button.error {
 
 .button-group {
     display: flex;
+    box-shadow: 0 1px 1px 0 #0a0a0a;
 
-    > button {
+    > button, .vde-button {
         flex: 1;
-        border-radius: 0;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        border-right: 1px solid #2b2b2b !important;
     }
 
-    > button:first-child {
-        border-right: 0;
-        border-radius: $globalBorderRadius 0 0 $globalBorderRadius;
+    > button:first-child, .vde-button:first-child {
+        // border-right: 0 !important;
+        border-radius: $globalBorderRadius 0 0 $globalBorderRadius !important;
     }
 
-    > button:last-child {
-        border-left: 0;
-        border-radius: 0 $globalBorderRadius $globalBorderRadius 0;
+    > button:last-child, .vde-button:last-child {
+        border-right: 0 !important;
+        border-radius: 0 $globalBorderRadius $globalBorderRadius 0 !important;
     }
 }
 
 .button-group-separated {
     display: flex;
 
-    > button {
+    > button, .vde-button {
         flex: 1;
         margin-right: 5px;
     }
 
-    > button:last-child {
+    > button:last-child, .vde-button:last-child {
         margin-right: 0;
     }
 }

@@ -59,22 +59,27 @@
             text-align: center;
             background: none;
             border: 0;
+            font-size: 12px;
+            color: #bbb;
+            padding: 5px;
         }
 
         .left-button, .right-button {
             cursor: pointer;
-            width: 24px;
-            height: 24px;
-            background: #0cddff;
+            width: 18px;
+            height: 18px;
+            background: #4b4b4b;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #fefefe;
+            color: #bbb;
             border-radius: 4px;
             user-select: none;
+            transition: opacity, background-color, 0.2s;
+            box-shadow: 0 1px 1px 0 #0a0a0a;
 
             &:hover {
-                opacity: 0.7;
+                background: #6b6b6b;
             }
 
             &:active {

@@ -55,12 +55,15 @@ let SceneApi = {
         if (window.location.hostname.split('.').length === 4)
             appUrl = `//${window.location.hostname}:${window.location.port}/error.html`;
 
+        let windowY = DataStorage.input.y + Math.random() * 64;
+        if (windowY > window.innerHeight / 1.5) windowY = window.innerHeight / 1.5;
+
         let windowData = {
             appInfo: app,
             sessionKey: sessionKey,
             url: appUrl,
             x: DataStorage.input.x > window.innerWidth / 2 ?DataStorage.input.x - 400 + Math.random() * 64 :DataStorage.input.x + Math.random() * 64,
-            y: DataStorage.input.y + Math.random() * 64,
+            y: windowY,
             width: 480,
             height: 240,
             zIndex: 1,
@@ -178,7 +181,7 @@ let SceneApi = {
             ).getBoundingClientRect();
 
             // Visual line effect
-            let sin =  Math.sin(new Date().getTime() / 32) * 0.1;
+            let sin = Math.sin(new Date().getTime() / 32) * 0.1;
             if (connection.channelUsage < 1)
                 sin *= connection.channelUsage;
             let lineMultiplierX = 1.1 + sin;

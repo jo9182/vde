@@ -209,19 +209,20 @@ html, body {
         user-select: none;
         animation-duration: 0.5s;
         animation-name: windowFadeIn;
+        color: #bbbbbb;
 
         border-radius: 4px;
         overflow: hidden;
         box-shadow: 0 0 7px 4px #00000030;
 
         .caption {
-            background: #f1f7ff;
+            background: #3b3b3b;
             padding: 5px;
             user-select: none;
             display: flex;
             // border-top: 1px solid #3b4957;
-            // border-bottom: 1px solid #010a15;
-            color: #444444;
+            border-bottom: 1px solid #242424;
+            color: #bbbbbb;
             font-size: 12px;
 
             .title {
@@ -235,10 +236,10 @@ html, body {
                 display: flex;
                 transition: opacity, 0.2s;
                 padding: 3px;
-                background: #51de40;
+                background: #25611e;
                 border-radius: 24px;
-                color: #0f8449;
-                font-size: 0.85vw;
+                color: #23ad68;
+                font-size: 12px;
                 text-align: center;
 
                 align-items: center;
@@ -264,13 +265,13 @@ html, body {
             }
 
             .icon.options {
-                background: #eca63e;
-                color: #f3e5a2;
+                background: #a3670d;
+                color: #d0b94b;
             }
 
             .icon.close {
-                background: #ec563e;
-                color: #f5b88c;
+                background: #ad2b16;
+                color: #e37a2f;
             }
 
             .icon:last-child {
@@ -282,16 +283,17 @@ html, body {
             user-select: none;
             padding: 5px;
             display: flex;
-            background: #f1f7ff;
+            background: #2b2b2b;
 
             .tab {
                 cursor: pointer;
                 margin-right: 5px;
-                background: #b9cad4;
+                background: #4b4b4b;
                 font-size: 12px;
                 padding: 1px 10px;
                 border-radius: 18px;
                 transition: opacity, 0.2s;
+                color: #bbbbbb;
 
                 &:hover {
                     opacity: 0.8;
@@ -325,7 +327,7 @@ html, body {
         .modules {
             display: flex;
             padding: 3px;
-            background: #cdd7e4;
+            background: #2b2b2b;
             //border-top: 1px solid #3b4957;
             //border-bottom: 1px solid #202231;
 

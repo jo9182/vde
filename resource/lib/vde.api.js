@@ -301,13 +301,30 @@ let VDE = {
     async getFile(path, format = null, location = 'storage') {
         let resource = null;
         let isBinary = false;
-        if (format === 'binary') isBinary = true;
+        if (format === 'binary' || format === 'image') isBinary = true;
         if (location === 'internal') resource = await this.getRemoteFile(`/${path}`, isBinary);
         if (location === 'storage') resource = await this.getRemoteFile(`/storage/${path}`, isBinary);
         if (location === 'docs') resource = await this.getRemoteFile(`/docs/${path}`, isBinary);
         if (location === 'public') resource = await this.getRemoteFile(`/public/${path}`, isBinary);
         if (!resource) return null;
         if (format === 'json') resource = JSON.parse(resource);
+
+        if (format === 'image') {
+            resource = new Blob([resource], { type: "image/png" });
+            let canvas = document.createElement('canvas');
+            let ctx = canvas.getContext('2d');
+            let urlCreator = window.URL || window.webkitURL;
+            let image = new Image();
+            image.src = urlCreator.createObjectURL(resource);
+            return new Promise((resolve => {
+                image.onload = () => {
+                    canvas.setAttribute("width", image.width);
+                    canvas.setAttribute("height", image.height);
+                    ctx.drawImage(image, 0, 0, image.width, image.width, 0, 0, image.width, image.width);
+                    resolve(ctx.getImageData(0, 0, image.width, image.height));
+                }
+            }));
+        } else
         return resource;
     },
     async getFileList(path, location = 'storage', filter = '.*') {
@@ -325,6 +342,12 @@ let VDE = {
     async fileExists(path, location = 'storage') {
         let response = await fetch(`/api/file/exists/${location}/${path}`);
         return response.ok;
+    },
+    async searchFile(path, location = 'storage') {
+        try {
+            return JSON.parse(await this.getRemoteFile(`/api/file/search/${location}/${path}`));
+        }
+        catch { return []; }
     },
     saveFile(path, data, location = 'storage') {
         let resolveMain = null;

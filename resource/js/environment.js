@@ -40,19 +40,22 @@ let Environment = {
         window.requestAnimationFrame(animate);
 
         let startFromX = 0;
-        document.addEventListener('touchstart', function (event) {
-            startFromX = event.changedTouches[0].screenX;
+        let isMouseDown = false;
+        document.addEventListener('mousedown', function (event) {
+            startFromX = event.screenX;
             isTouchEnd = false;
+            isMouseDown = true;
         });
 
-        document.addEventListener('touchmove', function (event) {
+        document.addEventListener('mousemove', function (event) {
+            if (!isMouseDown) return;
             event = event.originalEvent || event;
             event.preventDefault();
 
-            if (!DataStorage.event.isDrag) desktopX = -event.changedTouches[0].screenX + startFromX;
+            if (!DataStorage.event.isDrag) desktopX = -event.screenX + startFromX;
         }, {passive: false});
 
-        document.addEventListener('touchend', function (event) {
+        document.addEventListener('mouseup', function (event) {
             if (desktopX > 100) {
                 DataStorage.desktop.id++;
                 if (DataStorage.desktop.id > DataStorage.desktop.maxId)
@@ -64,6 +67,7 @@ let Environment = {
                     DataStorage.desktop.id = 0;
             }
             desktopX = 0;
+            isMouseDown = false;
         });
 
         // Click
