@@ -5,7 +5,7 @@ let components = [
     'button', 'checkbox', 'input',
     'number.range', 'radio.group', 'select',
     'toggle.group', 'tab.bar', 'table', 'panel', 'slider', 'progress',
-    'tree', 'side.bar'
+    'tree', 'side.bar', 'file.tree', 'field'
 ];
 
 for (let i = 0; i < components.length; i++) {

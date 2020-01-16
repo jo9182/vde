@@ -45,9 +45,95 @@ let AccessBySubDomain = (host) => {
     return sessionData;
 };
 
+let CompileSASS = (path, fileContent) => {
+    // Transpile
+    let result = SASS.renderSync({
+        data: fileContent,
+        includePaths: [path.split("/").slice(0, -1).join("/")]
+    });
+
+    // Autoprefix
+    return PostCSS([ AutoPrefixer ]).process(result.css).css;
+};
+
+let CompileTS = (path, fileContent) => {
+    let fileDir = require('path').dirname(path);
+
+    // Get file
+    // let fileContent = Fs.readFileSync(path, 'utf-8');
+    fileContent = fileContent.replace(/\/\/\/ <reference path="(.*?)" \/>/g, (r1, r2) => {
+        return Fs.readFileSync(fileDir + '/' + SafePath(r2), 'utf-8');
+    });
+
+    // Compile ts to js
+    let result = Tsc.transpileModule(fileContent, {
+        reportDiagnostics: true,
+        compilerOptions: {
+            removeComments: true,
+            target: Tsc.ScriptTarget.ES2016
+        }
+    });
+
+    return result.outputText;
+};
+
 let ConvertFile = (path, res) => {
     path = path.replace(/\\/g, '/');
     let extension = Path.extname(path);
+
+    // Html tags
+    if (Path.basename(path) === 'index.vue') {
+        // Get file
+        let fileContent = Fs.readFileSync(path, 'utf-8');
+        let style = '';
+        let html = '';
+        let script = '';
+
+        fileContent = fileContent.replace(/<template>(.*?)<\/template>/gms, (r1, r2) => {
+            html = `<html>
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+                    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                    <title>Application</title>
+                    <!-- Std libs -->
+                    <script src="/public/lib/vue.js"></script>
+                    <script src="/public/lib/vde.api.js"></script>
+                    <script src="/public/lib/vde.api2.ts"></script>
+                    <script src="/public/lib/extender.js"></script>
+                    <script src="/public/lib/vde.image.ts"></script>
+                    <script src="/public/ui.js"></script>
+                    <link rel="stylesheet" href="/public/ui.css">
+                    <link rel="stylesheet" href="style.scss">
+                    <style>%%STYLE%%</style>
+                </head>
+                <body>
+                    <div id="app">
+                        ${r2}
+                    </div>
+                    <script>
+                        %%SCRIPT%%
+                    </script>
+                </body>
+            </html>`;
+            return '';
+        });
+
+        fileContent = fileContent.replace(/<style.*?>(.*?)<\/style>/gms, (r1, r2) => {
+            style = CompileSASS(path, r2);
+            return '';
+        });
+
+        fileContent = fileContent.replace(/<script.*?>(.*?)<\/script>/gms, (r1, r2) => {
+            script = CompileTS(path, r2);
+            return '';
+        });
+
+        // Set headers
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html.replace('%%STYLE%%', style).replace('%%SCRIPT%%', script));
+        return true;
+    }
 
     // Html tags
     if (extension === '.html') {
@@ -84,26 +170,28 @@ let ConvertFile = (path, res) => {
         let fileContent = Fs.readFileSync(path, 'utf-8');
 
         // Transpile
-        let result = SASS.renderSync({
+        /*let result = SASS.renderSync({
             data: fileContent,
             includePaths: [path.split("/").slice(0, -1).join("/")]
         });
 
         // Autoprefix
-        result = PostCSS([ AutoPrefixer ]).process(result.css).css;
+        result = PostCSS([ AutoPrefixer ]).process(result.css).css;*/
 
         // Set headers
         res.setHeader('Content-Type', 'text/css');
-        res.send(result);
+        res.send(CompileSASS(path, fileContent));
         return true;
     }
 
     // TypeScript File to JS
     if (extension === '.ts') {
-        let fileDir = require('path').dirname(path);
-
         // Get file
         let fileContent = Fs.readFileSync(path, 'utf-8');
+
+        /*let fileDir = require('path').dirname(path);
+
+
         fileContent = fileContent.replace(/\/\/\/ <reference path="(.*?)" \/>/g, (r1, r2) => {
             return Fs.readFileSync(fileDir + '/' + SafePath(r2), 'utf-8');
         });
@@ -113,16 +201,13 @@ let ConvertFile = (path, res) => {
             reportDiagnostics: true,
             compilerOptions: {
                 removeComments: true,
-                //sourceMap: true,
-                //inlineSourceMap: true,
-                target: Tsc.ScriptTarget.ES2016,
-                // module: Tsc.ModuleKind.CommonJS
+                target: Tsc.ScriptTarget.ES2016
             }
-        });
+        });*/
 
         // Set headers
         res.setHeader('Content-Type', 'application/javascript');
-        res.send(result.outputText);
+        res.send(CompileTS(path, fileContent));
         return true;
     }
 
@@ -154,6 +239,9 @@ let FilterTree = (folder, filter) => {
 let ConvertTree = (absolutePath, basePath, out, tree) => {
     let finalPath = tree.path.replace(basePath.replace(/\\/g, '/'), '');
     let absoluteFinalPath = tree.path.replace(absolutePath.replace(/\\/g, '/'), '');
+
+    // console.log(finalPath, absoluteFinalPath);
+
     let folder;
     if (finalPath) {
         out[finalPath] = [];
@@ -262,6 +350,9 @@ let RestAppMethodList = {
                     // Get file list
                     absolutePath = Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`);
 
+                    //console.log(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs`));
+                    //console.log(DirTree(absolutePath, { normalizePath: true, attributes: ['mtime'] }, null, null));
+
                     ConvertTree(
                         Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs`),
                         Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs`),
@@ -273,11 +364,14 @@ let RestAppMethodList = {
                     return error(res);
             }
 
+            if (tree[path]) tree = tree[path];
+
             // Filter tree
             FilterTree(tree, filter);
 
             // Send to client
             tree.splice(0, 1);
+
             res.send(JSON.stringify(tree));
         },
 
@@ -443,6 +537,11 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.path);
+            if (!path) {
+                if (Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.path}/index.vue`))) {
+                    path = 'index.vue';
+                } else path = 'index.html';
+            }
 
             if (!Fs.existsSync(Path.resolve(__dirname + '/../', `${access.app.path}/${path}`))) {
                 return error(res, 'File not found');

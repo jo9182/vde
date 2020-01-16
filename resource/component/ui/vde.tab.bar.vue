@@ -3,7 +3,7 @@
         <div class="vde-tab-bar">
             <div class="toggle-group button-group">
                 <!--<button @click="select(item)" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>-->
-                <vde-button @click="select(item)" v-for="item in items" :title="item" :selected="item === selectedItem"></vde-button>
+                <vde-button @click="select(item)" v-for="item in items" :title="item" :selected="item === selectedItem" style="white-space: nowrap;"></vde-button>
             </div>
             <div ref="tab-body" class="tab-body">
                 <slot></slot>

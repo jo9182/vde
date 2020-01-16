@@ -209,3 +209,15 @@ table {
         background: #b2b2b2;
     }
 }
+
+.scroll-mini {
+    // Scrollbar webkit
+    &::-webkit-scrollbar {
+        background: #121212;
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #3b3b3b;
+    }
+}

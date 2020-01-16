@@ -50,7 +50,7 @@ let SceneApi = {
         // Run new app
         let appUrl = '//' + sessionKey + '.'
             + window.location.hostname + ':'
-            + (window.location.port * 1 + 1) + '/index.html';
+            + (window.location.port * 1 + 1) + '/';
         // Ip address
         if (window.location.hostname.split('.').length === 4)
             appUrl = `//${window.location.hostname}:${window.location.port}/error.html`;
