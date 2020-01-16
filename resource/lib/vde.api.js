@@ -320,7 +320,7 @@ let VDE = {
                 image.onload = () => {
                     canvas.setAttribute("width", image.width);
                     canvas.setAttribute("height", image.height);
-                    ctx.drawImage(image, 0, 0, image.width, image.width, 0, 0, image.width, image.width);
+                    ctx.drawImage(image, 0, 0);
                     resolve(ctx.getImageData(0, 0, image.width, image.height));
                 }
             }));

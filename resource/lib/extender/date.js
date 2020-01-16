@@ -34,16 +34,23 @@ Date.prototype.addHours = function (h) {
     return this;
 };
 
+// Get day name of current date - example, sunday, monday etc
+Date.prototype.dayName = function () {
+    return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][this.getDay()];
+};
+
 // Start of current date - example 2019-09-01 12:34:32 -> 2019-09-01 00:00:00
 Date.prototype.start = function () {
-    this.setUTCHours(0, 0, 0, 0);
-    return this;
+    let d = new Date(this);
+    d.setUTCHours(0, 0, 0, 0);
+    return d;
 };
 
 // End of current date - example 2019-09-01 12:34:32 -> 2019-09-01 23:59:59
 Date.prototype.end = function () {
-    this.setUTCHours(23, 59, 59, 999);
-    return this;
+    let d = new Date(this);
+    d.setUTCHours(23, 59, 59, 999);
+    return d;
 };
 
 // Offset current date with days
@@ -51,6 +58,11 @@ Date.prototype.offset = function (offsetDay) {
     let today = new Date();
     today.setDate(today.getDate() + ~~offsetDay);
     return today;
+};
+
+// Offset current date with days
+Date.prototype.secondsFromStartOfDay = function() {
+    return (this.getTime() - this.start().getTime()) / 1000 | 0;
 };
 
 // Get current date without time

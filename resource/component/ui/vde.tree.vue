@@ -4,7 +4,7 @@
             <div v-if="x.isFolder">
                 <div class="folder" :class="x.isOpen ?'open' :''" @click="open(x)" v-if="x.name !== '..'">
                     <i class="arrow fas fa-sort-down"></i>
-                    <i class="icon fas" :class="x.isOpen ?'fa-folder-open' :'fa-folder'"></i>
+                    <i class="icon fas" :class="x.isOpen ?'fa-folder-open' :'fa-folder'" style="color: #db9d2c;"></i>
                     <div class="title" style="">{{ x.name }}</div>
                 </div>
                 <vde-tree v-if="x.isOpen"
@@ -15,7 +15,7 @@
                           :selected="selected" :r="cr"></vde-tree>
             </div>
             <div @click.stop="select(x.path)" class="file" :class="selected.includes(x.path) ?'selected' :''" v-if="!x.isFolder" style="margin-left: 15px; display: flex;">
-                <i class="fas fa-file"></i>
+                <i class="fas fa-file" style="color: #bbd8e1;"></i>
                 <div class="title">{{ x.name }}</div>
             </div>
         </div>
@@ -61,6 +61,7 @@
                 } else {
                     if (!this.isControl) this.selected.length = 0;
                     this.selected.push(x);
+                    this.$emit('select', x);
                 }
                 this.cr = Math.random();
             }
@@ -80,6 +81,7 @@
         color: #bbbbbb;
         user-select: none;
         font-size: 14px;
+        width: 100%;
 
         .item {
             cursor: pointer;

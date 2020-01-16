@@ -7,7 +7,7 @@
             </svg>
         </div>
         <div v-if="isShow" class="list" style="z-index: 1;" :style="{ width }">
-            <div v-for="x in 10" @click="selectedItem = x">{{ x }}</div>
+            <div v-for="x in items" @click="[selectedItem = x.split(':').shift(), $emit('change', x.split(':').pop())]">{{ x.split(':')[0] }}</div>
         </div>
     </div>
 </template>
@@ -16,7 +16,8 @@
     export default {
         name: "vde-select",
         props: {
-
+            items: Array,
+            value: String
         },
         mounted() {
             document.addEventListener('click', () => {
@@ -26,10 +27,20 @@
         beforeDestroy() {
 
         },
+        model: {
+            prop: 'value',
+            event: 'change',
+        },
         methods: {
             toggle() {
                 this.isShow = !this.isShow;
                 this.width = this.$refs.input.getBoundingClientRect().width + 'px';
+            }
+        },
+        watch: {
+            model(val) {
+                this.selectedItem = val;
+                console.log(1);
             }
         },
         data() {
@@ -45,6 +56,7 @@
 <style lang="scss" scoped>
     .vde-select {
         font-size: 12px;
+        flex: 1;
 
         .input {
             background: #4b4b4b;

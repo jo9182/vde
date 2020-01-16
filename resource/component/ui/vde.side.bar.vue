@@ -22,6 +22,7 @@
         methods: {
             select(x) {
                 this.currentSelected = x;
+                this.$emit('select', x);
             }
         },
         data() {
