@@ -28,6 +28,40 @@ let DateHelper = {
     }
 };
 
+// Get start of week from current date
+Date.prototype.startOfWeek = function(offset) {
+    let day = this.getDay();
+    let diff = this.getDate() - day + (day === 0 ? -6 : 1);
+    return new Date(this.setDate(diff + ~~offset));
+};
+
+// Get start of month from current date
+Date.prototype.startOfMonth = function(offset) {
+    let d = new Date(this);
+    d.setUTCDate(1 + offset);
+    return d;
+};
+
+// Get list of dates from start of week
+Date.prototype.getWeekRange = function() {
+    let out = [];
+    for (let i = 0; i < 7; i++) out.push(this.startOfWeek(i));
+    return out;
+};
+
+// Get list of dates from start of month
+Date.prototype.getMonthRange = function() {
+    let out = [];
+    for (let i = 0; i < 32; i++) {
+        let d = new Date(this);
+        d.setUTCDate(1 + i);
+        if (d.getMonth() !== this.getMonth()) break;
+        out.push(d);
+    }
+
+    return out;
+};
+
 // Add hours to current date
 Date.prototype.addHours = function (h) {
     this.setTime(this.getTime() + (h * 60 * 60 * 1000));
