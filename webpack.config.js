@@ -93,11 +93,12 @@ module.exports = SMP.wrap({
         }),
         new VueLoaderPlugin(),
         new CopyPlugin([
-            {from: './resource/lib/vde.api.js', to: '../public/lib/vde.api.js'},
+            {from: './resource/lib', to: '../public/lib'},
+            /*{from: './resource/lib/vde.api.js', to: '../public/lib/vde.api.js'},
             {from: './resource/lib/vde.api2.ts', to: '../public/lib/vde.api2.ts'},
             {from: './resource/lib/vue.js', to: '../public/lib/vue.js'},
             {from: './resource/lib/vue.prod.js', to: '../public/lib/vue.prod.js'},
-            {from: './resource/lib/vde.image.ts', to: '../public/lib/vde.image.ts'},
+            {from: './resource/lib/vde.image.ts', to: '../public/lib/vde.image.ts'},*/
             {from: './resource/manifest.webmanifest', to: '../public/manifest.webmanifest'},
         ])
     ]

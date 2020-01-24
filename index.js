@@ -37,3 +37,24 @@ RestApp.post(`/git-push/${process.env.GIT_WEB_HOOK_PATH}`, (req, res) => {
     res.send('OK');
     process.exit();
 });
+
+/*const asc = require("assemblyscript/cli/asc");
+const { binary, text, stdout, stderr } = asc.compileString(`export function sas(x: u32, y: u32): u32 {
+    return x + y;
+}`);
+console.log('s', binary);*/
+
+/*asc.main([
+    "myModule.ts",
+    "--binaryFile", "myModule.wasm",
+    "--optimize",
+    "--sourceMap",
+    "--measure"
+], {
+    stdout: process.stdout,
+    stderr: process.stderr
+}, function(err) {
+    if (err)
+        throw err
+...
+});*/
