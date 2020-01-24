@@ -17,6 +17,9 @@ const Rimraf = require('rimraf');
 const DirTree = require("directory-tree");
 const Tsc = require('typescript');
 const Glob = require("glob");
+const Asc = require("assemblyscript/cli/asc");
+const ChildProcess = require('child_process');
+const OS = require('os');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -77,7 +80,7 @@ let CompileTS = (path, fileContent) => {
     return result.outputText;
 };
 
-let ConvertFile = (path, res) => {
+let ConvertFile = (path, res, params = {}) => {
     path = path.replace(/\\/g, '/');
     let extension = Path.extname(path);
 
@@ -189,6 +192,32 @@ let ConvertFile = (path, res) => {
         // Get file
         let fileContent = Fs.readFileSync(path, 'utf-8');
 
+        // If Assembly Script module
+        if (path.match(/asm\.ts$/g)) {
+            const { binary, text, stdout, stderr } = Asc.compileString(fileContent);
+
+            console.log(stderr.toString());
+
+            let out = `
+                let ${Path.basename(path).replace(/(\.asm|\.ts)/g, '').replace(/(\.)/g, '').toUpperCase()}_INIT = (async () => {
+                    let s = await WebAssembly.instantiate(new Uint8Array(${JSON.stringify(Array.from(binary))}), {
+                        env: {
+                            memory: new WebAssembly.Memory({ initial: 1 }),
+                            abort: () => console.log("Abort!")
+                        }
+                    });
+                    return s.instance.exports;
+                });
+            `;
+
+            // Set headers
+            // res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Type', 'application/javascript');
+            res.send(out);
+            // res.end(Buffer.from(binary), 'binary');
+            return true;
+        }
+
         /*let fileDir = require('path').dirname(path);
 
 
@@ -210,6 +239,37 @@ let ConvertFile = (path, res) => {
         res.send(CompileTS(path, fileContent));
         return true;
     }
+
+    if (extension === '.mp4' && (params.frame || params.time)) {
+        let tmpFrameName = OS.tmpdir() + '/' + Math.random() + '.jpg';
+        let scale = '';
+
+        if (params.size) {
+            scale = `-s ${params.size}`;
+        }
+
+        if (params.frame) {
+            ChildProcess.exec(`ffmpeg -i "${path}" -vf "select=eq(n\\,${params.frame})" -frames:v 1 ${scale} "${tmpFrameName}"`, (err, out, code) => {
+                res.sendFile(tmpFrameName);
+            });
+        }
+        if (params.time) {
+            ChildProcess.exec(`ffmpeg -ss ${params.time} -i "${path}" -vframes:v 1 ${scale} "${tmpFrameName}"`, (err, out, code) => {
+                res.sendFile(tmpFrameName);
+            });
+        }
+
+        return true;
+    }
+
+    /*if (extension === '.mp4' && params.time) {
+        let tmpFrameName = OS.tmpdir() + '/' + Math.random() + '.jpg';
+        ChildProcess.exec(`ffmpeg -ss ${params.time} -i "${path}" -vframes:v 1 "${tmpFrameName}"`, (err, out, code) => {
+            res.sendFile(tmpFrameName);
+        });
+
+        return true;
+    }*/
 
     return false;
 };
@@ -317,7 +377,7 @@ let RestAppMethodList = {
         '^/api/file/tree/:filter([^/]+)/:location([a-z]+)/:path(*)': async (req, res) => {
             let access = AccessBySubDomain(req.headers.host);
             if (!access) return error(res);
-            let path = SafePath(req.params.path);
+            let path = SafePath(req.params.path) || '/';
             let location = req.params.location;
             let filter = decodeURI(req.params.filter);
             let absolutePath = '';
@@ -488,7 +548,12 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.path);
-            res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`));
+            if (!ConvertFile(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`), res, req.query))
+                res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`));
+
+            /*console.log(req);
+            let path = SafePath(req.params.path);
+            res.sendFile(Path.resolve(__dirname + '/../', `${access.app.storage}/../../docs/${path}`));*/
         },
 
         // Get public file
@@ -497,7 +562,6 @@ let RestAppMethodList = {
             if (!access) return error(res);
 
             let path = SafePath(req.params.path);
-
             if (!ConvertFile(Path.resolve(__dirname + '/../', `public/${path}`), res))
                 res.sendFile(Path.resolve(__dirname + '/../', `public/${path}`));
         },

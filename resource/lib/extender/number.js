@@ -31,6 +31,21 @@ Number.prototype.intToHMS = function () {
     return hours + ':' + minutes + ':' + sec;
 };
 
+// Convert seconds to HH:MM:SS.SSS
+Number.prototype.intToHMSM = function () {
+    let sec_num = Math.abs(this);
+    let hours = ~~(sec_num / 1000 / 3600) % 24; //Math.floor(sec_num / 3600000);
+    let minutes = ~~(sec_num / 1000 / 60) % 60;//Math.floor((sec_num - (hours * 3600000)) / 60000);
+    let sec = ~~(sec_num / 1000) % 60;
+    let ms = sec_num % 1000;
+
+    if (hours < 10) hours = "0" + hours;
+    if (minutes < 10) minutes = "0" + minutes;
+    if (sec < 10) sec = "0" + sec;
+
+    return hours + ':' + minutes + ':' + sec + '.' + ('000' + ms).slice(-3);
+};
+
 // Convert bytes to kb, mb and etc
 Number.prototype.humanByteSize = function () {
     let bytes = this;

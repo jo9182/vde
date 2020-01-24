@@ -5,6 +5,7 @@ const RestApp = Express();
 const ServerAppApi = require('./server.app.api');
 const ServerUserApi = require('./server.user.api');
 const MD5 = require('md5');
+const Compression = require('compression');
 
 let error = (res, msg = 'ERROR') => {
     res.status(400);
@@ -170,6 +171,14 @@ let RestAppMethodList = {
         },
     }
 };
+
+// Set compression
+RestApp.use(Compression({
+    filter(req, res) {
+        if (req.headers['x-no-compression']) return false;
+        return Compression.filter(req, res);
+    }
+}));
 
 // Set post parsers
 RestApp.use(BodyParser.urlencoded({extended: true}));
