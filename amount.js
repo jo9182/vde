@@ -7,9 +7,10 @@ const Fs = require('fs');
         ...await RecursiveReaddir('./resource'),
         ...await RecursiveReaddir('./storage/user/root/bin'),
     ].filter(x => {
+        // if (!x.match(/draw-studio/)) return false;
         if (x.match(/vue\.js/) || x.match(/vue\.prod\.js/) || x.match(/\.min\.js/)) return false;
         if (x.match(/storage/) && x.match(/user/) && x.match(/bin/) && x.match(/lib/)) return false;
-        return x.match(/\.(vue|js|scss|ts)$/);
+        return x.match(/\.(vue|js|scss|ts|html)$/);
     });
     let x = c.map((x) => {
         return Fs.readFileSync(x, 'utf-8').split('\n').length;

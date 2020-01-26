@@ -3,7 +3,7 @@
         <div class="header">
             <div v-for="(x, i) in headerTitle" @click="sortBy(x, headerType[i])" :style="{ flex: headerColumnWidth[i] }">{{ x }}</div>
         </div>
-        <div class="body">
+        <div class="body" :class="scrollY ?'scroll-mini' :''" :style="[scrollY ?{overflowY: 'scroll'} :{}]">
             <div v-for="(x, i) in currentData" @click.stop="$emit('select', x)">
                 <div @click="[editable ?edit(i, j) :'']" v-for="(y, j) in headerTitle" :style="{ flex: headerColumnWidth[j] }">
                     <span v-if="!isEditable(i, j)" v-html="headerFormat[j](x[y], x)"></span>
@@ -21,7 +21,8 @@
         props: {
             header: Array,
             data: Array,
-            editable: Boolean
+            editable: Boolean,
+            scrollY: Boolean
         },
         mounted() {
             document.addEventListener('click', () => {

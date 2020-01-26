@@ -1,11 +1,10 @@
 <template>
     <div class="vde-input">
         <input ref="input" v-if="!disabled"
-               @change="$emit('change', $event.target.value)"
+               @change="processInput('change', $event)"
                v-bind:value="value"
-               @input="$emit('input', $event.target.value)"
+               @input="processInput('input', $event)"
                type="text">
-
         {{ disabled ?model :'' }}
     </div>
 </template>
@@ -15,7 +14,8 @@
         name: "vde-input",
         props: {
             disabled: Boolean,
-            value: [String, Number, Date, Boolean, Object]
+            value: [String, Number, Date, Boolean, Object],
+            mask: String
         },
         mounted() {
 
@@ -26,6 +26,10 @@
             },
             select() {
                 this.$refs.input.select();
+            },
+            processInput(eventType, e) {
+                if (this.mask === 'integer') e.target.value = e.target.value.replace(/\D/g, '');
+                this.$emit(eventType, e.target.value);
             }
         },
         data() {

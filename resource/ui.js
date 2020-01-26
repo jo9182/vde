@@ -4,8 +4,9 @@ import "../resource/scss/ui.scss";
 let components = [
     'button', 'checkbox', 'input',
     'number.range', 'radio.group', 'select',
-    'toggle.group', 'tab.bar', 'table', 'panel', 'slider', 'progress',
-    'tree', 'side.bar', 'file.tree', 'field', 'chart'
+    'toggle.group', 'tab.panel', 'table', 'panel', 'slider', 'progress',
+    'tree', 'side.bar', 'file.tree', 'field', 'chart', 'menu.bar', 'modal',
+    'tab.group', 'file.table'
 ];
 
 for (let i = 0; i < components.length; i++) {

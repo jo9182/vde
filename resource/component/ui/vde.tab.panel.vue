@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="vde-tab-bar">
+        <div class="vde-tab-panel">
             <div class="toggle-group button-group">
                 <!--<button @click="select(item)" class="button base" :class="item === selectedItem ?'selected' :''" v-for="item in items">{{ item }}</button>-->
                 <vde-button @click="select(item)" v-for="item in items" :title="item" :selected="item === selectedItem" style="white-space: nowrap;"></vde-button>
@@ -14,7 +14,7 @@
 
 <script>
     export default {
-        name: "vde-tab-bar",
+        name: "vde-tab-panel",
         props: {
             items: Array,
             selected: [String, Number]
@@ -50,7 +50,7 @@
 </script>
 
 <style lang="scss" scoped>
-    .vde-tab-bar {
+    .vde-tab-panel {
         position: relative;
         border: 1px solid #4b4b4b;
         border-radius: 2px;

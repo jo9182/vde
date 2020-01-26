@@ -1,5 +1,7 @@
 <template>
-    <div class="vde-button" :class="selected ?'selected' :''" @click="$emit('click')">{{ title }}</div>
+    <div class="vde-button"
+         :class="[disabled ?'disabled' :(selected ?'selected' :'')]"
+         @click="[!disabled ?$emit('click') :null]">{{ title }}</div>
 </template>
 
 <script>
@@ -7,6 +9,7 @@
         name: "vde-number-range",
         props: {
             title: String,
+            disabled: Boolean,
             selected: Boolean
         },
         mounted() {
@@ -55,5 +58,16 @@
 
     .vde-button.selected {
         background: #d03d58;
+    }
+
+    .vde-button.disabled {
+        background: #3e3e3e;
+        color: #6f6f6f;
+
+        &:hover, &:active {
+            background: #3e3e3e;
+            color: #6f6f6f;
+            top: 0;
+        }
     }
 </style>
