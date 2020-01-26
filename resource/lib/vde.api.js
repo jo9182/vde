@@ -67,7 +67,7 @@ let VDE = {
         if (config.components) {
             for (let i = 0; i < config.components.length; i++) {
                 let component = await this.getVueComponent(config.components[i] + '.vue');
-                Vue.component(config.components[i].replace(/\./g, '-'), component);
+                Vue.component(config.components[i].replace(/\./g, '-').split('/').pop(), component);
             }
         }
 

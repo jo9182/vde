@@ -3,30 +3,42 @@ class VdeImage {
         red: null,
         green: null,
         blue: null,
-        gray: null
+        gray: null,
+        alpha: null
     };
 
+    public sectionSize: any = null;
     public isGrayScale: boolean = false;
+    public hasAlpha: boolean = false;
     private readonly _width: number = 0;
     private readonly _height: number = 0;
+    private readonly _sectionRow: number = 0;
+    private readonly _sectionColumn: number = 0;
+    private readonly _useSection: boolean = false;
+    private readonly _changedSections: Set<number> = new Set<number>();
 
-    constructor({image = null, isGrayScale = undefined, width = 0, height = 0}) {
+    constructor({image = null, isGrayScale = undefined, hasAlpha = undefined, sectionSize = undefined, width = 0, height = 0}) {
         this.isGrayScale = !!isGrayScale;
+        this.hasAlpha = !!hasAlpha;
+        this.sectionSize = sectionSize || {width: 32, height: 32};
+        if (sectionSize) this._useSection = true;
 
         if (image === null) {
             this._width = width;
             this._height = height;
-            this.channel.red = new Float32Array(width * height); // new Array(width * height).fill(0);
-            this.channel.green = new Float32Array(width * height); // new Array(width * height).fill(0);
-            this.channel.blue = new Float32Array(width * height); // new Array(width * height).fill(0);
-            this.channel.gray = new Float32Array(width * height); // new Array(width * height).fill(0);
+            this.channel.red = new Float32Array(width * height);
+            this.channel.green = new Float32Array(width * height);
+            this.channel.blue = new Float32Array(width * height);
+            this.channel.gray = new Float32Array(width * height);
+            if (hasAlpha) this.channel.alpha = new Float32Array(width * height);
         } else if (image instanceof VdeImage) {
             this._width = image.width;
             this._height = image.height;
-            this.channel.red = new Float32Array(image.channel.red); // [].concat(image.channel.red);
-            this.channel.green = new Float32Array(image.channel.green); // [].concat(image.channel.green);
-            this.channel.blue = new Float32Array(image.channel.blue); // [].concat(image.channel.blue);
-            this.channel.gray = new Float32Array(image.channel.gray); // [].concat(image.channel.gray);
+            this.channel.red = new Float32Array(image.channel.red);
+            this.channel.green = new Float32Array(image.channel.green);
+            this.channel.blue = new Float32Array(image.channel.blue);
+            this.channel.gray = new Float32Array(image.channel.gray);
+            if (hasAlpha) this.channel.alpha = new Float32Array(image.channel.alpha);
             this.isGrayScale = isGrayScale || image.isGrayScale;
 
             if (this.isGrayScale) {
@@ -41,10 +53,11 @@ class VdeImage {
         } else if (image instanceof ImageData) {
             this._width = image.width;
             this._height = image.height;
-            this.channel.red = new Float32Array(image.width * image.height); // new Array(image.width * image.height).fill(0);
-            this.channel.green = new Float32Array(image.width * image.height); // new Array(image.width * image.height).fill(0);
-            this.channel.blue = new Float32Array(image.width * image.height); // new Array(image.width * image.height).fill(0);
-            this.channel.gray = new Float32Array(image.width * image.height); // new Array(image.width * image.height).fill(0);
+            this.channel.red = new Float32Array(image.width * image.height);
+            this.channel.green = new Float32Array(image.width * image.height);
+            this.channel.blue = new Float32Array(image.width * image.height);
+            this.channel.gray = new Float32Array(image.width * image.height);
+            if (hasAlpha) this.channel.alpha = new Float32Array(image.width * image.height);
 
             let px = 0, py = 0;
             for (let i = 0; i < image.data.length; i += 4) {
@@ -54,6 +67,7 @@ class VdeImage {
                     this.channel.red[px % image.width + py % image.height * image.width] = image.data[i] / 255;
                     this.channel.green[px % image.width + py % image.height * image.width] = image.data[i + 1] / 255;
                     this.channel.blue[px % image.width + py % image.height * image.width] = image.data[i + 2] / 255;
+                    if (hasAlpha) this.channel.alpha[px % image.width + py % image.height * image.width] = image.data[i + 3] / 255;
                 }
 
                 px++;
@@ -70,6 +84,7 @@ class VdeImage {
             this.channel.green = new Float32Array(image.channel.green);
             this.channel.blue = new Float32Array(image.channel.blue);
             this.channel.gray = new Float32Array(image.channel.gray);
+            if (hasAlpha) this.channel.alpha = new Float32Array(image.channel.alpha);
             // this.channel = JSON.parse(JSON.stringify(image.channel));
         }
 
@@ -78,6 +93,37 @@ class VdeImage {
             this.channel.green = this.channel.gray;
             this.channel.blue = this.channel.gray;
         }
+
+        this._sectionRow = Math.ceil(this._width / this.sectionSize.width);
+        this._sectionColumn = Math.ceil(this._height / this.sectionSize.height);
+    }
+
+    drawSection(canvas: HTMLCanvasElement, {x, y, width, height}) {
+        let ctx = canvas.getContext('2d');
+        let imageData = ctx.createImageData(width, height);
+        let imageIndex = 0;
+        let px = x, py = y;
+        let length = imageData.width * imageData.height;
+        const r = this.channel.red, g = this.channel.green, b = this.channel.blue, a = this.channel.alpha;
+        const w = imageData.width, h = imageData.height;
+        const cw = this.width, ch = this.height;
+        const hasAlpha = this.hasAlpha;
+
+        for (let i = 0; i < length; i++) {
+            let index = px % cw + py % ch * cw;
+            imageData.data[imageIndex++] = (r[index] * 255) | 0;
+            imageData.data[imageIndex++] = (g[index] * 255) | 0;
+            imageData.data[imageIndex++] = (b[index] * 255) | 0;
+            imageData.data[imageIndex++] = hasAlpha ? (a[index] * 255) | 0 : 255;
+
+            px++;
+            if (px >= x + w) {
+                px = x;
+                py++;
+            }
+        }
+
+        ctx.putImageData(imageData, x, y);
     }
 
     draw(canvas: HTMLCanvasElement, isClear: boolean = false) {
@@ -86,15 +132,16 @@ class VdeImage {
         let imageIndex = 0;
         let px = 0, py = 0;
         let length = imageData.width * imageData.height;
-        const r = this.channel.red, g = this.channel.green, b = this.channel.blue;
+        const r = this.channel.red, g = this.channel.green, b = this.channel.blue, a = this.channel.alpha;
         const w = imageData.width, h = imageData.height;
+        const hasAlpha = this.hasAlpha;
 
         for (let i = 0; i < length; i++) {
             let index = px % w + py % h * w;
             imageData.data[imageIndex++] = (r[index] * 255) | 0;
             imageData.data[imageIndex++] = (g[index] * 255) | 0;
             imageData.data[imageIndex++] = (b[index] * 255) | 0;
-            imageData.data[imageIndex++] = 255;
+            imageData.data[imageIndex++] = hasAlpha ? (a[index] * 255) | 0 : 255;
 
             px++;
             if (px >= w) {
@@ -105,6 +152,19 @@ class VdeImage {
 
         if (isClear) ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.putImageData(imageData, 0, 0);
+    }
+
+    drawChanged(canvas: HTMLCanvasElement) {
+        this._changedSections.forEach(x => {
+            let sectionX = x % this._sectionRow;
+            let sectionY = x / this._sectionRow | 0;
+
+            this.drawSection(canvas, {
+                x: sectionX * this.sectionSize.width, y: sectionY * this.sectionSize.height,
+                width: this.sectionSize.width, height: this.sectionSize.height
+            });
+        });
+        this._changedSections.clear();
     }
 
     grayscale() {
@@ -141,7 +201,7 @@ class VdeImage {
                         // Copy chunk
                         for (let ii = 0; ii < step; ii++) {
                             for (let jj = 0; jj < step; jj++) {
-                                chunk.push(copy.getPixel(i + ii,j + jj, 'gray'));
+                                chunk.push(copy.getPixel(i + ii, j + jj, 'gray'));
                             }
                         }
 
@@ -308,13 +368,78 @@ class VdeImage {
         return this.channel[channel][~~x % this._width + ~~y % this._height * this._width] || 0;
     }
 
+    getPixels(format: string = '', channel: string = 'all') {
+        let out = [];
+        for (let i = 0; i < this.channel.red.length; i++) {
+            out.push(this.channel.red[i] * 255 | 0);
+            out.push(this.channel.green[i] * 255 | 0);
+            out.push(this.channel.blue[i] * 255 | 0);
+            if (this.hasAlpha) out.push(this.channel.alpha[i] * 255 | 0);
+            else out.push(255);
+        }
+        return out;
+    }
+
+    setPixels(pixels:Array<number>, format: string = '', channel: string = 'all') {
+        let px = 0;
+        for (let i = 0; i < pixels.length; i += 4) {
+            this.channel.red[px] = pixels[i] / 255;
+            this.channel.green[px] = pixels[i + 1] / 255;
+            this.channel.blue[px] = pixels[i + 2] / 255;
+            this.channel.alpha[px] = pixels[i + 3] / 255;
+            px++;
+        }
+    }
+
+    getPixelComponents(x: number, y: number) {
+        let r = this.channel['red'][~~x % this._width + ~~y % this._height * this._width];
+        let g = this.channel['green'][~~x % this._width + ~~y % this._height * this._width];
+        let b = this.channel['blue'][~~x % this._width + ~~y % this._height * this._width];
+        let a = this.channel['alpha'][~~x % this._width + ~~y % this._height * this._width];
+
+        return {
+            rgb: (r << 16) + (g << 8) + b,
+            r, g, b, a
+        }
+    }
+
     setPixel(x: number, y: number, value: number, channel: string = 'all') {
         if (channel === 'all') {
             this.channel['red'][~~x % this._width + ~~y % this._height * this._width] = value;
             this.channel['green'][~~x % this._width + ~~y % this._height * this._width] = value;
             this.channel['blue'][~~x % this._width + ~~y % this._height * this._width] = value;
+            this.channel['alpha'][~~x % this._width + ~~y % this._height * this._width] = value;
         } else {
             this.channel[channel][~~x % this._width + ~~y % this._height * this._width] = value;
+        }
+    }
+
+    setPixelRGBA(x: number, y: number, color: number, alpha: number = 1) {
+        if (x < 0 || y < 0 || x >= this._width || y >= this._height) return;
+
+        this.channel['red'][~~x % this._width + ~~y % this._height * this._width] = Math.min(((color & 0xFF0000) >> 16) / 255, 1);
+        this.channel['green'][~~x % this._width + ~~y % this._height * this._width] = Math.min(((color & 0xFF00) >> 8) / 255, 1);
+        this.channel['blue'][~~x % this._width + ~~y % this._height * this._width] = Math.min(((color & 0xFF)) / 255, 1);
+        this.channel['alpha'][~~x % this._width + ~~y % this._height * this._width] = Math.min(alpha, 1);
+
+        if (this._useSection) {
+            let xx = ~~(x / this.sectionSize.width), yy = ~~(y / this.sectionSize.height);
+            this._changedSections.add(xx % this._sectionRow + yy * this._sectionRow);
+        }
+    }
+
+    setPixelComponents(x: number, y: number, {r, g, b, a}) {
+        if (x < 0 || y < 0 || x >= this._width || y >= this._height) return;
+
+        let pos = ~~x % this._width + ~~y % this._height * this._width;
+        this.channel['red'][pos] = Math.min(r, 1);
+        this.channel['green'][pos] = Math.min(g, 1);
+        this.channel['blue'][pos] = Math.min(b, 1);
+        this.channel['alpha'][pos] = Math.min(a, 1);
+
+        if (this._useSection) {
+            let xx = ~~(x / this.sectionSize.width), yy = ~~(y / this.sectionSize.height);
+            this._changedSections.add(xx % this._sectionRow + yy * this._sectionRow);
         }
     }
 
